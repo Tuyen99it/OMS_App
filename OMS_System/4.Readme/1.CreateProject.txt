@@ -1,0 +1,152 @@
+1. Install 
+- SDK: .Net8
+- Code editor: VS codes
+- Database: MS sqlserver
+2. Create project
+- Create a new folder: mkdir Name_Folder
+- Create a new MVC project: dotnet new mvc 
+3. Connect Project to Mssql server
+3.1 Install EntityFramework to work with Mssql server
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 9.0.1
+dotnet add package Microsoft.Data.SqlClient --version 5.0.0
+dotnet add package Microsoft.Extensions.Configuration --version 8.0.0
+dotnet add package Microsoft.Extensions.Configuration.Json --version 8.0.0
+dotnet add package Microsoft.Extensions.DependencyInjection --version 8.0.0
+dotnet add package Microsoft.Extensions.Logging --version 8.0.0
+dotnet add package Microsoft.EntityFrameworkCore.Design  --version 8.0.0
+3.2 Create Connectstring
+3.2.1. Create a database name " OMS database " on Mssql server.
+3.2.2. Create ConnetionString: appsetting.json
+  "ConnectionStrings": {
+    "OMSContext": "Data source=localhost;Initial Catalog=OMSDatabase; User ID=SA;Password=Tuyen123;encrypt=false"
+  },
+3.2.3. Create OMSDBcontext
+using Microsoft.EntityFrameworkCore;
+namespace OMS_Webapp.Data
+{
+    public class OMSDBContext : DbContext
+    {
+
+        public OMSDBContext(DbContextOptions<OMSDBContext> options) : base(options) { }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+    }
+}
+3.2.4.Config Add OMSDBContext into project
+// Add DbContext
+builder.Services.AddDbContext<OMSDBContext>(options =>
+{
+    // Fretch connectstring from appsettings.json file
+    string connectionString = builder.Configuration.GetConnectionString("OMSContext");
+    // Connect to Mssql server
+    options.UseSqlServer(connectionString);
+});
+3.2.5. Check connect database status
+- Create a new migration : dotnet ef migrations add Initial
+- Update Database: dotnet ef database update
+4. Add Identity in the database
+4.1 Create AppUser Modle. It is inheritated form IdentityUser Model
++ UserIdentity Model:
+. ID: Text
+. UserName: Text
+. NormalUserName: Text uppertext
+. Email: Email
+. NormalEmail: Email uppertext
+. EmailConfirmed: Bool
+. PasswordHash: Hash code
+. SercurityStamd
+. PhoneNumber: Phone
+. PhoneNumberConfirmed: Bool
+. TwoFactorEnable: Bool
+. LockoutEnd: Bool
+. LockoutEnable: Bool
+. AccessFailedCount: Number 
++ AppUser: IdentityUser
+. FullName: Text
+. Address: Text
+. Birthday: DateTime.Date
+
+using System;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity
+namespace OMS_Webapp.Models
+{
+    public class AppUser : IdentityUser
+    {
+        [MaxLength(100)]
+        public string FullName { get; set; }
+        [MaxLength(255)]
+        public string Address { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? Birthday { get; set; }
+
+    }
+}
+
+4.2 Update OMSDBContext
+using Microsoft.EntityFrameworkCore;
+
+using OMS_Webapp.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+namespace OMS_Webapp.Data
+{
+    public class OMSDBContext : IdentityDbContext<AppUser>
+    {
+
+        public DbSet<AppUser> AppUsers { get; set; }
+        public OMSDBContext(DbContextOptions<OMSDBContext> options) : base(options) { }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            // remove pre-fix AspNet
+            foreach(var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var nameTable=entityType.Name;
+                if (nameTable.StartsWith("AspNet"))
+                {
+                    entityType.SetTableName(nameTable.Substring(6));
+                }
+            }
+        }
+    }
+}
+4.3 Update database
+- Remove file migration
+- Remove migrations : dotnet ef migrations remove
+- Drop data base: dotnet ef database drop
+- Create migraion: dotnet ef migrations add name_init
+- Update database: dotnet ef database update
+
+3. Install dependency packages
+1. SQL server: 
+
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 9.0.1
+dotnet add package Microsoft.Data.SqlClient --version 5.0.0
+dotnet add package Microsoft.Extensions.Configuration --version 8.0.0
+dotnet add package Microsoft.Extensions.Configuration.Json --version 8.0.0
+dotnet add package Microsoft.Extensions.DependencyInjection --version 8.0.0
+dotnet add package Microsoft.Extensions.Logging --version 8.0.0
+dotnet add package Microsoft.EntityFrameworkCore.Design  --version 8.0.0
+2. Identity:
+dotnet add package Microsoft.AspNetCore.Authentication --version 2.2.0 
+dotnet add package Microsoft.AspNetCore.Authentication.Cookies --version 2.2.0 
+dotnet add package Microsoft.AspNetCore.Authentication.Facebook --version 8.0.0 
+dotnet add package Microsoft.AspNetCore.Authentication.Google --version 8.0.0 
+dotnet add package Microsoft.AspNetCore.Authentication.oAuth --version 2.2.0 
+dotnet add package Microsoft.AspNetCore.Http.Abstractions --version 2.3.0 
+dotnet add package Microsoft.AspNetCore.Identity --version 2.2.0 
+dotnet add package Microsoft.Aspnetcore.Identity.EntityFrameworkCore --version 8.0.0 
+dotnet add package Microsoft.AspNetCore.Identity.UI --version 8.0.0 
+dotnet add package Microsoft.AspNetCore.Session --version 2.3.0  
+
+3. Tools
+- dotnet ef:
+dotnet add package Microsoft.EntityFrameworkCore.Design  --version 8.0.0
+dotnet add package Microsoft.EntityFrameworkCore.Tools    --version 8.0.0
+dotnet tool install --global dotnet-ef
+- Identity
+dotnet tool install --global dotnet-aspnet-codegenerator  --version 8.0.0
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design  --version 8.0.0
+

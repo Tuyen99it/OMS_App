@@ -117,4 +117,16 @@
 - Role table
 - Claim table
 - UserRole: Connect user with role
+4.3 Product
+- Product
+- ProductCategory
+- ProductStoke
+4.4 Cart
+- Cart
+- Order table
+- Order checking table
+4.5 Coupon table
+4.6 Notification table
+4.7 chat table
+
 

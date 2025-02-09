@@ -1,5 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using OMS_Webapp.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
+
+// Add DbContext
+builder.Services.AddDbContext<OMSDBContext>(options =>
+{
+    // Fretch connectstring from appsettings.json file
+    string connectionString = builder.Configuration.GetConnectionString("OMSContext");
+    // Connect to Mssql server
+    options.UseSqlServer(connectionString);
+});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
