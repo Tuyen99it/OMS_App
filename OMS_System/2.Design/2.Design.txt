@@ -1,0 +1,44 @@
+1. Summary
+- Start from 2/3/2025-2/9/2025 (7days)
+- Use Figma to design
+2. Knowledge
+- Farm
+- Grid
+- Colour
+- Design basic
+- Prototipe basic
+- layout
+3. Web design
+3.1 Page
+- Home/Index
+- Product
+- cart
+- Order
+- Identity  ( pending )
+- Dashboard ( pending )
+3.2 layout
+- Common layout
+- Product layout
+- cart layout
+- order layout
+- Identity layout
+- Dasboard layout
+3.3 Components
+- Cards
++ Category card
++ Product card
++ Cart card
++ Order card
+- Sidebar
+4. Access
+- Product image folder
+- User image folder
+- Category image folder
+- Notification image folder
+- Voucher image folder
+- Login image folder
+- Css filter folder
+- Js file folder
+
+
+

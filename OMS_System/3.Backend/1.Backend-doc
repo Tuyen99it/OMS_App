@@ -1,0 +1,120 @@
+1. Model
+1.1 Identity
+- Authentication: User
+- Authorization: Roles
+1.2 Product managerment
+- Product
+- Product category
+- Product stoke
+1.3 Order processing
+- Cart 
+- Order
+- Checkout
+- Order confirmation
+- Order tracking
+1.4 Payment
+1.5. Customer profile
+- User/Customer
+- Order
+- Cart
+- Address book
+1.6 Admin Dashboard
+- Sale management
+- Order management
+- Customer managerment
+- User/staff management
+- Coupont management
+1.7 Notification and alert
+- Product 
+- User
+- Order
+- stoke
+1.8
+- Ship options/rates
+- Label generate
+- Delivery tracking
+1.9 Review and feedback
+- User/Customer
+- Product
+- Review and feedback
+1.10 Coupon codes
+- Coupont
+1.11 Sercure Data
+1.12 Languare
+- Language
+- Chat 
+1.13 customer supports
+- Chat
+- FAQ 
+- Contact form
+2. functions
+2.1 Identity
+- Authentication:
++ User CRUD
++ Login/Logout
++ External login
++ Email confirmation
++ Phone confirmation
++ Two factor identity
+- Authorization
++ Roles CRUD
++ Assign roles to user
++ Add policy for Roles
+2.2 Product managerment
+- Product: CRUD
+- Product category: CRUD
+- Product stoke: CRUD
+2.3 Order processing
+- Cart: CRUD
+- Order: CRUD
+- Checkout: Payment
+- Order confirmation
+- Order tracking: GG map
+2.4 Payment
+2.5. Customer profile
+- User/Customer: RUD
+- Order: RD
+- Cart: CRUD
+- Address book: CRUD
+2.6 Admin Dashboard
+- Sale management: R
+- Order management: R
+- Customer managerment: R
+- User/staff management: R
+- Coupont management: R
+2.7 Notification and alert
+- Product: RU
+- User: RU
+- Order: RU
+- stoke: RU
+2.8
+- Ship options/rates: CRUD
+- Label generate: CR
+- Delivery tracking:CD
+2.9 Review and feedback
+- User/Customer: R
+- Product: R
+- Review and feedback: CRUD
+2.10 Coupon codes
+- Coupont: CRUD
+2.11 Sercure Data
+2.12 Languare
+- Language
+- Chat 
+2.13 customer supports
+- Chat
+- FAQ  
+- Contact form
+3. Page
+- Update later
+4. Database
+4.1 Authentication
+- User table: Store user information
+- User_Login Table: External login
+- User_Token table: External login
+- User Claim table: Add information claim
+4.2 Authorization
+- Role table
+- Claim table
+- UserRole: Connect user with role
+
