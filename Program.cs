@@ -45,8 +45,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 //Configure cookie for Identity 
 builder.Services.ConfigureApplicationCookie(options => {
-    //cookie setting
-    options.Cookie.HttpOnly = true;                          // Ensure the cookie can not be accessed from client-side cripts.
+//cookie setting
+options.Cookie.HttpOnly = true;                          // Ensure the cookie can not be accessed from client-side cripts.
 options.ExpireTimeSpan = TimeSpan.FromMinutes(30);       // Setting expire time of cookie is 30 minutes
 options.LoginPath = "/Identity/Account/AccessDenied";    // Sets the path to the login page when access is denied
 options.SlidingExpiration = true;                        // Reset cookie expire time when each request of client. Ensuring that the user remains authenticated as long as they continue to interact with the application within the specified time span ( 30 minutes in this case )

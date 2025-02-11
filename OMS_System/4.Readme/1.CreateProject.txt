@@ -199,6 +199,3 @@ dotnet aspnet-codegenerator identity -dc OMS_Webapp.Data.OMSDBContext
 //});
 - Re migration identity again.
 dotnet aspnet-codegenerator identity -dc OMS_Webapp.Data.OMSDBContext
-
-
-

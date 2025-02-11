@@ -1,6 +1,49 @@
-﻿namespace OMS_Webapp.OMS_System._4.Readme
-{
-    public class _2
-    {
-    }
-}
+﻿1. Custom Identify theo mô hình MVC
+1.1 Create Identity Controller
+- After scaffold Identity. The Identity folder is automatically generated in Areas/Identity/Account Folder. The main files are
++ Pages/_ValidationScriptsPartial.cshtml: The partial use to jquery lib to validate data before binding.
++ Pages/_ViewStart.cshtml: The first code is ran when the code start.
++ Page/_ViewImports.cshtml. RazorPage use to inport the specific namespace use in Razor page
++ Page/Error.cshtml
+
+Pages/Account/
+_StatusMessage.cshtml: Partial is used to pass MessageStatus to other Razor Pages
+_ViewImports.cshtml: 
++ Register: Use to register user account ( userid/ password) or external register
++ RegisterConfirmation: The page use to confirm the email that user registered new account
++ Login: Login page
++ LoginWith2Fa: Two factor confirmation page
++ LoginWithRecoveryCode
++ ExternalLogin
++ Logout
++ ConfirmEmail
++ ConfirmEmailChange
++ ResendEmailConfirmation
++ ForgotPassword
++ ForgotPasswordConfirmation
++ ResetPassword
++ ResetPasswordConfirmation
++ Lockout
+
+Pages/Account/Manager/
+_Layout
+_ManagerNav
+_StatusMessage
+_ViewImports
++ ChangePassword
++ DeletePersonData
++ Disable2fa
++ DownloadPersonData
++ Email
++ EnableAuthenticator
++ ExternalLogins
++ GenerateRecoveryCodes
++ Index
++ PersonalData
++ ResetAuthentication
++ SetPassword
++ ShowRecoveryCode
++ TwoFactorAuthentication
++ ManagerNavPage
+
+1. Custorm Identity Controller
