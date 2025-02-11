@@ -1,0 +1,6 @@
+﻿namespace OMS_Webapp.OMS_System._4.Readme
+{
+    public class _2
+    {
+    }
+}

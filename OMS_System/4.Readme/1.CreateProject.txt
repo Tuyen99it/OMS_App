@@ -47,6 +47,25 @@ builder.Services.AddDbContext<OMSDBContext>(options =>
 - Create a new migration : dotnet ef migrations add Initial
 - Update Database: dotnet ef database update
 4. Add Identity in the database
+- Install Package and tools
+dotnet add package Microsoft.AspNetCore.Authentication --version 2.2.0 
+dotnet add package Microsoft.AspNetCore.Authentication.Cookies --version 2.2.0 
+dotnet add package Microsoft.AspNetCore.Authentication.Facebook --version 8.0.0 
+dotnet add package Microsoft.AspNetCore.Authentication.Google --version 8.0.0 
+dotnet add package Microsoft.AspNetCore.Authentication.oAuth --version 2.2.0 
+dotnet add package Microsoft.AspNetCore.Http.Abstractions --version 2.3.0 
+dotnet add package Microsoft.AspNetCore.Identity --version 2.2.0 
+dotnet add package Microsoft.Aspnetcore.Identity.EntityFrameworkCore --version 8.0.0 
+dotnet add package Microsoft.AspNetCore.Identity.UI --version 8.0.0 
+dotnet add package Microsoft.AspNetCore.Session --version 2.3.0  
+
+- dotnet ef:
+dotnet add package Microsoft.EntityFrameworkCore.Design  --version 8.0.0
+dotnet add package Microsoft.EntityFrameworkCore.Tools    --version 8.0.0
+dotnet tool install --global dotnet-ef
+- Identity
+dotnet tool install --global dotnet-aspnet-codegenerator  --version 8.0.0
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design  --version 8.0.0
 4.1 Create AppUser Modle. It is inheritated form IdentityUser Model
 + UserIdentity Model:
 . ID: Text
@@ -119,34 +138,67 @@ namespace OMS_Webapp.Data
 - Create migraion: dotnet ef migrations add name_init
 - Update database: dotnet ef database update
 
-3. Install dependency packages
-1. SQL server: 
+(11/2/2025)
+4.5 Configure Identity Services
+- Add Identity dependency into project
 
-dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 9.0.1
-dotnet add package Microsoft.Data.SqlClient --version 5.0.0
-dotnet add package Microsoft.Extensions.Configuration --version 8.0.0
-dotnet add package Microsoft.Extensions.Configuration.Json --version 8.0.0
-dotnet add package Microsoft.Extensions.DependencyInjection --version 8.0.0
-dotnet add package Microsoft.Extensions.Logging --version 8.0.0
-dotnet add package Microsoft.EntityFrameworkCore.Design  --version 8.0.0
-2. Identity:
-dotnet add package Microsoft.AspNetCore.Authentication --version 2.2.0 
-dotnet add package Microsoft.AspNetCore.Authentication.Cookies --version 2.2.0 
-dotnet add package Microsoft.AspNetCore.Authentication.Facebook --version 8.0.0 
-dotnet add package Microsoft.AspNetCore.Authentication.Google --version 8.0.0 
-dotnet add package Microsoft.AspNetCore.Authentication.oAuth --version 2.2.0 
-dotnet add package Microsoft.AspNetCore.Http.Abstractions --version 2.3.0 
-dotnet add package Microsoft.AspNetCore.Identity --version 2.2.0 
-dotnet add package Microsoft.Aspnetcore.Identity.EntityFrameworkCore --version 8.0.0 
-dotnet add package Microsoft.AspNetCore.Identity.UI --version 8.0.0 
-dotnet add package Microsoft.AspNetCore.Session --version 2.3.0  
+builder.Services.AddDefaultIdentity<AppUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+}).AddRoles<IdentityRole>().AddEntityFrameworkStores<OMSDBContext>();
 
-3. Tools
-- dotnet ef:
-dotnet add package Microsoft.EntityFrameworkCore.Design  --version 8.0.0
-dotnet add package Microsoft.EntityFrameworkCore.Tools    --version 8.0.0
-dotnet tool install --global dotnet-ef
-- Identity
-dotnet tool install --global dotnet-aspnet-codegenerator  --version 8.0.0
-dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design  --version 8.0.0
+- Configure IdentityOption 
+//configure IdentityOption
+builder.Services.Configure<IdentityOptions>(options => { 
+    // Password setting
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequiredUniqueChars = 1;
+
+    //Lock settings
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+
+    //User settings
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = false;
+
+});
+
+- Configure cookie for Identity
+// Configure cookie for Identity 
+builder.Services.ConfigureApplicationCookie(options => {
+    //cookie setting
+    options.Cookie.HttpOnly = true;                          // Ensure the cookie can not be accessed from client-side cripts.
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);       // Setting expire time of cookie is 30 minutes
+    options.LoginPath = "/Identity/Account/AccessDenied";    // Sets the path to the login page when access is denied
+    options.SlidingExpiration = true;                        // Reset cookie expire time when each request of client. Ensuring that the user remains authenticated as long as they continue to interact with the application within the specified time span ( 30 minutes in this case )
+
+});
+4.6 Config Razor page
+- Add RazorPage service into container
+builder.Services.AddRazorPages();
+- Add RazorPage Middleware into PipeLine
+app.MapUseRazorPages();
+4.7 Migration Identity code.
+- Migration Identity code
+dotnet aspnet-codegenerator identity -dc OMS_Webapp.Data.OMSDBContext
+- There are some issues when migration due to NG config cookie for Identity.  Comment those codes and migrations again. 
+//builder.Services.ConfigureApplicationCookie(options => {
+//    //cookie setting
+//    options.Cookie.HttpOnly = true;                          // Ensure the cookie can not be accessed from client-side cripts.
+//options.ExpireTimeSpan = TimeSpan.FromMinutes(30);       // Setting expire time of cookie is 30 minutes
+//options.LoginPath = "/Identity/Account/AccessDenied";    // Sets the path to the login page when access is denied
+//options.SlidingExpiration = true;                        // Reset cookie expire time when each request of client. Ensuring that the user remains authenticated as long as they continue to interact with the application within the specified time span ( 30 minutes in this case )
+
+//});
+- Re migration identity again.
+dotnet aspnet-codegenerator identity -dc OMS_Webapp.Data.OMSDBContext
+
+
 
