@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Security.Cryptography.Xml;
+using System.Security.Claims;
 namespace OMS_Webapp.Areas.Identity.Controllers
 {
     [Authorize]
@@ -252,8 +254,15 @@ namespace OMS_Webapp.Areas.Identity.Controllers
 
         //Get: /Account/LoginWithRecoveryCode/
         [HttpGet("/loginwithrecoverycode/")]
-        public IActionResult LoginWithRecoveryCode()
+        public IActionResult LoginWithRecoveryCode(string returnUrl=null)
         {
+            returnUrl ??= Url.Content("~/");
+            var user = _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new InvalidOperationException("Unable to load two-factor authentication user");
+            }
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -261,27 +270,111 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         [HttpPost("/loginwithrecoverycode/")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginWithRecoveryCode(string returnUrl=null)
+        public async Task<IActionResult> LoginWithRecoveryCode(LoginWithRecoveryCodeViewModel model,string returnUrl=null)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var user=await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if(user == null)
+            {
+                throw new InvalidOperationException("Unable to load two factor authentication user");
+            }
+            var recoveryCode=model.RecoveryCode.Replace(" ",string.Empty);
+            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
+            var userId = await _userManager.GetUserIdAsync(user);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User with Id '{UserId}' logged in with a recovery code.", user.Id);
+                return LocalRedirect(returnUrl);
+            }
+            if (result.IsLockedOut)
+            {
+                _logger.LogInformation("User with Id '{UserId}' was locked out", user.Id);
+                return RedirectToAction("Lockout");
+
+            }
+            else
+            {
+                _logger.LogWarning("Invalid recovery code entered for user with ID '{UserId}' ", user.Id);
+                ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
+                return View();
+
+            }
+
         }
 
         //Get: /Account/ExternalLogin
         [HttpGet("/externallogin/")]
+        [AllowAnonymous]
         public async Task<IActionResult> ExternalLogin()
         {
-            return View();
+            return RedirectToAction("Index");
         }
 
 
-        //Post: /Account/ExternalLogin/callbackUrl
+        //Post: /Account/ExternalLogin
         [HttpPost("/externallogin/")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLogin(string callbackUrl)
+        public async Task<IActionResult> ExternalLogin(string provider, string returnUrl=null)
         {
-            return View();
+            var redirectUrl=Url.Action("ExternalLogin", controller:"AccountController",values: new {area="Identity", returnUrl});
+            var properties=_signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return new ChallengeResult(provider, properties);
         }
+
+
+
+        //Get: /Account/ExternalLoginCallBack
+        [HttpGet("/externallogincallback/")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallBack(ExternalLoginViewModel model,string returnUrl=null, string remoteError = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            if(remoteError == null)
+            {
+                ErrorMessage = $"Error from external provider: {remoteError}";
+                return RedirectToAction("Login", new { ReturnUrl = returnUrl });
+            }
+            var info=await _signInManager.GetExternalLoginInfoAsync();
+            if(info == null)
+            {
+                ErrorMessage = $"Error loading external login information";
+                return RedirectToAction("Login", new { returnUrl = returnUrl });
+            }
+            //Sign in user with this external login provider if the user already has a login
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey,isPersistent:false,bypassTwoFactor:true);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("{Name} logged in with {LoginProvide} provider.",info.Principal.Identity.Name,info.LoginProvider);
+                return LocalRedirect(returnUrl);
+            }
+            if (result.IsLockedOut)
+            {
+                return RedirectToAction("Lockout");
+            }
+            else
+            {
+                // if the user does not have an account, then ask the user to create an account
+                ViewBag.ReturnUrl = returnUrl;
+                ViewBag.ProviderDisplayName = info.ProviderDisplayName;
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                {
+                    var ExternalLoginViewModel = new ExternalLoginViewModel
+                    {
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                    };
+
+                    return View();
+                }
+            }
+
+        }
+        
+
+
 
         //Get: /Account/Logout
         [HttpGet("/logout/")]
