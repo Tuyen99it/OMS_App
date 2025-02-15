@@ -535,14 +535,6 @@ namespace OMS_Webapp.Areas.Identity.Controllers
             return View();
 
         }
-        //Get:/Account/ForgetPassword
-        [HttpGet("/forgotpassword/")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ForgotPassword(string returnUrl = null)
-        {
-            returnUrl ??= Url.Content("~/");
-            return View();
-        }
 
 
         //Post: /Account/forgotpassword/
@@ -587,9 +579,44 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         //Get:/Account/Resetpassword
         [HttpGet("/resetpassword/")]
         [AllowAnonymous]
-        public IActionResult ResetPassword()
+        public IActionResult ResetPassword( string code=null)
         {
+            if(code== null)
+            {
+                return BadRequest("A code must be supplied for password reset");
+            }
+            else
+            {
+                var resetPasswordViewModel = new ResetPasswordViewModel{
+                    Code=Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+                };
+                return View();
+            }
+        }
+
+        //Post:/Account/Resetpassword
+        [HttpPost("/resetpassword/")]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid) 
+            {
+                return View();
+            }
+            var user= await _userManager.FindByEmailAsync(model.Email);
+            if (user == null) return RedirectToAction("ResetPasswordConfirmation");
+            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation");
+            }
+            foreach(var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
             return View();
+
         }
 
         //Get:/Account/ResetpasswordConfirmation
