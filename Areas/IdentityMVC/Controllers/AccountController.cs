@@ -12,6 +12,7 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Security.Cryptography.Xml;
 using System.Security.Claims;
+using System.Security;
 namespace OMS_Webapp.Areas.Identity.Controllers
 {
     [Authorize]
@@ -25,7 +26,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         private readonly IUserStore<AppUser> _userStore;
         private readonly IUserEmailStore<AppUser> _emailStore;
         private readonly IEmailSender _emailSender;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<AccountController> logger, IUserStore<AppUser> userStore, IUserEmailStore<AppUser> emailStore,IEmailSender emailSender)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<AccountController> logger, IUserStore<AppUser> userStore, IUserEmailStore<AppUser> emailStore, IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -112,28 +113,28 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         //Get: /Account/RegisterConfirmation: Allow confirm register when using fake email addres
         [HttpGet("/registerconfirmation/")]
         [AllowAnonymous]
-        public async Task<IActionResult> RegisterConfirmation( string email,string returnUrl=null,bool displayConfirmationAccountLink=false)
+        public async Task<IActionResult> RegisterConfirmation(string email, string returnUrl = null, bool displayConfirmationAccountLink = false)
         {
-           if(email == null)
+            if (email == null)
             {
                 return RedirectToAction("/Index");
             }
             returnUrl ??= Url.Content("~/");
-            var user=await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user == null) return NotFound("Can not find out user have email: " + email);
             // Create a code confirmation when use fake email. When you use real email please remove this code or pass value "false" to displayConfirmationAccountLink
             if (displayConfirmationAccountLink)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
-                var code=await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code=WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 ViewBag.EmailConfirmationUrl = Url.Action(
                     "ConfirmEmail",
                     controller: "Account",
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme);
             }
-            return View();  
+            return View();
         }
 
         //Get: /Acount/Login/url
@@ -204,7 +205,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         //Get: /Account/LoginWith2fa
         [HttpGet("/loginwith2fa/")]
         [AllowAnonymous]
-        public async Task<IActionResult> LoginWith2Fa(bool rememerMe,string returnUrl=null)
+        public async Task<IActionResult> LoginWith2Fa(bool rememerMe, string returnUrl = null)
         {
             // Ensure the user has gon through the username and password screem first
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -212,7 +213,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
             {
                 throw new InvalidOperationException("Unable to load two-factor authentication user");
             }
-            ViewBag.ReturnUrl = returnUrl;  
+            ViewBag.ReturnUrl = returnUrl;
             ViewBag.RememberMe = rememerMe;
             return View();
         }
@@ -221,7 +222,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         [HttpPost("/loginwith2fa/")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginWith2Fa(LoginWith2faViewModel model,bool rememerMe,string returnUrl=null )
+        public async Task<IActionResult> LoginWith2Fa(LoginWith2faViewModel model, bool rememerMe, string returnUrl = null)
         {
             if (!ModelState.IsValid) return View();
             returnUrl ??= Url.Content("~/");
@@ -249,12 +250,12 @@ namespace OMS_Webapp.Areas.Identity.Controllers
                 ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
                 return View();
             }
-            
+
         }
 
         //Get: /Account/LoginWithRecoveryCode/
         [HttpGet("/loginwithrecoverycode/")]
-        public IActionResult LoginWithRecoveryCode(string returnUrl=null)
+        public IActionResult LoginWithRecoveryCode(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             var user = _signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -270,18 +271,18 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         [HttpPost("/loginwithrecoverycode/")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginWithRecoveryCode(LoginWithRecoveryCodeViewModel model,string returnUrl=null)
+        public async Task<IActionResult> LoginWithRecoveryCode(LoginWithRecoveryCodeViewModel model, string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
-            var user=await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if(user == null)
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
             {
                 throw new InvalidOperationException("Unable to load two factor authentication user");
             }
-            var recoveryCode=model.RecoveryCode.Replace(" ",string.Empty);
+            var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty);
             var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
             var userId = await _userManager.GetUserIdAsync(user);
             if (result.Succeeded)
@@ -318,10 +319,10 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         [HttpPost("/externallogin/")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLogin(string provider, string returnUrl=null)
+        public async Task<IActionResult> ExternalLogin(string provider, string returnUrl = null)
         {
-            var redirectUrl=Url.Action("ExternalLogin", controller:"AccountController",values: new {area="Identity", returnUrl});
-            var properties=_signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            var redirectUrl = Url.Action("ExternalLogin", controller: "AccountController", values: new { area = "Identity", returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
         }
 
@@ -330,25 +331,25 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         //Get: /Account/ExternalLoginCallBack
         [HttpGet("/externallogincallback/")]
         [AllowAnonymous]
-        public async Task<IActionResult> ExternalLoginCallBack(ExternalLoginViewModel model,string returnUrl=null, string remoteError = null)
+        public async Task<IActionResult> ExternalLoginCallBack(ExternalLoginViewModel model, string returnUrl = null, string remoteError = null)
         {
             returnUrl ??= Url.Content("~/");
-            if(remoteError == null)
+            if (remoteError == null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
                 return RedirectToAction("Login", new { ReturnUrl = returnUrl });
             }
-            var info=await _signInManager.GetExternalLoginInfoAsync();
-            if(info == null)
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
             {
                 ErrorMessage = $"Error loading external login information";
                 return RedirectToAction("Login", new { returnUrl = returnUrl });
             }
             //Sign in user with this external login provider if the user already has a login
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey,isPersistent:false,bypassTwoFactor:true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
-                _logger.LogInformation("{Name} logged in with {LoginProvide} provider.",info.Principal.Identity.Name,info.LoginProvider);
+                _logger.LogInformation("{Name} logged in with {LoginProvide} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
             if (result.IsLockedOut)
@@ -362,22 +363,75 @@ namespace OMS_Webapp.Areas.Identity.Controllers
                 ViewBag.ProviderDisplayName = info.ProviderDisplayName;
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
-                    var ExternalLoginViewModel = new ExternalLoginViewModel
+                    ViewBag.ExternalLoginViewModel = new ExternalLoginViewModel
                     {
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                     };
 
-                    return View();
+
                 }
+                return View();
             }
 
         }
-        
+        // Post: Account/confirmation
+        [HttpPost("/confirmation/")]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmationAsync(ExternalLoginViewModel model,string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            // get user information from the external login provider
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                ErrorMessage = "Error loading external login information during confirmation.";
+                return RedirectToAction("Index", new { returnUrl });
+            }
+            if (ModelState.IsValid)
+            {
+                var user = CreateUser();
+                // Set username and email for user
+                await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None );
+                await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None );
+                var result =await  _userManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                    var userId =await _userManager.GetUserIdAsync(user);
+                    var code=await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code=WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var callbackUrl = Url.Action(
+                        "ConfirmEmail",
+                        controller: "AccountController",
+                        values: new { area = "Identity", userId = userId, code = code },
+                        protocol: Request.Scheme
+
+                        );
+                    await _emailSender.SendEmailAsync(model.Email, "Confirm your email",
+                        $"Please confirm your account by >a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.");
+                    // if account confirmation is required, we need to show the link if we don't have a real email
+                    if (_userManager.Options.SignIn.RequireConfirmedEmail)
+                    {
+                        return RedirectToAction("RegisterConfirmation",new {Email=model.Email});
+
+                    }
+                    await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider); 
+                    return LocalRedirect(returnUrl);
+                }
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            ViewBag.ProviderDisplayName = info.ProviderDisplayName;
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
 
 
-
-        //Get: /Account/Logout
-        [HttpGet("/logout/")]
+            //Get: /Account/Logout
+            [HttpGet("/logout/")]
         public async Task<IActionResult> Logout()
         {
             return View();
