@@ -56,7 +56,7 @@ options.SlidingExpiration = true;                        // Reset cookie expire 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 // Add Razor page
-builder.Services.AddRazorPages();
+//builder.Services.AddRazorPages();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

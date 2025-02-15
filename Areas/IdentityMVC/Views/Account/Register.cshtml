@@ -1,0 +1,71 @@
+﻿@inject SignInManager<AppUser> SignInManager
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng ký tài khoản mới";
+    string returnUrl = ViewBag.ReturnUrl;
+    var ExtenalLogins = ViewBag.ExternalLogins as List<AuthenticationScheme>;
+}
+
+<h1>@ViewBag.Title</h1>
+
+<div class=" row">
+    <div class="col-md-4">
+        <form id="registerform" asp-area="Identity" asp-controller="AccountController" asp-action="Register" asp-route-returnUrl="@returnUrl">
+            <h2>Tạo tài khoản mới</h2>
+            <hr />
+            <div asp-validation-summary="ModelOnly " class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="@Model.Email" class="form-control" autocomplete="username" aria-required="true" placehole="Nhập địa chỉ email của bạn" />
+                <label asp-for="@Model.Email">Email</label>
+                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="@Model.Password" class="form-control" autocomplete="password" aria-required="true" placehole="Nhập mật khẩu" />
+                <label asp-for="@Model.Password">Mật khẩu</label>
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="@Model.ConfirmPassword" class="form-control" autocomplete="password" aria-required="true" placehole="Nhập lại mật khẩu" />
+                <label asp-for="@Model.ConfirmPassword">Mật khẩu</label>
+                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Đăng ký</button>
+        </form>
+    </div>
+    <div class=" col-md-6 col-md-offset-2">
+        <section>
+            <h3> Use another service to register</h3>
+            <hr>
+            @{
+                if ((ExtenalLogins?.Count ?? 0) == 0) //ExtenalLogins? return null instead NullOperationException
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                                article
+                                about setting up this ASP.NET application to support logging in via external services
+                            </a>.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-action="ExternalLogin" asp-route-returnUrl="@returnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in ExtenalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+
+            }
+        </section>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

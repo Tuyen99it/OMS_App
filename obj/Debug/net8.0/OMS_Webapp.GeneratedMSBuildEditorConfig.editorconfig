@@ -26,6 +26,34 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\Nguyen Tuyen\OMS_Webapp
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/Nguyen Tuyen/OMS_Webapp/Areas/IdentityMVC/Views/Account/ExternalLogin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlNVkNcVmlld3NcQWNjb3VudFxFeHRlcm5hbExvZ2luLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Nguyen Tuyen/OMS_Webapp/Areas/IdentityMVC/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlNVkNcVmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Nguyen Tuyen/OMS_Webapp/Areas/IdentityMVC/Views/Account/LoginWith2fa.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlNVkNcVmlld3NcQWNjb3VudFxMb2dpbldpdGgyZmEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Nguyen Tuyen/OMS_Webapp/Areas/IdentityMVC/Views/Account/LoginWithRecoveryCode.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlNVkNcVmlld3NcQWNjb3VudFxMb2dpbldpdGhSZWNvdmVyeUNvZGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Nguyen Tuyen/OMS_Webapp/Areas/IdentityMVC/Views/Account/Logout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlNVkNcVmlld3NcQWNjb3VudFxMb2dvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Nguyen Tuyen/OMS_Webapp/Areas/IdentityMVC/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlNVkNcVmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Nguyen Tuyen/OMS_Webapp/Areas/IdentityMVC/Views/Account/RegisterConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlNVkNcVmlld3NcQWNjb3VudFxSZWdpc3RlckNvbmZpcm1hdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Nguyen Tuyen/OMS_Webapp/Areas/IdentityMVC/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlNVkNcVmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

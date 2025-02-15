@@ -77,7 +77,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Action(
                         "/ConfirmEmail",
-                        controller: "Account",
+                        controller: "AccountController",
                         values: new
                         {
                             area = "Identity",
@@ -113,8 +113,9 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         //Get: /Account/RegisterConfirmation: Allow confirm register when using fake email addres
         [HttpGet("/registerconfirmation/")]
         [AllowAnonymous]
-        public async Task<IActionResult> RegisterConfirmation(string email, string returnUrl = null, bool displayConfirmationAccountLink = false)
+        public async Task< IActionResult> RegisterConfirmation(string email, string returnUrl = null, bool displayConfirmationAccountLink = false)
         {
+            ViewBag.DisplayConfirmationAccountLink = displayConfirmationAccountLink;
             if (email == null)
             {
                 return RedirectToAction("/Index");
@@ -224,6 +225,8 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginWith2Fa(LoginWith2faViewModel model, bool rememerMe, string returnUrl = null)
         {
+            ViewBag.RemeberMe = rememerMe;
+            ViewBag.ReturnUrl = returnUrl;
             if (!ModelState.IsValid) return View();
             returnUrl ??= Url.Content("~/");
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -323,6 +326,8 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         {
             var redirectUrl = Url.Action("ExternalLogin", controller: "AccountController", values: new { area = "Identity", returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.Properties= properties;
             return new ChallengeResult(provider, properties);
         }
 
@@ -557,7 +562,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
                 _logger.LogInformation("Encode:{code}", code);
                 var callbackUrl = Url.Action(
                     "ResetPassword",
-                    controller: "Account",
+                    controller: "AccountController",
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
                 await _emailSender.SendEmailAsync(model.Email, "ResetPassword", $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' clicking here</a>");
