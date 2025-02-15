@@ -446,18 +446,6 @@ namespace OMS_Webapp.Areas.Identity.Controllers
                 return RedirectToAction();
             }
         }
-        
-
-
-        //Post: /Account/Logout
-        [HttpPost("/logout/")]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout(string returnUrl)
-        {
-            return View();
-        }
-
         //Get: /Account/ConfirmEmail
         [HttpGet("/confirmemail/")]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
@@ -511,12 +499,42 @@ namespace OMS_Webapp.Areas.Identity.Controllers
 
         //Get: /Account/ResendEmailConfirmation
         [HttpGet("/ResendEmailConfirmation/")]
-        public async Task<IActionResult> ResendEmailConfirmation()
+        [AllowAnonymous]
+        public IActionResult ResendEmailConfirmation()
         {
-            return View();
+          return View();
         }
 
 
+        //Post: /Account/ResendEmailConfirmation
+        [HttpPost("/resendemailconfirmation/")]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResendEmailConfirmationAsync(ResendEmailConfirmationViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var user=await _userManager.FindByEmailAsync(model.Email);
+            var code =await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code=WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Action(
+                       "ConfirmEmail",
+                       controller: "AccountController",
+                       values: new { area = "Identity", userId = user.Id, code = code },
+                       protocol: Request.Scheme
+
+                       );
+            await _emailSender.SendEmailAsync(
+               model.Email,
+               "Confirm your email",
+               $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            return View();
+
+        }
         //Get:/Account/ForgetPassword
         [HttpGet("/forgotpassword/")]
         [AllowAnonymous]

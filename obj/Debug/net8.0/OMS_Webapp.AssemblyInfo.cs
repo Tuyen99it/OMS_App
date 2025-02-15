@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OMS_Webapp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+21bad877c90af4db17dd410cf362c8ebc1e46ad3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf0be5a6960dfd2419dca1b23b6ad44c5e4d870b")]
 [assembly: System.Reflection.AssemblyProductAttribute("OMS_Webapp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OMS_Webapp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
