@@ -430,12 +430,23 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
 
 
-            //Get: /Account/Logout
-            [HttpGet("/logout/")]
-        public async Task<IActionResult> Logout()
+        //Get: /Account/Logout
+        [HttpGet("/logout/")]
+        public async Task<IActionResult> Logout(string returnUrl = null)
         {
-            return View();
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out");
+            if (returnUrl != null)
+            {
+                return LocalRedirect(returnUrl);
+            }
+            else
+            {
+                //this need to be a redirect so that the browser performs a new request and the identity for the user gets updated
+                return RedirectToAction();
+            }
         }
+        
 
 
         //Post: /Account/Logout
