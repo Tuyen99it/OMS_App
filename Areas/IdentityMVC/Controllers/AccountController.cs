@@ -312,7 +312,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         //Get: /Account/ExternalLogin
         [HttpGet("/externallogin/")]
         [AllowAnonymous]
-        public async Task<IActionResult> ExternalLogin()
+        public IActionResult ExternalLogin()
         {
             return RedirectToAction("Index");
         }
@@ -322,12 +322,11 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         [HttpPost("/externallogin/")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLogin(string provider, string returnUrl = null)
+        public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
             var redirectUrl = Url.Action("ExternalLogin", controller: "AccountController", values: new { area = "Identity", returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-            ViewBag.ReturnUrl = returnUrl;
-            ViewBag.Properties= properties;
+           
             return new ChallengeResult(provider, properties);
         }
 
@@ -453,7 +452,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
         //Get: /Account/ConfirmEmail
         [HttpGet("/confirmemail/")]
-        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        public async Task<IActionResult> ConfirmEmailAsync(string userId, string code)
         {
             if (userId == null || code == null) return RedirectToAction("/Index");
             var user = await _userManager.FindByIdAsync(userId);
@@ -467,7 +466,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         //Get: //Account/ConfirmEmailChange
         [HttpGet("/confirmemailchange/")]
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmailChange(string userId, string email, string code)
+        public async Task<IActionResult> ConfirmEmailChangeAsync(string userId=null, string email=null, string code=null)
         {
             if (userId == null || email == null || code == null)
             {
