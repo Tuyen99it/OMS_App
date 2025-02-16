@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OMS_Webapp.Data;
 
@@ -11,9 +12,11 @@ using OMS_Webapp.Data;
 namespace OMS_Webapp.Migrations
 {
     [DbContext(typeof(OMSDBContext))]
-    partial class OMSDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250216010518_fixaddress")]
+    partial class fixaddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,6 +189,7 @@ namespace OMS_Webapp.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 

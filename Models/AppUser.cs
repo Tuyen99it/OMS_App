@@ -6,9 +6,9 @@ namespace OMS_Webapp.Models
     public class AppUser : IdentityUser
     {
         [MaxLength(100)]
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
         [MaxLength(255)]
-        public string Address { get; set; }
+        public string? Address { get; set; }
         [DataType(DataType.Date)]
         public DateTime? Birthday { get; set; }
 
