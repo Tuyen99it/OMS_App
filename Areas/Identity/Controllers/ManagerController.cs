@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using OMS_App.Areas.Identity.Models;
@@ -20,6 +22,7 @@ namespace OMS_App.Areas.Identity.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IUserStore<AppUser> _userStore;
 
         private readonly ILogger<ManagerController> _logger;
         private readonly IEmailSender _emailSender;
@@ -31,6 +34,9 @@ namespace OMS_App.Areas.Identity.Controllers
         }
         [TempData]
         public string ErrorMessage { get; set; }
+
+        [TempData]
+        public string StatusMessasge { get; set; }
         [HttpGet("/index/")]
         public async Task<IActionResult> Index()
         {
@@ -145,16 +151,88 @@ namespace OMS_App.Areas.Identity.Controllers
                 await _signInManager.RefreshSignInAsync(user);
                 ErrorMessage="Mật khẩu đã được thay đổi";
                 return RedirectToAction("ChangePassword");
-           }
+                  }
             foreach (var error in result.Errors){
-                ModelState.AddModelError(string.Empty,error.Description);
-               
+                ModelState.AddModelError(string.Empty,error.Description); 
             }
              return View(model);
         }
 
+        [HttpGet("/externallogin/")]
+        public async Task<IActionResult>ExternalLogin(){
+           var user = await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+ _userManager.GetUserId(User));
+            }
+            var currentLogin=await _userManager.GetLoginsAsync(user); // get current login provider
+            var otherLogins=(await _signInManager.GetExternalAuthenticationSchemesAsync()) // get all external auth schemes was configured in the service.
+                .Where(auth=>currentLogin.All(ul=>auth.Name!=ul.LoginProvider)) //get all external auth schemes that are not current login provider
+                .ToList();
+            string passwordHash=null;
+            if(_userStore is IUserPasswordStore<AppUser> passwordStore){ // Check _userStore is instance of IUserPasswordStore
+                passwordHash=await passwordStore.GetPasswordHashAsync(user,new System.Threading.CancellationToken());
+            }
+            bool showRemoveButton=passwordHash!=null || currentLogin.Count>1;
+            ViewBag.currentLogin=currentLogin;
+            ViewBag.otherLogins=otherLogins;
+            ViewBag.showRemoveButton=showRemoveButton;
+            return View();
 
+        }
 
+        //Post: /Manager/ExteraLogin/RemoveLogin
+        [HttpPost("/externalLogin/removelogin/")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveLogin(string loginProvider, string providerKey){
+            var user =await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            var result =await _userManager.RemoveLoginAsync(user,loginProvider,providerKey);
+            if(!result.Succeeded){
+                ErrorMessage="The external Login was not removed";  
+                return RedirectToAction();
+            }
+            await _signInManager.RefreshSignInAsync(user);  
+            StatusMessasge="The external login was removed";
+            return RedirectToAction();
+        }
+
+        //Post: /Manager/ExternalLogin/LinkLogin
+        [HttpPost("externallogin/linklogin/")]
+        public async Task<IActionResult>LinkLogin(string provider){
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            // Yêu cầu một điều hướng đến trình cung cấp đăng nhập bên ngoài để bắt đầu kết nối đăng nhập với user hiện tại
+            var redirectUrl=Url.Action("LinkLoginCallback","Manager");
+            var properties =_signInManager.ConfigureExternalAuthenticationProperties(provider,redirectUrl,_userManager.GetUserId(User));
+            return new ChallengeResult(provider,properties);
+        }
+
+        //Get: /Manager/ExternalLogin.LinkLoginCallback
+        [HttpGet("/externallogin/linklogincallback/")]
+        public async Task<IActionResult> LinkLoginCallback(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User) );
+            }
+            var userId=_userManager.GetUserId(User);
+            var info=await _signInManager.GetExternalLoginInfoAsync(userId); 
+            if(info==null){
+                throw new ApplicationException("Error loading external login information during link to login");
+            }
+            var result =await _userManager.AddLoginAsync(user,info);
+            if (!result.Succeeded){
+                ErrorMessage="The external login was not added. Error: "+result.Errors.FirstOrDefault()?.Description;
+                return RedirectToAction();
+            }
+            //Clear the existing external cookie to ensure a clean login proccess
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);  
+            StatusMessasge="The external login was added";
+            return RedirectToAction();
+
+        }
               
 
     }
