@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OMS_App.Areas.Identity.Models;
 using OMS_Webapp.Models;
 
@@ -229,11 +230,315 @@ namespace OMS_App.Areas.Identity.Controllers
             }
             //Clear the existing external cookie to ensure a clean login proccess
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);  
-            StatusMessasge="The external login was added";
+            StatusMessasge="The external login was added ";
             return RedirectToAction();
 
         }
-              
+
+        //Get: /Manager/TowFactorAuthentication
+        public async Task<IActionResult>TwoFactorAuthentication(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id:"+_userManager.GetUserId(User));
+            }
+            bool hasAuthenticator=await _userManager.GetAuthenticatorKeyAsync(user)!=null;
+            bool is2FaEnabled=await _userManager.GetTwoFactorEnabledAsync(user);
+            bool isMachineRemembered=await _signInManager.IsTwoFactorClientRememberedAsync(user);
+            var recoveryCodesLeft=await _userManager.CountRecoveryCodesAsync(user);
+            ViewBag.HasAuthenticator=hasAuthenticator;
+            ViewBag.Is2FaEnabled=is2FaEnabled;
+            ViewBag.IsMachineRemembered=isMachineRemembered;
+            ViewBag.RecoveryCodesLeft=recoveryCodesLeft;
+            return View();
+
+        }
+
+        //Post: /Manager/TwoFactorAuthentication
+        public async Task<IActionResult> TwoFactorAuthenticationAsync(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id:"+_userManager.GetUserId(User));
+            }
+            await _signInManager.ForgetTwoFactorClientAsync();
+            StatusMessasge="The current browser has been forgotten. When you login again from this browser, you will be prompted for your 2fa code.";
+            return RedirectToAction();
+          
+        }
+        //Get: /Manager/EnableAuthenticator
+        public async Task<IActionResult>EnableAuthenticator(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            await LoadSharedKeyAndQrCodeUriAsync(user);
+            return View();
+        }
+
+        //Post: /Manager/EnableAuthenticator
+        [HttpPost("/nanager/enableauthenticattor/")]
+        public async Task<IActionResult> EnableAuthenticator(Enable2FaAuthenticationViewModel model){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            if(!ModelState.IsValid){
+                await LoadSharedKeyAndQrCodeUriAsync(user);
+                return View();
+            }
+            var verificationCode=model.Code.Replace(" ","").Replace("-","");
+            var is2FaTokenValid=await _userManager.VerifyTwoFactorTokenAsync(user,_userManager.Options.Tokens.AuthenticatorTokenProvider,verificationCode);
+            if(!is2FaTokenValid){
+                ModelState.AddModelError(model.Code,"Verification code is invalid");
+                return View();
+            }
+            await _userManager.SetTwoFactorEnabledAsync(user,true);
+            var userId=await _userManager.GetUserIdAsync(user);
+            _logger.LogInformation("User with Id {UserId} has enabled 2FA with an authenticator app.",userId);
+            StatusMessasge="Your authenticator app has been verified";
+            if(await _userManager.CountRecoveryCodesAsync(user)==0){
+                var recoveryCodes=await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user,10);
+                TempData["RecoveryCodes"]=recoveryCodes.ToArray();
+                return RedirectToAction("ShowRecoveryCodes");
+            } 
+            else{
+                return RedirectToAction("TwoFactorAuthentication");
+            }  
+        }
+        
+        // Load the shared key and Qr codel Uri to enable authenticator app
+        private async Task LoadSharedKeyAndQrCodeUriAsync(AppUser user){
+            // load the authenticator key and Qr code Uri to display on the form
+            var unformattedKey=await _userManager.GetAuthenticatorKeyAsync(user);
+            if(string.IsNullOrEmpty(unformattedKey)){
+                await _userManager.ResetAuthenticatorKeyAsync(user);
+                unformattedKey=await _userManager.GetAuthenticatorKeyAsync(user);
+            }
+            var sharedKey=FormatKey(unformattedKey);
+            var email=await _userManager.GetEmailAsync(user);
+            var authenticatorUri=GenerateQrCodeUri(email,unformattedKey);
+            ViewBag.SharedKey=sharedKey;
+            ViewBag.AuthenticatorUri=authenticatorUri;
+        
+        }
+        //Format the shared key to display in Qr code
+        private string FormatKey(string unformattedKey){
+            var result=new System.Text.StringBuilder();
+            int currentPosition=0;
+            while(currentPosition+4<unformattedKey.Length){
+                result.Append(unformattedKey.AsSpan(currentPosition,4)).Append(" ");
+                currentPosition+=4;
+            }
+            if(currentPosition<unformattedKey.Length){
+                result.Append(unformattedKey.AsSpan(currentPosition));
+            }
+            return result.ToString().ToLowerInvariant();
+            
+        }
+
+        //Generate the Qr code Uri
+        private string GenerateQrCodeUri(string email,string unformattedKey){
+            return string.Format(
+                "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6",
+                System.Web.HttpUtility.UrlEncode("OMS_App"),
+                System.Web.HttpUtility.UrlEncode(email),
+                unformattedKey); 
+        }   
+
+        //Get: /Manager/Disable2Fa
+        public async Task<IActionResult> Disable2Fa(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            if(!await _userManager.GetTwoFactorEnabledAsync(user)){
+                throw new ApplicationException($"Cannot disable 2FA for user with ID '{_userManager.GetUserId(User)}' as it's not currently enabled.");
+            }
+            return View();
+        }
+
+        //Post: /Manager/Disable2Fa
+
+        [HttpPost("/manager/disable2fa/")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Disable2FaAsync(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            var disable2FaResult=await _userManager.SetTwoFactorEnabledAsync(user,false);
+            if(!disable2FaResult.Succeeded){
+                throw new InvalidOperationException($"Unexpected error occurred disabling 2FA for user with ID '{_userManager.GetUserId(User)}'.");
+            }
+            _logger.LogInformation("User with ID '{UserId}' has disabled 2fa.",_userManager.GetUserId(User));
+            StatusMessasge="2FA has been disabled. You can reenable 2FA at any time by reconfiguring the authenticator app.";
+            return RedirectToAction("TwoFactorAuthentication");
+        }
+
+        //Get: /Manager/ResetAuthenticator
+        public async Task<IActionResult> ResetAuthenticator(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            return View();
+        }
+
+        //Post: /Manager/ResetAuthenticator
+        [HttpPost("/manager/resetauthenticator/")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult>ResetAuthenticatorAsync(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            await _userManager.SetTwoFactorEnabledAsync(user,false);
+            await _userManager.ResetAuthenticatorKeyAsync(user);
+            _logger.LogInformation("User with ID '{UserId}' has reset their authenticator app key.",_userManager.GetUserId(User));
+            return RedirectToAction("EnableAuthenticator");
+        }
+
+        //Get: /Manager/ShowRecoveryCodes
+        public IActionResult ShowRecoveryCodes(){
+            var recoveryCodes= (string[])TempData["RecoveryCodes"];
+            if(recoveryCodes==null||recoveryCodes.Length==0){
+                return RedirectToAction("TwoFactorAuthentication");
+            }
+            TempData["RecoveryCodes"]=recoveryCodes;
+            return View();
+        }
+
+        //Get: /Manager/GenerateRecoveryCodes
+        public async Task<IActionResult> GenerateRecoveryCode(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            var is2FaEnabled=await _userManager.GetTwoFactorEnabledAsync(user);
+            if(!is2FaEnabled){
+                throw new InvalidOperationException($"Cannnot generate recovery codes for user with Id '{_userManager.GetUserId(User)}' as they do not have 2FA enabled.");
+            }
+            return View();
+        }
+
+        //Post: /Manager/GenerateRecoveryCodes
+        [HttpPost("/manager/generaterecoverycodes/")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult>GenerateRecoveryCodesAync(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            var is2FaEnabled=await _userManager.GetTwoFactorEnabledAsync(user);
+            if(!is2FaEnabled){
+                throw new InvalidOperationException($"Cannnot generate recovery codes for user with Id '{_userManager.GetUserId(User)}' as they do not have 2FA enabled.");
+            }
+            var recoveryCodes=await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user,10);
+            ViewBag.RecoveryCodes=recoveryCodes.ToArray();
+            _logger.LogInformation("User with Id '{UserId}' has generated new 2FA recovery codes.",_userManager.GetUserId(User));
+            StatusMessasge="You have generated new recovery codes.";
+            return RedirectToAction("ShowRecoveryCodes");
+        }
+
+        //Post: /Manager/DownloadPersonData
+        [HttpPost("/manager/downloadpersondata/")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DownloadPersonData(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+           _logger.LogInformation("User with Id '{UserId}' asked for their personal data.",_userManager.GetUserId(User));
+            
+            //Only include personal data for download
+            var personalData=new Dictionary<string,string>();   
+            var personalDataProps=typeof(AppUser).GetProperties().Where(
+                prop=>Attribute.IsDefined(prop,typeof(PersonalDataAttribute)));  
+            foreach (var p in personalDataProps){
+                personalData.Add(p.Name,p.GetValue(user)?.ToString()??"null");
+            }
+            personalData.Add("AuthenticatorKey",await _userManager.GetAuthenticatorKeyAsync(user)?? "null");
+            Response.Headers.TryAdd("Content-Disposition","attachment;filename=PersonalData.json");
+          
+            return new FileContentResult(System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(personalData),"application/json");     
+        }
+
+         //Get: Mamager/PersonalData
+        public async Task<IActionResult> PersonalData(){
+            var user =await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            return View();
+        }
+
+        //Get: /Manager/DeletePersonalData
+        public async Task<IActionResult> DeletePersonalData(){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            return View();
+        }
+
+        //Post: /Manager/DeletePersonalData
+        [HttpPost("/manager/deletepersondata/")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePersonalDataAsync(DeletePersonalDataViewModel model){
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null){
+                return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
+            }
+            var requuiredPassword=await _userManager.HasPasswordAsync(user);
+            if(requuiredPassword){
+                if(!await _userManager.CheckPasswordAsync(user,model.Password)){
+                    ModelState.AddModelError(string.Empty,"Incorrect password.");
+                    return View();
+                }
+            }
+            
+            var userId=_userManager.GetUserId(User);
+            await _signInManager.SignOutAsync();
+            await _userManager.DeleteAsync(user);
+            _logger.LogInformation("User with Id '{UserId}' deleted themselves.",userId);
+            return RedirectToAction("Index","Home");
+        }
+
+    
+    }
+    public static class ManageNavView{
+        public static string Index =>"Index";
+        public static string Email =>"Email";
+        public static string ChangePassword =>"ChangePassword";
+        public static string ExternalLogin =>"ExternalLogin";
+        public static string DownloadPersonData =>"DownloadPersonData";
+        public static string PersonalData =>"PersonalData";
+        public static string DeletePersonalData =>"DeletePersonalData";
+        public static string TwoFactorAuthentication =>"TwoFactorAuthentication";
+        public static string EnableAuthenticator =>"EnableAuthenticator";
+        public static string Disable2Fa =>"Disable2Fa";
+        public static string ResetAuthenticator =>"ResetAuthenticator";
+        public static string GenerateRecoveryCodes =>"GenerateRecoveryCodes";
+        public static string ShowRecoveryCodes =>"ShowRecoveryCodes";
+        public static string IndexNavClass(ViewContext viewContext)=>PageNavClass(viewContext,Index);
+        public static string EmailNavClass(ViewContext viewContext)=>PageNavClass(viewContext,Email);
+        public static string ChangePasswordNavClass(ViewContext viewContext)=>PageNavClass(viewContext,ChangePassword);
+        public static string ExternalLoginNavClass(ViewContext viewContext)=>PageNavClass(viewContext,ExternalLogin);
+        public static string DownloadPersonDataNavClass(ViewContext viewContext)=>PageNavClass(viewContext,DownloadPersonData);
+        public static string PersonalDataNavClass(ViewContext viewContext)=>PageNavClass(viewContext,   PersonalData);
+        public static string DeletePersonalDataNavClass(ViewContext viewContext)=>PageNavClass(viewContext,DeletePersonalData);
+        public static string TwoFactorAuthenticationNavClass(ViewContext viewContext)=>PageNavClass(viewContext,TwoFactorAuthentication);           
+        public static string EnableAuthenticatorNavClass(ViewContext viewContext)=>PageNavClass(viewContext,EnableAuthenticator);
+        public static string Disable2FaNavClass(ViewContext viewContext)=>PageNavClass(viewContext  ,Disable2Fa);
+        public static string ResetAuthenticatorNavClass(ViewContext viewContext)=>PageNavClass(viewContext ,ResetAuthenticator);
+        public static string GenerateRecoveryCodesNavClass(ViewContext viewContext)=>PageNavClass(viewContext,GenerateRecoveryCodes);
+        public static string ShowRecoveryCodesNavClass(ViewContext viewContext)=>PageNavClass(viewContext,ShowRecoveryCodes);
+        
+        public static string PageNavClass(ViewContext viewContext,string action){
+            var activeAction=viewContext.ViewData["ActiveAction"] as string??System.IO.Path.GetFileNameWithoutExtension(viewContext.ActionDescriptor.DisplayName);
+            return string.Equals(activeAction,action,StringComparison.OrdinalIgnoreCase)?"active":"";
+
+        }
 
     }
+
 }
