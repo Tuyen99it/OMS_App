@@ -1,0 +1,59 @@
+@using Microsoft.AspNetCore.Http.Features;
+@using OMS_App.Areas.Identity.Controllers;
+@using OMS_App.Areas.Identity.Models;
+
+@{
+    ViewData["Title"]="Two Factor Authentication ";
+    ViewData["ActivePage"]=ManageNavView.TwoFactorAuthentication;
+    bool HasAuthenticator=ViewBag.HasAuthenticator;
+    bool Is2FaEnable=ViewBag.Is2FaEnabled;
+    bool IsMachineRemembered=ViewBag.IsMachineRemembered;
+    int RecoveryCodesLeft=ViewBag.RecoveryCodesLeft;
+}
+<partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
+<h3>@ViewData["Title"]</h3>
+@{
+    var consentFeature=Context.Features.Get<ITrackingConsentFeature>();
+    @if(consentFeature?.CanTrack??true){
+        if(Is2FaEnable){
+            if(RecoveryCodesLeft==0){
+                <div class="alert alert-danger">
+                    <strong>You have no recovery left.</strong>
+                    <p> You must <a asp-action="GenerateRecoveryCodes">generate a new recovery codes</a> before you can log in with a recovery code.</p>
+                </div>
+            }
+            else if(RecoveryCodesLeft==1){
+                <div class="alert alert-danger">
+                     <strong>You have one recovery left.</strong>
+                    <p> You can <a asp-action="GenerateRecoveryCodes">genereate a new recovery codes</a> before you can log in with a recovery code.</p>
+                </div>
+            }
+            else if(RecoveryCodesLeft<=3){
+                 <div class="alert alert-danger">
+                     <strong>You have {@RecoveryCodesLeft} recovery left.</strong>
+                    <p> You can <a asp-action="GenerateRecoveryCodes">genereate a new recovery codes</a> before you can log in with a recovery code.</p>
+                </div>
+            }
+            if(IsMachineRemembered){
+                <form method="post" style="display:inline-block">
+                    <button type="submit" class="btn btn-primary">forget this browser</button>
+                </form>
+            }
+            <a asp-action="Disable2Fa" class="btn btn-primary">Disable2Fa</a>
+            <a asp-action="GenerateRecoveryCode">Reset recovery code.</a>
+        }
+        <h4>Authenticator app</h4>
+        if(!HasAuthenticator){
+            <a id="enable-authenticator" asp-action="EnableAuthenticator" class="btn btn-primary">Add Authenticator app</a>
+        }
+        else{
+            <a id="enable-authenticator" asp-action="EnableAuthenticator" class="btn btn-primary">Set up Authenticator</a>
+            <a id="reset-authenticator" asp-action="ResetAuthenticator" class="btn btn-primary">Reset Authenticator</a>
+        }
+    }
+
+}
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"></partial>
+}
+

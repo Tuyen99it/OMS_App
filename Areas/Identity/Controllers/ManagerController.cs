@@ -37,7 +37,7 @@ namespace OMS_App.Areas.Identity.Controllers
         public string ErrorMessage { get; set; }
 
         [TempData]
-        public string StatusMessasge { get; set; }
+        public string StatusMessage { get; set; }
         [HttpGet("/index/")]
         public async Task<IActionResult> Index()
         {
@@ -88,7 +88,9 @@ namespace OMS_App.Areas.Identity.Controllers
             {
                 Email=user.Email
             };
-            return View(model);
+            var isEmailConfirm=await _userManager.IsEmailConfirmedAsync(user);
+            ViewBag.isEmailConfirm=isEmailConfirm;
+            return View();
 
         }
 
@@ -98,6 +100,7 @@ namespace OMS_App.Areas.Identity.Controllers
         {
             var user =await _userManager.GetUserAsync(User);
             if(user==null){
+
                 return RedirectToAction("Login","Acccount");    
             }
             if(!ModelState.IsValid){
@@ -137,7 +140,7 @@ namespace OMS_App.Areas.Identity.Controllers
 
         [HttpPost("/changepassword/")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(ChangePaswordViewModel model)
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             var user =await _userManager.GetUserAsync(User);
             if(user==null){
@@ -182,7 +185,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Post: /Manager/ExteraLogin/RemoveLogin
-        [HttpPost("/externalLogin/removelogin/")]
+        [HttpPost("/removelogin/")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveLogin(string loginProvider, string providerKey){
             var user =await _userManager.GetUserAsync(User);
@@ -195,12 +198,12 @@ namespace OMS_App.Areas.Identity.Controllers
                 return RedirectToAction();
             }
             await _signInManager.RefreshSignInAsync(user);  
-            StatusMessasge="The external login was removed";
+            StatusMessage="The external login was removed";
             return RedirectToAction();
         }
 
         //Post: /Manager/ExternalLogin/LinkLogin
-        [HttpPost("externallogin/linklogin/")]
+        [HttpPost("/linklogin/")]
         public async Task<IActionResult>LinkLogin(string provider){
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -212,7 +215,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Get: /Manager/ExternalLogin.LinkLoginCallback
-        [HttpGet("/externallogin/linklogincallback/")]
+        [HttpGet("/linklogincallback/")]
         public async Task<IActionResult> LinkLoginCallback(){
             var user=await _userManager.GetUserAsync(User);
             if(user==null){
@@ -230,7 +233,7 @@ namespace OMS_App.Areas.Identity.Controllers
             }
             //Clear the existing external cookie to ensure a clean login proccess
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);  
-            StatusMessasge="The external login was added ";
+            StatusMessage="The external login was added ";
             return RedirectToAction();
 
         }
@@ -260,7 +263,7 @@ namespace OMS_App.Areas.Identity.Controllers
                 return NotFound("Unable to load user with Id:"+_userManager.GetUserId(User));
             }
             await _signInManager.ForgetTwoFactorClientAsync();
-            StatusMessasge="The current browser has been forgotten. When you login again from this browser, you will be prompted for your 2fa code.";
+            StatusMessage="The current browser has been forgotten. When you login again from this browser, you will be prompted for your 2fa code.";
             return RedirectToAction();
           
         }
@@ -294,7 +297,7 @@ namespace OMS_App.Areas.Identity.Controllers
             await _userManager.SetTwoFactorEnabledAsync(user,true);
             var userId=await _userManager.GetUserIdAsync(user);
             _logger.LogInformation("User with Id {UserId} has enabled 2FA with an authenticator app.",userId);
-            StatusMessasge="Your authenticator app has been verified";
+            StatusMessage="Your authenticator app has been verified";
             if(await _userManager.CountRecoveryCodesAsync(user)==0){
                 var recoveryCodes=await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user,10);
                 TempData["RecoveryCodes"]=recoveryCodes.ToArray();
@@ -370,7 +373,7 @@ namespace OMS_App.Areas.Identity.Controllers
                 throw new InvalidOperationException($"Unexpected error occurred disabling 2FA for user with ID '{_userManager.GetUserId(User)}'.");
             }
             _logger.LogInformation("User with ID '{UserId}' has disabled 2fa.",_userManager.GetUserId(User));
-            StatusMessasge="2FA has been disabled. You can reenable 2FA at any time by reconfiguring the authenticator app.";
+            StatusMessage="2FA has been disabled. You can reenable 2FA at any time by reconfiguring the authenticator app.";
             return RedirectToAction("TwoFactorAuthentication");
         }
 
@@ -435,7 +438,7 @@ namespace OMS_App.Areas.Identity.Controllers
             var recoveryCodes=await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user,10);
             ViewBag.RecoveryCodes=recoveryCodes.ToArray();
             _logger.LogInformation("User with Id '{UserId}' has generated new 2FA recovery codes.",_userManager.GetUserId(User));
-            StatusMessasge="You have generated new recovery codes.";
+            StatusMessage="You have generated new recovery codes.";
             return RedirectToAction("ShowRecoveryCodes");
         }
 
@@ -532,7 +535,7 @@ namespace OMS_App.Areas.Identity.Controllers
         public static string ResetAuthenticatorNavClass(ViewContext viewContext)=>PageNavClass(viewContext ,ResetAuthenticator);
         public static string GenerateRecoveryCodesNavClass(ViewContext viewContext)=>PageNavClass(viewContext,GenerateRecoveryCodes);
         public static string ShowRecoveryCodesNavClass(ViewContext viewContext)=>PageNavClass(viewContext,ShowRecoveryCodes);
-        
+
         public static string PageNavClass(ViewContext viewContext,string action){
             var activeAction=viewContext.ViewData["ActiveAction"] as string??System.IO.Path.GetFileNameWithoutExtension(viewContext.ActionDescriptor.DisplayName);
             return string.Equals(activeAction,action,StringComparison.OrdinalIgnoreCase)?"active":"";

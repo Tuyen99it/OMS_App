@@ -1,0 +1,43 @@
+
+@using OMS_App.Areas.Identity.Models;
+@using OMS_App.Areas.Identity.Controllers;
+@model EmailViewModel 
+@{
+    ViewData["Title"] = "Change email";
+    ViewData["ActivePage"] = ManageNavView.Email;
+}
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="@TempData["StatusMessage"]" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="email-form" method="post">
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            @if(ViewBag.IsEmailConfirm){
+                <div class="from-group">
+                    <input asp-for="Email" class="form-control" placeholder="Please enter your email" disabled/>
+                    <div class="input-group-append">
+                        <span class="h-100 input-group-text text-success font-weight-bold">✓</span>
+                    </div>
+                    <label asp-for="Email" class="form-label"></label>
+                </div>
+            }
+            else{
+                <div class="form-group">
+                    <input class="form-control" asp-for="Email" placeholder="Please enter your email" />
+                    <label asp-for="Email" class="form-label"></label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-group">
+                <input class="form-control" asp-for="Email" placeholder="Please enter your email">
+                <label class="form-label" asp-for="Email"></label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+
+            </div>
+            <button class="btn btn-primary w-100 btn-lg" id="changeemailbtn" type="submit" asp-action="Email" asp-controller="Manager">Change Email</button>
+        </form>
+    </div>
+</div>   
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"></partial>
+}

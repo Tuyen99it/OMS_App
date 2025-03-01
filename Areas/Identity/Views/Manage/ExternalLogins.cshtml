@@ -1,0 +1,56 @@
+
+@using OMS_App.Areas.Identity.Controllers;
+@using OMS_App.Areas.Identity.Models;
+
+ 
+@{
+    ViewData["Title"]="Manage your external logins";
+    ViewData["ActivePage"]=ManageNavView.ExternalLogin;
+    var currentLogin = ViewBag.currentLogin as IList<UserLoginInfo>;
+    var otherLogins=ViewBag.otherLogins as IList<UserLoginInfo>;
+    bool showRemoveButton=ViewBag.showRemoveButton;
+}   
+<patial name="_StatusMessage" model="@TempData["StatusMessage"]"></patial>
+@if(currentLogin?.Count>0){
+    <h3> Registered logins</h3>
+    <table class="table">
+        <tbody>
+            @foreach(var login in currentLogin){
+                <tr>
+                    <td id="@($"login-provider-{login.LoginProvider}")">@login.ProviderDisplayName</td>
+                    <td>
+                        @if(showRemoveButton){
+                            <form id="@($"remove-login-{login.LoginProvider}")" asp-action="RemoveLogin" method="post">
+                                <div>
+                                    <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden">
+                                    <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden">
+                                    <button type="submit" class="btn btn-danger" title="Remove this @login.ProviderDisplayName logins from your account">Remove</button>
+                                    
+                                </div>
+                            </form>
+                        }
+                        else{
+                            @:&nbsp;
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if(otherLogins?.Count>0){
+    <h4>Add another service to login </h4>
+    <hr/>
+    <form id="link-login-form" asp-action="LinkLogin" method="post" class="form-horizontal">
+        <div id="socialloginlist">
+            <p>
+                @foreach(var provider in otherLogins){
+                    <button id="@($"link-login-button-{provider.ProviderDisplayName}")" type="submit" class="btn btn-primary" name="provider" value="@provider.ProviderDisplayName" title="Login using your @provider.ProviderDisplayName account">@provider.ProviderDisplayName    </button>
+                }
+            </p>
+        </div>
+    </form>
+}
+
+
+

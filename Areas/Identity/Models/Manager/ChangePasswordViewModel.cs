@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OMS_App.Areas.Identity.Models
 {
-    public class ChangePaswordViewModel 
+    public class ChangePasswordViewModel 
     {
         [Required]
         [DataType(DataType.Password)]
