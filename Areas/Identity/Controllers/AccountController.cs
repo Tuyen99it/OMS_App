@@ -17,7 +17,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
 {
     [Authorize]
     [Area("Identity")]
-    [Route("/Account/[action]")]
+    
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -26,20 +26,20 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         private readonly IUserStore<AppUser> _userStore;
         private readonly IUserEmailStore<AppUser> _emailStore;
         private readonly IEmailSender _emailSender;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<AccountController> logger, IUserStore<AppUser> userStore, IUserEmailStore<AppUser> emailStore, IEmailSender emailSender)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<AccountController> logger, IUserStore<AppUser> userStore,  IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _userStore = userStore;
-            _emailStore = emailStore;
+           //_emailStore = emailStore;
             _emailSender = emailSender;
         }
         [TempData]
         public string ErrorMessage { get; set; }
 
         //Get: /Account/register/url
-        [HttpGet("/register/")]
+      
         [AllowAnonymous]
         public async Task<IActionResult> Register(string returnUrl = null)
         {
@@ -67,7 +67,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
             {
                 var user = CreateUser();
                 await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
+                //await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

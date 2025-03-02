@@ -14,11 +14,14 @@ builder.Services.AddDbContext<OMSDBContext>(options =>
     // Connect to Mssql server
     options.UseSqlServer(connectionString);
 });
+
+
+
 //Add Identity Services to container
 builder.Services.AddDefaultIdentity<AppUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
-}).AddRoles<IdentityRole>().AddEntityFrameworkStores<OMSDBContext>();
+}).AddRoles<IdentityRole>().AddEntityFrameworkStores<OMSDBContext>().AddDefaultTokenProviders();;
 //configure IdentityOption
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -53,6 +56,8 @@ options.SlidingExpiration = true;                        // Reset cookie expire 
 
 });
 
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 // Add Razor page
@@ -71,7 +76,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.MapRazorPages();
+//app.MapRazorPages();
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "MyArea",
