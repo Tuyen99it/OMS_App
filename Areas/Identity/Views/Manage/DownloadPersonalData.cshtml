@@ -1,0 +1,16 @@
+@using OMS_App.Areas.Identity.Controllers;
+@using OMS_App.Areas.Identity.Models;
+
+
+@{
+    ViewData["Title"] = "Download user data";
+    ViewData["ActivePage"] = ManageNavView.DeletePersonalData;
+}
+
+<partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
+<h3>@ViewData["Title"]</h3>   
+
+@section Scripts{
+    <partial name="_ValidationSCriptsPartial"></partial>
+}
+
