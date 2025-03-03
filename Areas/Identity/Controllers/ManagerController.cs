@@ -18,7 +18,7 @@ using OMS_Webapp.Models;
 namespace OMS_App.Areas.Identity.Controllers
 {
     [Area("Identity")]
-    [Route("/Manager/[action]")]
+   
     public class ManagerController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -38,7 +38,7 @@ namespace OMS_App.Areas.Identity.Controllers
 
         [TempData]
         public string StatusMessage { get; set; }
-        [HttpGet("/index/")]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var user=await _userManager.GetUserAsync(User);
@@ -54,7 +54,7 @@ namespace OMS_App.Areas.Identity.Controllers
 
         }
         
-        [HttpPost("/index/")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(ProfileViewModel model){
             var user =await _userManager.GetUserAsync(User);
@@ -76,7 +76,7 @@ namespace OMS_App.Areas.Identity.Controllers
             return View(model);
         }
 
-        [HttpGet("/email/")]
+        [HttpGet]
         public async Task<IActionResult> Email()
         {
             var user=await _userManager.GetUserAsync(User);
@@ -94,7 +94,7 @@ namespace OMS_App.Areas.Identity.Controllers
 
         }
 
-        [HttpPost("/email/")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Email(EmailViewModel model)
         {
@@ -126,7 +126,7 @@ namespace OMS_App.Areas.Identity.Controllers
             return View(model);
         }
 
-        [HttpGet("/changepassword/")]
+        [HttpGet]
         public async Task<IActionResult> ChangePassword()
         {
             var user=await _userManager.GetUserAsync(User);
@@ -138,7 +138,7 @@ namespace OMS_App.Areas.Identity.Controllers
             return View();
         }
 
-        [HttpPost("/changepassword/")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
@@ -162,7 +162,7 @@ namespace OMS_App.Areas.Identity.Controllers
              return View(model);
         }
 
-        [HttpGet("/externallogin/")]
+        [HttpGet]
         public async Task<IActionResult>ExternalLogin(){
            var user = await _userManager.GetUserAsync(User);
             if(user==null){
@@ -185,7 +185,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Post: /Manager/ExteraLogin/RemoveLogin
-        [HttpPost("/removelogin/")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveLogin(string loginProvider, string providerKey){
             var user =await _userManager.GetUserAsync(User);
@@ -203,7 +203,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Post: /Manager/ExternalLogin/LinkLogin
-        [HttpPost("/linklogin/")]
+        [HttpPost]
         public async Task<IActionResult>LinkLogin(string provider){
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -215,7 +215,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Get: /Manager/ExternalLogin.LinkLoginCallback
-        [HttpGet("/linklogincallback/")]
+        [HttpGet]
         public async Task<IActionResult> LinkLoginCallback(){
             var user=await _userManager.GetUserAsync(User);
             if(user==null){
@@ -278,7 +278,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Post: /Manager/EnableAuthenticator
-        [HttpPost("/nanager/enableauthenticattor/")]
+        [HttpPost]
         public async Task<IActionResult> EnableAuthenticator(Enable2FaAuthenticationViewModel model){
             var user=await _userManager.GetUserAsync(User);
             if(user==null){
@@ -361,7 +361,7 @@ namespace OMS_App.Areas.Identity.Controllers
 
         //Post: /Manager/Disable2Fa
 
-        [HttpPost("/manager/disable2fa/")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Disable2FaAsync(){
             var user=await _userManager.GetUserAsync(User);
@@ -387,7 +387,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Post: /Manager/ResetAuthenticator
-        [HttpPost("/manager/resetauthenticator/")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult>ResetAuthenticatorAsync(){
             var user=await _userManager.GetUserAsync(User);
@@ -424,7 +424,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Post: /Manager/GenerateRecoveryCodes
-        [HttpPost("/manager/generaterecoverycodes/")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult>GenerateRecoveryCodesAync(){
             var user=await _userManager.GetUserAsync(User);
@@ -443,7 +443,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Post: /Manager/DownloadPersonData
-        [HttpPost("/manager/downloadpersondata/")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DownloadPersonData(){
             var user=await _userManager.GetUserAsync(User);
@@ -484,7 +484,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Post: /Manager/DeletePersonalData
-        [HttpPost("/manager/deletepersondata/")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePersonalDataAsync(DeletePersonalDataViewModel model){
             var user=await _userManager.GetUserAsync(User);

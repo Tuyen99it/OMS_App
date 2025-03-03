@@ -13,18 +13,19 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Security.Cryptography.Xml;
 using System.Security.Claims;
 using System.Security;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 namespace OMS_Webapp.Areas.Identity.Controllers
 {
     [Authorize]
     [Area("Identity")]
-    
+   
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<AccountController> _logger;
         private readonly IUserStore<AppUser> _userStore;
-        private readonly IUserEmailStore<AppUser> _emailStore;
+       // private readonly IUserEmailStore<AppUser> _emailStore;
         private readonly IEmailSender _emailSender;
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<AccountController> logger, IUserStore<AppUser> userStore,  IEmailSender emailSender)
         {
@@ -39,7 +40,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         public string ErrorMessage { get; set; }
 
         //Get: /Account/register/url
-      
+        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Register(string returnUrl = null)
         {
@@ -65,9 +66,12 @@ namespace OMS_Webapp.Areas.Identity.Controllers
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
-                await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
-                //await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
+                var user = new AppUser(){
+                    UserName=model.Email,
+                    Email=model.Email
+                };
+                // await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
+                // await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -111,7 +115,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
 
         //Get: /Account/RegisterConfirmation: Allow confirm register when using fake email addres
-        [HttpGet("/registerconfirmation/")]
+        [HttpGet]
         [AllowAnonymous]
         public async Task< IActionResult> RegisterConfirmation(string email, string returnUrl = null, bool displayConfirmationAccountLink = false)
         {
@@ -124,22 +128,24 @@ namespace OMS_Webapp.Areas.Identity.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null) return NotFound("Can not find out user have email: " + email);
             // Create a code confirmation when use fake email. When you use real email please remove this code or pass value "false" to displayConfirmationAccountLink
-            if (displayConfirmationAccountLink)
+            if (!displayConfirmationAccountLink)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                ViewBag.EmailConfirmationUrl = Url.Action(
+                var EmailConfirmationUrl = Url.Action(
                     "ConfirmEmail",
                     controller: "Account",
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme);
+                ViewBag.EmailConfirmationUrl=EmailConfirmationUrl;
+                _logger.LogInformation("Url:" +EmailConfirmationUrl);
             }
             return View();
         }
 
         //Get: /Acount/Login/url
-        [HttpGet("/login/")]
+        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
@@ -150,61 +156,58 @@ namespace OMS_Webapp.Areas.Identity.Controllers
             returnUrl ??= Url.Content("~/"); // if return ==null, returnUrl= absolute path
             // clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-            ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            var ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())?.ToList();
+            ViewBag.ExternalLogins=ExternalLogins;
             ViewBag.ReturnUrl = returnUrl;
 
             return View();
         }
 
         //POST: Account/login
-        [HttpPost("/login/")]
+        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");// Return absolute path of url
             ViewBag.ReturnUrl = returnUrl;
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // login by Email
-                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);
-                if (!result.Succeeded)
+                ViewBag.StatusMessage="Can not to login";
+                return View();
+               
+            }
+            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);
+            if (!result.Succeeded)
+            {
+                // login by user
+                var userName = await _userManager.FindByEmailAsync(model.UserName);
+                if (userName != null)
                 {
-                    // login by user
-                    var userName = await _userManager.FindByEmailAsync(model.UserName);
-                    if (userName != null)
-                    {
-                        result = await _signInManager.PasswordSignInAsync(userName.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);
-                    }
-
-                }
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation(1, "User logged in");
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToAction("LoginWith2fa", new { ReturnUrl = returnUrl, Remember = model.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning(2, "Account is locked");
-                    return RedirectToAction("Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
-                    return View(model);
+                    result = await _signInManager.PasswordSignInAsync(userName.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);
                 }
 
             }
-            return View(model);
-
+            if (result.Succeeded)
+            {
+                _logger.LogInformation(1, "User logged in");
+            }
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToAction("LoginWith2fa", new { ReturnUrl = returnUrl, Remember = model.RememberMe });
+            }
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning(2, "Account is locked");
+                return RedirectToAction("Lockout");
+            }
+            return RedirectToAction("Index","Home");
+          
 
         }
 
         //Get: /Account/LoginWith2fa
-        [HttpGet("/loginwith2fa/")]
+        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> LoginWith2Fa(bool rememerMe, string returnUrl = null)
         {
@@ -220,7 +223,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
 
         //Post: / Account/LoginWith2Fa
-        [HttpPost("/loginwith2fa/")]
+        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginWith2Fa(LoginWith2faViewModel model, bool rememerMe, string returnUrl = null)
@@ -257,7 +260,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
 
         //Get: /Account/LoginWithRecoveryCode/
-        [HttpGet("/loginwithrecoverycode/")]
+        [HttpGet]
         public IActionResult LoginWithRecoveryCode(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -271,7 +274,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
 
         //Post: /Account/loginwithrecoverycode
-        [HttpPost("/loginwithrecoverycode/")]
+        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginWithRecoveryCode(LoginWithRecoveryCodeViewModel model, string returnUrl = null)
@@ -310,7 +313,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
 
         //Get: /Account/ExternalLogin
-        [HttpGet("/externallogin/")]
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult ExternalLogin()
         {
@@ -319,7 +322,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
 
 
         //Post: /Account/ExternalLogin
-        [HttpPost("/externallogin/")]
+        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
@@ -333,7 +336,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
 
 
         //Get: /Account/ExternalLoginCallBack
-        [HttpGet("/externallogincallback/")]
+        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallBack(ExternalLoginViewModel model, string returnUrl = null, string remoteError = null)
         {
@@ -379,7 +382,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
 
         }
         // Post: Account/confirmation
-        [HttpPost("/confirmation/")]
+        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmationAsync(ExternalLoginViewModel model,string returnUrl = null)
@@ -394,10 +397,13 @@ namespace OMS_Webapp.Areas.Identity.Controllers
             }
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+                var user = new AppUser(){
+                    UserName=model.Email,
+                    Email=model.Email
+                };
                 // Set username and email for user
-                await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None );
-                await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None );
+                // await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None );
+                // await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None );
                 var result =await  _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -435,7 +441,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
 
 
         //Get: /Account/Logout
-        [HttpGet("/logout/")]
+        [HttpGet]
         public async Task<IActionResult> Logout(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
@@ -451,7 +457,8 @@ namespace OMS_Webapp.Areas.Identity.Controllers
             }
         }
         //Get: /Account/ConfirmEmail
-        [HttpGet("/confirmemail/")]
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmailAsync(string userId, string code)
         {
             if (userId == null || code == null) return RedirectToAction("/Index");
@@ -464,7 +471,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
 
         //Get: //Account/ConfirmEmailChange
-        [HttpGet("/confirmemailchange/")]
+        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmailChangeAsync(string userId=null, string email=null, string code=null)
         {
@@ -502,7 +509,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
 
         //Get: /Account/ResendEmailConfirmation
-        [HttpGet("/ResendEmailConfirmation/")]
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult ResendEmailConfirmation()
         {
@@ -511,7 +518,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
 
 
         //Post: /Account/ResendEmailConfirmation
-        [HttpPost("/resendemailconfirmation/")]
+        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResendEmailConfirmationAsync(ResendEmailConfirmationViewModel model)
@@ -542,7 +549,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
 
 
         //Post: /Account/forgotpassword/
-        [HttpPost("/forgotpassword/")]
+        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
@@ -553,7 +560,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToAction("./ForgotPasswordConfirmation");
+                    return RedirectToAction("ForgotPasswordConfirmation");
                 }
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 _logger.LogInformation("Code:{code}", code);
@@ -565,7 +572,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
                 await _emailSender.SendEmailAsync(model.Email, "ResetPassword", $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' clicking here</a>");
-                return RedirectToAction("./ForgotPasswordConfirmation");
+                return RedirectToAction("ForgotPasswordConfirmation");
 
             }
             return View();
@@ -573,7 +580,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
 
 
         //Get:/Account/forgotpasswordconfirmation
-        [HttpGet("/forgotpasswordconfirmation/")]
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPasswordConfirmation()
         {
@@ -599,7 +606,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
 
         //Post:/Account/Resetpassword
-        [HttpPost("/resetpassword/")]
+        [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPasswordAsync(ResetPasswordViewModel model)
@@ -632,7 +639,7 @@ namespace OMS_Webapp.Areas.Identity.Controllers
         }
 
         //Get:/Account/Lockout
-        [HttpGet("/lockout/")]
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult Lockout()
         {
