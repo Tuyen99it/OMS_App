@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OMS_App.Areas.Identity.Models;
 using OMS_Webapp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OMS_App.Areas.Identity.Controllers
 {
@@ -239,7 +240,7 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Get: /Manager/TowFactorAuthentication
-        public async Task<IActionResult>TwoFactorAuthentication(){
+        public async Task<IActionResult> TwoFactorAuthentication(){
             var user=await _userManager.GetUserAsync(User);
             if(user==null){
                 return NotFound("Unable to load user with Id:"+_userManager.GetUserId(User));
@@ -257,6 +258,8 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
         //Post: /Manager/TwoFactorAuthentication
+        [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> TwoFactorAuthenticationAsync(){
             var user=await _userManager.GetUserAsync(User);
             if(user==null){
