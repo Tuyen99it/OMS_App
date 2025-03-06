@@ -44,7 +44,12 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 
 });
-
+builder.Services.AddAuthentication().AddFacebook(facebookOptions=>{
+    facebookOptions.AppId=builder.Configuration["Authentication:Facebook:AppId"];
+    facebookOptions.AppSecret=builder.Configuration["Authentication:Facebook:AppSecret"];
+    facebookOptions.CallbackPath="/dang-nhap-tu-facebook";
+    facebookOptions.AccessDeniedPath="/Account/Login";
+});
 
 //Configure cookie for Identity 
 builder.Services.ConfigureApplicationCookie(options => {

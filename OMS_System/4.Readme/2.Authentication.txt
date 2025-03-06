@@ -47,3 +47,34 @@ _ViewImports
 + ManagerNavPage
 
 1. Custorm Identity Controller
+- Custom Account
+- Custom Manager
+2. Custom View
+- Account Folder
+- Manager Folder
+3. Add External login.
+- Facebook
+- Google
+- QR code
+3.1 Facebook login
+- Add the Microsoft.AspNetCore.Authentication.Facebook NuGet package to the project
+- Access via: https://developers.facebook.com/apps/ 
+- Get AppId and Secret 
+- Store the Facebook app ID and secret
+. Store sensitive settings such as the Facebook app ID and secret values with Secret Manager. For this sample, use the following steps:
+1. Initialize the project for secret storage per the instructions: dotnet user-secrets init
+2. Store the sensitive settings in the local secret store with the secret keys:
+dotnet user-secrets set "Authentication:Facebook:AppId" "<app-id>"
+dotnet user-secrets set "Authentication:Facebook:AppSecret" "<app-secret>"
+- Declare AppId and AppSecret on appsetings.json files
+ "Authentication":{
+    "Facebook":{
+      "AppId":"549405628069282",
+      "AppSecrete":"ca51fec585b392d4e2d4743d5d9fea1c"
+    }
+- Config facebook Authentication
+services.AddAuthentication().AddFacebook(facebookOptions =>
+    {
+        facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
+        facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
+    });

@@ -448,7 +448,7 @@ namespace OMS_App.Areas.Identity.Controllers
         //Post: /Manager/DownloadPersonData
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DownloadPersonData(){
+        public async Task<IActionResult> DownloadPersonalDataAsync(){
             var user=await _userManager.GetUserAsync(User);
             if(user==null){
                 return NotFound("Unable to load user with Id: "+_userManager.GetUserId(User));
