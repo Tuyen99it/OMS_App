@@ -1,0 +1,75 @@
+
+@model RoleManagement
+
+@{
+    ViewData["Title"] = "Role Management";
+    var Roles=ViewBag.Roles as List<IdentityRole>;
+
+    
+}
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col-md-6">
+        <section>
+            <form id="account" method="post">  
+                <div class="form-floating mb-3">
+                    <input asp-for="SearchingRoleName" class="form-control"aria-required="true" placeholder="Enter role name..." />
+                    <label asp-for="SearchingRoleName" class="form-label"></label>
+                    <span asp-validation-for="SearchingRoleName" class="text-danger"></span>
+                </div>
+                <div>
+                    <button id="login-submit" type="submit" class=" btn btn-lg btn-primary">Search</button>
+                </div>
+            </form>
+        </section>
+        
+    </div>
+</div>
+<div>
+    <h2> Thêm role</h2>
+</div>
+<div >
+    <div>
+
+        <a asp-action="Create" asp-controller="Role" class="text-link text-primary">Add Role</a>
+    </div>
+
+</div>
+<hr>
+
+    <table class="table">
+    <thead>
+        <tr>
+            <th>
+                No
+            </th>
+             <th>
+                RoleName
+            </th>
+            <th>NormalizeName</th>
+            <th>
+                Action
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+            @{
+                int i=0;
+            }
+            @foreach(var role in Roles){
+                <tr>
+                    <td>@i++</td>
+                    <td>@Html.DisplayFor(modelItem=>role.Name)</td>
+                    <td>@Html.DisplayFor(modelItem=>role.NormalizedName)</td>
+                    <td>
+                        <a asp-action ="Detail" asp-controller="Role" asp-route-roleid="@role.Id">Detail</a>
+                        <a asp-action ="Update" asp-controller="Role" asp-route-roleid="@role.Id">Update</a>
+                        <a asp-action ="Delete" asp-controller="Role" asp-route-roleid="@role.Id">Delete</a>
+                    </td>
+                </tr>
+                
+            }
+    </tbody>
+</table>
+

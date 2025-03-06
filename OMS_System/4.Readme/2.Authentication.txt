@@ -73,8 +73,36 @@ dotnet user-secrets set "Authentication:Facebook:AppSecret" "<app-secret>"
       "AppSecrete":"ca51fec585b392d4e2d4743d5d9fea1c"
     }
 - Config facebook Authentication
-services.AddAuthentication().AddFacebook(facebookOptions =>
-    {
-        facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
-        facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
-    });
+builder.Services.AddAuthentication().AddFacebook(facebookOptions=>{
+    facebookOptions.AppId=builder.Configuration["Authentication:Facebook:AppId"];
+    facebookOptions.AppSecret=builder.Configuration["Authentication:Facebook:AppSecret"];
+    facebookOptions.CallbackPath="/dang-nhap-tu-facebook";
+    facebookOptions.AccessDeniedPath="/Account/Login";
+};
+- External login process: Login -> (post) External Login -> (create external login: AppId, App secrete) Face/Google login -> ( callback: get: provider info): Login/ Confirm Account/Create account
+- Create External account: (post) Confirmation  -> create user -> add user to login -> confirm -> Login
+3.2 Google Login
+Create the Google OAuth 2.0 Client ID and secret
+- Add the Microsoft.AspNetCore.Authentication.Google NuGet package to the project
+- Access via: https://console.cloud.google.com/apis/dashboard?inv=1&invt=AbrSsA&project=appwe-444810
+- Get ClientId and ClientSecret 
+- Store the Google app ID and secret
+- Store the sensitive settings such as the ClientId and ClientSecret value with secret manager: Following the steps:
+1. Initialize the secret storage of project: 
+dotnet user-secretes init
+2. Set sensitive settings 
+dotnet user-secrets set "Authentication:Google:ClientId" "<ClientId value>"
+dotnet user-secrets set "Authentication:Google:ClientSecret" "<ClientSecret value>"
+ Declare AppId and AppSecret on appsetings.json files
+ "Authentication":{
+    "Google":{
+      "ClientId":"",
+      "ClientSecrete":""
+    }
+- Config appsetings.json
+.AddGoogle(googleOptions=>{
+    googleOptions.ClientId=builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret=builder.Configuration["Authentication:Google:ClientSecret"];
+    googleOptions.CallbackPath="/dang-nhap-tu-google";
+    googleOptions.AccessDeniedPath="/Account/Login";
+});

@@ -1,0 +1,55 @@
+1. Create Role CRUD
+1.1 Phát sinh Controller, views, area sử dụng tool
+- Cài đặt aspnet-codegenerator
+dotnet tool install -g dotnet-aspnet-codegenerator
+dotnet tool update -g dotnet-asp-codegenerator
+- Thêm package
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+- Gõ lệnh xem hướng dẫn
+dotnet aspnet-codegenerator -h
+
+1.2 RoleController
+- Create Admin area
+dotnet aspnet-codegenerator area Admin
+- Create RoleController
+dotnet aspnet-codegenerator controller -name RoleController -namespace OMS_Webapp.Areas.Admin.Controllers -outDir Areas/Admin/Controllers
+- Custom Index action
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace OMS_Webapp.Areas.Admin.Controllers
+{
+    public class RoleController : Controller
+    {
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILogger<RoleController> _logger;
+        public RoleController(RoleManager<IdentityRole> roleManager,ILogger<RoleController>logger){
+            _roleManager=roleManager;
+            _logger=logger;
+        }
+        [TempData]
+        public string StatusMessage {get;set;}
+        
+        // GET: RoleController
+        public async Task<ActionResult> IndexAsync( string? searchRole=null ){
+            var roles=new List<IdentityRole>();
+            if(string.IsNullOrEmpty(searchRole)){
+                //Get the list of existing role
+                roles=await _roleManager.Roles.ToListAsync();
+                return View(roles);
+            }
+            // search role
+            roles=await _roleManager.Roles.ToListAsync();
+            roles=roles.Where( role=> role.Name.Contains(searchRole)).ToList();
+            return View(roles);
+        }
+        
+
+    }
+}
+1.3 Create Role View
+- Create Index Razorpage
+dotnet aspnet-codegenerator view Index Empty -outDir Areas/Admin/Views/Role -l _Layout 
+

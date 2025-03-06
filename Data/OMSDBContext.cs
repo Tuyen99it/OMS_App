@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 using OMS_Webapp.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 namespace OMS_Webapp.Data
 {
     public class OMSDBContext : IdentityDbContext<AppUser>
