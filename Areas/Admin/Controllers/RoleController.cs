@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OMS_App.Models;
-using OMS_App.Areas.Admin.Models;
+using OMS_App.Areas.Admin.Role.Models;
 using System.Threading.Tasks;
 namespace OMS_App.Areas.Admin.Controllers
 {

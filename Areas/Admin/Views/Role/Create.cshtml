@@ -1,12 +1,12 @@
-@model CreateViewModel;
+@model OMS_App.Areas.Admin.Role.Models.CreateViewModel;
 @{
     ViewData["Title"] = "Create";
 }
 
 <h1>Create a new Role</h1>
 <div>
-    <partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
-    <form method="post" >
+    <partial name="_StatusMessge" model="@TempData["StatusMessage"]"></partial>
+    <form method="post">
         <div class="row mb-3">
             <label asp-for="RoleName" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-10">
@@ -22,7 +22,7 @@
        
     </form>
 
-           
+</div>           
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial"></partial>
