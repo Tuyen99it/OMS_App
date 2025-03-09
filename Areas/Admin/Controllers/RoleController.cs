@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OMS_App.Models;
 using OMS_App.Areas.Admin.Models;
+using System.Threading.Tasks;
 namespace OMS_App.Areas.Admin.Controllers
 {
     [Authorize]
@@ -30,29 +31,31 @@ namespace OMS_App.Areas.Admin.Controllers
         public async Task<ActionResult> Index()
         {
             var roles = await _roleManager.Roles.ToListAsync();
-            
-            ViewBag.Roles=roles;
-           
+
+            ViewBag.Roles = roles;
+
             return View();
         }
-         // Post: RoleController
+        // Post: RoleController
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> IndexAsync(IndexViewModel model)
         {
-            if(string.IsNullOrEmpty(model.SearchingRoleName)){
-                var roles=await _roleManager.Roles.ToListAsync();
-                ViewBag.Roles=roles;
+            if (string.IsNullOrEmpty(model.SearchingRoleName))
+            {
+                var roles = await _roleManager.Roles.ToListAsync();
+                ViewBag.Roles = roles;
                 return View();
             }
-            else{
-                var roles=await _roleManager.Roles.ToListAsync();
-                roles=roles.Where(role=>role.NormalizedName.Contains(model.SearchingRoleName.ToUpper())).ToList();
-                ViewBag.Roles=roles;
+            else
+            {
+                var roles = await _roleManager.Roles.ToListAsync();
+                roles = roles.Where(role => role.NormalizedName.Contains(model.SearchingRoleName.ToUpper())).ToList();
+                ViewBag.Roles = roles;
                 return View();
             }
 
-           
+
         }
 
 
@@ -228,38 +231,142 @@ namespace OMS_App.Areas.Admin.Controllers
 
         }
 
-        // Private get claim
-        private string ClaimsToString(List<Claim> claims)
+        [HttpGet]
+        public async Task<IActionResult> ClaimHome(string roleId = null)
         {
-            var claimsString = new StringBuilder();
-            if (claims.Count() == 0)
+            if (string.IsNullOrEmpty(roleId))
             {
-                claimsString.Append("There is no claims");
-                return claimsString.ToString();
+                return NotFound("Unable to load role Id");
             }
-            var nameClaim = string.Join(",", claims.Select(claim => claim.Type));
-            claimsString.Append(nameClaim);
-            return claimsString.ToString();
-
-
-        }
-        //private GetClaim
-        private async Task<string> GetClaimsStringAsync(IdentityRole role)
-        {
+            var role = await _roleManager.FindByIdAsync(roleId);
             if (role == null)
             {
-                return "";
+                _logger.LogError("unable to load roleid: " + roleId);
             }
             var claims = await _roleManager.GetClaimsAsync(role);
-            if (claims.Count == 0)
+            ViewBag.Claims = claims;
+            ViewBag.Role = role;
+            return View();
+
+        }
+
+        // Post: RoleController
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ClaimHome(ClaimViewModel model,string roleId=null)
+        {
+            if (string.IsNullOrEmpty(roleId))
             {
-                return "No claim";
+                return NotFound("Unable to load role Id");
             }
-            var claimString = String.Join("", claims.ToList());
-            return claimString;
+            if (string.IsNullOrEmpty(model.SearchingClaimName))
+            {
+                var role = await _roleManager.FindByIdAsync(roleId);
+                if (role == null)
+                {
+                    _logger.LogError("unable to load roleid: " + roleId);
+                }
+                var claims = await _roleManager.GetClaimsAsync(role);
+                ViewBag.Claims = claims;
+                ViewBag.Role = role;
+                return View();
+            }
+            else
+            {
+                var role = await _roleManager.FindByIdAsync(roleId);
+                if (role == null)
+                {
+                    _logger.LogError("unable to load roleid: " + roleId);
+                }
+                var claims = await _roleManager.GetClaimsAsync(role);
+                claims= claims.Where(claim=>claim.Type.Contains(model.SearchingClaimName)).ToList();
+                ViewBag.Claims = claims;
+                ViewBag.Role = role;
+                return View();
+            }
 
 
         }
+
+        
+        [HttpGet]
+        public async Task<ActionResult> CreateClaim(string roleId=null)
+        {
+            if(string.IsNullOrEmpty(roleId)){
+                return NotFound("RoleId is null");
+            }
+            var role=await _roleManager.FindByIdAsync(roleId);
+            ViewBag.Role=role; 
+            // Create Role Id
+            return View();
+
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateClaimAsync(ClaimCreateViewModel model,string roleId=null)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("NG validate input");
+            }
+            if (string.IsNullOrEmpty(model.ClaimType))
+            {
+                _logger.LogError("ClaimType is null");
+                return View();
+            }
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role == null)
+            {
+               return NotFound("Unable to load role");
+            }
+            var claim = new Claim(model.ClaimType, model.ClaimValue);
+            // Save role
+            var result = await _roleManager.AddClaimAsync(role,claim);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Claim is created successfully");
+                return RedirectToAction("ClaimHome", "Role",new {roleId=role.Id});
+            }
+            StatusMessage = "Error";
+            foreach (var er in result.Errors)
+            {
+
+                StatusMessage += er.Description;
+                _logger.LogError("Can not create Role" + StatusMessage);
+
+            }
+            return View();
+
+        }
+
+        [HttpGet]
+       
+        public async Task<ActionResult> DeleteClaimAsync(string claimtype=null,string claimvalue=null, string roleId = null)
+        {
+            if(string.IsNullOrEmpty(roleId)||string.IsNullOrEmpty(claimtype)||string.IsNullOrEmpty(claimvalue)){
+                return NotFound("Can not delete due to role or claim is null");
+            }
+           
+            var role=await _roleManager.FindByIdAsync(roleId);
+        
+            var removeClaim=new Claim(claimtype,claimvalue);
+            var  result=await _roleManager.RemoveClaimAsync(role,removeClaim);
+            if(result.Succeeded){
+                _logger.LogInformation("Remove Claim successfully");
+                return RedirectToAction("ClaimHome",new{roleId=role.Id});
+            }
+            foreach(var err in result.Errors){
+                StatusMessage+=err.Description.ToString();
+            }
+            _logger.LogError("Can not delete role");
+            return RedirectToAction("ClaimHome",new{roleid=role.Id});
+           
+
+        }
+
+
 
 
 
