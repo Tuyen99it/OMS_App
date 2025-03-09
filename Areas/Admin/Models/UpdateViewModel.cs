@@ -1,11 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace OMS_App.Areas.Admin.Models{
-    public class UpdateViewModel{
-       [Required(ErrorMessage ="Role Name")]
-        public string RoleName {get;set;}
-
-        public string NormalName {get;set;}
+    public class UpdateViewModel:IdentityRole{
+       public string ClaimsString {get;set;}
+       public string ClaimType {get;set;}
+       public string ClaimValue{get;set;}
+       
 
     }
 }

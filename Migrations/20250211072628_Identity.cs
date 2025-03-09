@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace OMS_Webapp.Migrations
+namespace OMS_App.Migrations
 {
     /// <inheritdoc />
     public partial class Identity : Migration

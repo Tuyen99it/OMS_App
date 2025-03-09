@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using OMS_Webapp.Models;
+using OMS_App.Models;
 
-namespace OMS_Webapp.Areas.Identity.Controllers;
+namespace OMS_App.Areas.Identity.Controllers;
 [Area("Identity")]
 
 public class HomeController : Controller

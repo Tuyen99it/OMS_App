@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace OMS_Webapp.Migrations
+namespace OMS_App.Migrations
 {
     /// <inheritdoc />
     public partial class update : Migration

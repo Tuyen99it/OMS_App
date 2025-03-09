@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using OMS_Webapp.Data;
-using OMS_Webapp.Models;
+using OMS_App.Areas.Admin.Models;
+using OMS_App.Data;
+using OMS_App.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,6 @@ builder.Services.AddDbContext<OMSDBContext>(options =>
     // Connect to Mssql server
     options.UseSqlServer(connectionString);
 });
-
 
 
 //Add Identity Services to container

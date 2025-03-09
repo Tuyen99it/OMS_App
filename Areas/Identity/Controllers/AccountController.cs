@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
-using OMS_Webapp.Models;
-using OMS_Webapp.Areas.Identity.Models;
+using OMS_App.Models;
+using OMS_App.Areas.Identity.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
@@ -14,7 +14,7 @@ using System.Security.Cryptography.Xml;
 using System.Security.Claims;
 using System.Security;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
-namespace OMS_Webapp.Areas.Identity.Controllers
+namespace OMS_App.Areas.Identity.Controllers
 {
     [Authorize]
     [Area("Identity")]

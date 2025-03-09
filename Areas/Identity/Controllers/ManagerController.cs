@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OMS_App.Areas.Identity.Models;
-using OMS_Webapp.Models;
+using OMS_App.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace OMS_App.Areas.Identity.Controllers

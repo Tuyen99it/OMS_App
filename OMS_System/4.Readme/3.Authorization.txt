@@ -12,14 +12,14 @@ dotnet aspnet-codegenerator -h
 - Create Admin area
 dotnet aspnet-codegenerator area Admin
 - Create RoleController
-dotnet aspnet-codegenerator controller -name RoleController -namespace OMS_Webapp.Areas.Admin.Controllers -outDir Areas/Admin/Controllers
+dotnet aspnet-codegenerator controller -name RoleController -namespace OMS_App.Areas.Admin.Controllers -outDir Areas/Admin/Controllers
 - Custom Index action
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace OMS_Webapp.Areas.Admin.Controllers
+namespace OMS_App.Areas.Admin.Controllers
 {
     public class RoleController : Controller
     {

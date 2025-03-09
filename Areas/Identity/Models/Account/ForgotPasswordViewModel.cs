@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OMS_Webapp.Areas.Identity.Models
+namespace OMS_App.Areas.Identity.Models
 {
     public class ForgotPasswordViewModel
     {

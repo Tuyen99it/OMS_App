@@ -1,5 +1,6 @@
 
-@model RoleManagement
+@model IndexViewModel;
+@inject RoleManager<IdentityRole> _roleManager;
 
 @{
     ViewData["Title"] = "Role Management";
@@ -7,24 +8,29 @@
 
     
 }
+
 <h1>@ViewData["Title"]</h1>
+ <partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
 <div class="row">
     <div class="col-md-6">
         <section>
-            <form id="account" method="post">  
-                <div class="form-floating mb-3">
-                    <input asp-for="SearchingRoleName" class="form-control"aria-required="true" placeholder="Enter role name..." />
-                    <label asp-for="SearchingRoleName" class="form-label"></label>
+            <form id="account" method="post" class="row g-2">  
+
+                <div class="col-auto">
+                    <label class="visually-hidden">Email</label>
+                    <input class="form-control" asp-for="SearchingRoleName" placeholder="Enter role name ...">
                     <span asp-validation-for="SearchingRoleName" class="text-danger"></span>
                 </div>
-                <div>
-                    <button id="login-submit" type="submit" class=" btn btn-lg btn-primary">Search</button>
+               
+                <div class="col-2">
+                    <button id="login-submit" type="submit" class=" btn mb-3 btn-primary">Search</button>
                 </div>
             </form>
         </section>
         
     </div>
 </div>
+    
 <div>
     <h2> Thêm role</h2>
 </div>
@@ -47,6 +53,8 @@
                 RoleName
             </th>
             <th>NormalizeName</th>
+            <th>Claims</th>
+             
             <th>
                 Action
             </th>
@@ -55,19 +63,32 @@
     </thead>
     <tbody>
             @{
-                int i=0;
+                int i=1;
             }
             @foreach(var role in Roles){
                 <tr>
-                    <td>@i++</td>
+                    <td>@(i++)</td>
                     <td>@Html.DisplayFor(modelItem=>role.Name)</td>
                     <td>@Html.DisplayFor(modelItem=>role.NormalizedName)</td>
+                    @{
+                        string claimsInList=string.Empty;
+                        var claims=await _roleManager.GetClaimsAsync(role);
+                        if(claims.Count==0){
+                            claimsInList="No Claims";
+                        }
+                        else{
+                            claimsInList=string.Join(",",claims.ToList());
+                        }
+                        <td>@claimsInList</td>
+                    }
+                    
                     <td>
                         <a asp-action ="Detail" asp-controller="Role" asp-route-roleid="@role.Id">Detail</a>
                         <a asp-action ="Update" asp-controller="Role" asp-route-roleid="@role.Id">Update</a>
                         <a asp-action ="Delete" asp-controller="Role" asp-route-roleid="@role.Id">Delete</a>
                     </td>
                 </tr>
+                
                 
             }
     </tbody>

@@ -1,11 +1,13 @@
+using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OMS_App.Models;
 using OMS_App.Areas.Admin.Models;
-
-namespace OMS_Webapp.Areas.Admin.Controllers
+namespace OMS_App.Areas.Admin.Controllers
 {
     [Authorize]
     [Area("Admin")]
@@ -27,30 +29,33 @@ namespace OMS_Webapp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            _logger.LogInformation("Already enter index");
-            var roles = new List<IdentityRole>();
-            roles = await _roleManager.Roles.ToListAsync();
-            ViewBag.Roles = roles;
+            var roles = await _roleManager.Roles.ToListAsync();
+            
+            ViewBag.Roles=roles;
+           
             return View();
         }
-
+         // Post: RoleController
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Index(RoleManagement model)
+        public async Task<ActionResult> IndexAsync(IndexViewModel model)
         {
-            var Roles = new List<IdentityRole>();
-            if (!string.IsNullOrEmpty(model.SearchingRoleName))
-            {
-                var roles = await _roleManager.Roles.ToListAsync();
-                Roles = roles.Where(role => role.Name.Contains(model.SearchingRoleName)).ToList();
+            if(string.IsNullOrEmpty(model.SearchingRoleName)){
+                var roles=await _roleManager.Roles.ToListAsync();
+                ViewBag.Roles=roles;
+                return View();
             }
-            else
-            {
-                Roles = await _roleManager.Roles.ToListAsync();
+            else{
+                var roles=await _roleManager.Roles.ToListAsync();
+                roles=roles.Where(role=>role.NormalizedName.Contains(model.SearchingRoleName.ToUpper())).ToList();
+                ViewBag.Roles=roles;
+                return View();
             }
-            ViewBag.Roles = Roles;
-            return View();
+
+           
         }
+
+
 
         [HttpGet]
         public async Task<ActionResult> Create()
@@ -72,6 +77,12 @@ namespace OMS_Webapp.Areas.Admin.Controllers
             if (string.IsNullOrEmpty(model.RoleName))
             {
                 _logger.LogError("RoleName is null");
+                return View();
+            }
+            var role = await _roleManager.FindByNameAsync(model.RoleName);
+            if (role != null)
+            {
+                StatusMessage = "Role already existing";
                 return View();
             }
             //Create a new role
@@ -98,60 +109,69 @@ namespace OMS_Webapp.Areas.Admin.Controllers
 
         }
 
-         [HttpGet]
-        public async Task<ActionResult> Detail( string roleId=null)
+        [HttpGet]
+        public async Task<ActionResult> Detail(string roleId = null)
         {
-            if(string.IsNullOrEmpty(roleId)){
+            if (string.IsNullOrEmpty(roleId))
+            {
                 _logger.LogError("Role Id is null");
                 return View();
             }
-           var role=await _roleManager.FindByIdAsync(roleId);
-           if(role!=null){
-            _logger.LogInformation("Load role successfully");
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role != null)
+            {
+                _logger.LogInformation("Load role successfully");
+                return View(role);
+            }
+            return NotFound("Unable to load role");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Update(string roleId = null)
+        {
+            _logger.LogInformation("Access to Update");
+            if (string.IsNullOrEmpty(roleId))
+            {
+                _logger.LogError("Role Id is null");
+                return View();
+            }
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role == null)
+            {
+                _logger.LogError("Unable to load role");
+                return NotFound("Unable to load role");
+            }
+            _logger.LogInformation("Load {roleName} sucessful", role.Name);
+
             return View(role);
-           }
-           return NotFound("Unable to load role");
-        }
 
-         [HttpGet]
-        public async Task<ActionResult> Update(  string roleId=null)
-        {
-            if(string.IsNullOrEmpty(roleId)){
-                _logger.LogError("Role Id is null");
-                return View();
-            }
-           var role=await _roleManager.FindByIdAsync(roleId);
-           if(role==null){
-            _logger.LogError("Unable to load role");
-             return NotFound("Unable to load role");
-           }
-          
-           return View (role);
-           
         }
 
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> UpdateAsync(UpdateViewModel model)
+        public async Task<ActionResult> UpdateAsync(IdentityRole model, string roleId = null)
         {
             if (!ModelState.IsValid)
             {
                 _logger.LogError("NG validate input");
             }
-            if (string.IsNullOrEmpty(model.RoleName))
+            if (string.IsNullOrEmpty(roleId))
             {
                 _logger.LogError("RoleName is null");
                 return View();
             }
-            //Create a new role
-            var Role = new IdentityRole()
+            //find current role
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role == null)
             {
-                Name = model.RoleName
-            };
+                _logger.LogError("Unable to load role");
+                return NotFound("Unable to load role");
+            }
+            role.Name = model.Name;
             // updat role
-            var result = await _roleManager.UpdateAsync(Role);
+            var result = await _roleManager.UpdateAsync(role);
             if (result.Succeeded)
             {
                 _logger.LogInformation("Role is updated successfully");
@@ -165,29 +185,38 @@ namespace OMS_Webapp.Areas.Admin.Controllers
                 _logger.LogError("Can not update Role" + StatusMessage);
 
             }
-            return View();
+            return View("Index");
 
         }
-
-          [HttpGet]
-        public async Task<ActionResult> Delete(  string roleId=null)
+        public IActionResult Delete(string roleId = null)
         {
-            if(string.IsNullOrEmpty(roleId)){
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteAsync(string roleId = null)
+        {
+            if (string.IsNullOrEmpty(roleId))
+            {
                 _logger.LogError("Role Id is null");
                 return View();
             }
-           var role=await _roleManager.FindByIdAsync(roleId);
-           if(role==null){
-            _logger.LogError("Unable to load role");
-             return NotFound("Unable to load role");
-           }
-          
-          var result=await _roleManager.DeleteAsync(role);
-          if(result.Succeeded){
-             _logger.LogInformation("Delete {role} success"+role.Name);
-             return RedirectToAction("Index","Role");
-          }
-           foreach (var er in result.Errors)
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role == null)
+            {
+                _logger.LogError("Unable to load role");
+                return NotFound("Unable to load role");
+            }
+
+            var result = await _roleManager.DeleteAsync(role);
+            if (result.Succeeded)
+            {
+                StatusMessage = $"Delete {role.Name} successfully";
+                _logger.LogInformation("Delete {role} successfully" + role.Name);
+                return RedirectToAction("Index", "Role");
+            }
+            foreach (var er in result.Errors)
             {
 
                 StatusMessage += er.Description;
@@ -195,12 +224,46 @@ namespace OMS_Webapp.Areas.Admin.Controllers
 
             }
             return View();
-          
-           
+
+
+        }
+
+        // Private get claim
+        private string ClaimsToString(List<Claim> claims)
+        {
+            var claimsString = new StringBuilder();
+            if (claims.Count() == 0)
+            {
+                claimsString.Append("There is no claims");
+                return claimsString.ToString();
+            }
+            var nameClaim = string.Join(",", claims.Select(claim => claim.Type));
+            claimsString.Append(nameClaim);
+            return claimsString.ToString();
+
+
+        }
+        //private GetClaim
+        private async Task<string> GetClaimsStringAsync(IdentityRole role)
+        {
+            if (role == null)
+            {
+                return "";
+            }
+            var claims = await _roleManager.GetClaimsAsync(role);
+            if (claims.Count == 0)
+            {
+                return "No claim";
+            }
+            var claimString = String.Join("", claims.ToList());
+            return claimString;
+
+
         }
 
 
-       
+
+
 
 
 

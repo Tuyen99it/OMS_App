@@ -22,7 +22,7 @@ dotnet add package Microsoft.EntityFrameworkCore.Design  --version 8.0.0
   },
 3.2.3. Create OMSDBcontext
 using Microsoft.EntityFrameworkCore;
-namespace OMS_Webapp.Data
+namespace OMS_App.Data
 {
     public class OMSDBContext : DbContext
     {
@@ -90,7 +90,7 @@ dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design  --version 8
 using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity
-namespace OMS_Webapp.Models
+namespace OMS_App.Models
 {
     public class AppUser : IdentityUser
     {
@@ -107,9 +107,9 @@ namespace OMS_Webapp.Models
 4.2 Update OMSDBContext
 using Microsoft.EntityFrameworkCore;
 
-using OMS_Webapp.Models;
+using OMS_App.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-namespace OMS_Webapp.Data
+namespace OMS_App.Data
 {
     public class OMSDBContext : IdentityDbContext<AppUser>
     {
@@ -187,7 +187,7 @@ builder.Services.AddRazorPages();
 app.MapUseRazorPages();
 4.7 Migration Identity code.
 - Migration Identity code
-dotnet aspnet-codegenerator identity -dc OMS_Webapp.Data.OMSDBContext
+dotnet aspnet-codegenerator identity -dc OMS_App.Data.OMSDBContext
 - There are some issues when migration due to NG config cookie for Identity.  Comment those codes and migrations again. 
 //builder.Services.ConfigureApplicationCookie(options => {
 //    //cookie setting
@@ -198,4 +198,4 @@ dotnet aspnet-codegenerator identity -dc OMS_Webapp.Data.OMSDBContext
 
 //});
 - Re migration identity again.
-dotnet aspnet-codegenerator identity -dc OMS_Webapp.Data.OMSDBContext
+dotnet aspnet-codegenerator identity -dc OMS_App.Data.OMSDBContext
