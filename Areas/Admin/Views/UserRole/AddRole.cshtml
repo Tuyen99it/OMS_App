@@ -1,0 +1,78 @@
+@model OMS_App.Areas.Admin.UserRole.Models.AddRoleViewModel;
+
+
+@{
+    ViewData["Title"] = "Add Role";
+
+}
+
+<h1>@ViewData["Title"]</h1>
+<partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
+<h2> The Roles of @Model.User.UserName</h2>
+<hr>
+<div>
+    <a asp-action="UserList" class="text-link text-black">UserList </a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Name</th>
+            <th>Action</th>
+        </tr>
+
+    </thead>
+    <tbody>
+
+        @{
+            int i = 1;
+        }
+        @if(@Model.Options.Count>1){
+            <tr>
+            <form method="post">
+                <td>0</td>
+
+                <td>
+
+                   
+                    <select asp-for="SelectedRole" asp-items="Model.Options"></select>
+
+                </td>
+                <td>
+                    <input type="submit" value="Add"  asp-route-userId="@Model.User.Id" class="btn btn-primary">
+                </td>
+                
+
+            </form>
+
+        </tr>
+        }
+        @if (Model.ExistingRoles.Count() > 0)
+        {
+            foreach (var role in Model.ExistingRoles)
+            {
+                <tr>
+                    <td>@(i++)</td>
+                    <td>@role</td>
+                    <td>
+                        <a asp-action="Delete" asp-controller="UserRole" asp-route-userId="@Model.User.Id"
+                            asp-route-roleName="@role">Delete</a>
+                    </td>
+
+                </tr>
+
+            }
+
+        }
+       
+
+
+    </tbody>
+</table>
+@* <form method="post" name="add-user-role">
+    <div class="form-group">
+        <label class="form-label" asp-for="@Model.SelectedRole"></label>
+        <select class="form-control" asp-for="@Model.SelectedRole" asp-items="@Model.Options"></select>
+    </div>
+    <button class="btn btn-sm btn-primary">Add</button>
+</form> *@
