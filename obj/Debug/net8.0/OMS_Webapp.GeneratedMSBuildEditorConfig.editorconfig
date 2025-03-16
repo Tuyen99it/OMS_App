@@ -17,171 +17,171 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = OMS_Webapp
 build_property.RootNamespace = OMS_Webapp
-build_property.ProjectDir = C:\Users\F&B\Cshap\ASP_NET_Core\OMS_App\
+build_property.ProjectDir = C:\Webapp\OMS_App\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\F&B\Cshap\ASP_NET_Core\OMS_App
+build_property.MSBuildProjectDirectory = C:\Webapp\OMS_App
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/ConfirmEmail.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/ConfirmEmail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxDb25maXJtRW1haWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/ConfirmEmailChange.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/ConfirmEmailChange.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxDb25maXJtRW1haWxDaGFuZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/ExternalLogin.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/ExternalLogin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxFeHRlcm5hbExvZ2luLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/ForgotPassword.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/ForgotPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/Lockout.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/Lockout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxMb2Nrb3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/Login.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/LoginWith2fa.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/LoginWith2fa.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxMb2dpbldpdGgyZmEuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/LoginWithRecoveryCode.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/LoginWithRecoveryCode.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxMb2dpbldpdGhSZWNvdmVyeUNvZGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/Logout.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/Logout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxMb2dvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/Register.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/RegisterConfirmation.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/RegisterConfirmation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxSZWdpc3RlckNvbmZpcm1hdGlvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/ResendEmailConfirmation.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/ResendEmailConfirmation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxSZXNlbmRFbWFpbENvbmZpcm1hdGlvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/ResetPassword.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/ResetPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxSZXNldFBhc3N3b3JkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Account/ResetPasswordConfirmation.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Account/ResetPasswordConfirmation.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcQWNjb3VudFxSZXNldFBhc3N3b3JkQ29uZmlybWF0aW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/ChangePassword.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/ChangePassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXENoYW5nZVBhc3N3b3JkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/DeletePersonalData.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/DeletePersonalData.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXERlbGV0ZVBlcnNvbmFsRGF0YS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/Disable2Fa.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/Disable2Fa.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXERpc2FibGUyRmEuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/DownloadPersonalData.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/DownloadPersonalData.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXERvd25sb2FkUGVyc29uYWxEYXRhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/Email.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/Email.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXEVtYWlsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/EnableAuthenticator.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/EnableAuthenticator.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXEVuYWJsZUF1dGhlbnRpY2F0b3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/ExternalLogins.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/ExternalLogins.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXEV4dGVybmFsTG9naW5zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/GenerateRecoveryCodes.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/GenerateRecoveryCodes.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXEdlbmVyYXRlUmVjb3ZlcnlDb2Rlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/Index.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/PersonalData.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/PersonalData.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXFBlcnNvbmFsRGF0YS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/ResetAuthenticator.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/ResetAuthenticator.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXFJlc2V0QXV0aGVudGljYXRvci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Manage/TwofactorAuthentication.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Manage/TwofactorAuthentication.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcTWFuYWdlXFR3b2ZhY3RvckF1dGhlbnRpY2F0aW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Shared/_Layout.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Shared/_ManagerNav.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Shared/_ManagerNav.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcU2hhcmVkXF9NYW5hZ2VyTmF2LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Shared/_StatusMessage.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Shared/_StatusMessage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcU2hhcmVkXF9TdGF0dXNNZXNzYWdlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/_ViewImports.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Areas/Identity/Views/_ViewStart.cshtml]
+[C:/Webapp/OMS_App/Areas/Identity/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcVmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Views/Home/Index.cshtml]
+[C:/Webapp/OMS_App/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Views/Home/Privacy.cshtml]
+[C:/Webapp/OMS_App/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Views/Shared/Error.cshtml]
+[C:/Webapp/OMS_App/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Views/Shared/_LoginPartial.cshtml]
+[C:/Webapp/OMS_App/Views/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Webapp/OMS_App/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Views/_ViewImports.cshtml]
+[C:/Webapp/OMS_App/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Views/_ViewStart.cshtml]
+[C:/Webapp/OMS_App/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/F&B/Cshap/ASP_NET_Core/OMS_App/Views/Shared/_Layout.cshtml]
+[C:/Webapp/OMS_App/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-xctiktxyjo
