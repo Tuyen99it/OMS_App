@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using OMS_Webapp.Data;
-using OMS_Webapp.Models;
+using OMS_App.Areas.Admin.Role.Models;
+using OMS_App.Data;
+using OMS_App.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,11 +15,13 @@ builder.Services.AddDbContext<OMSDBContext>(options =>
     // Connect to Mssql server
     options.UseSqlServer(connectionString);
 });
+
+
 //Add Identity Services to container
 builder.Services.AddDefaultIdentity<AppUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
-}).AddRoles<IdentityRole>().AddEntityFrameworkStores<OMSDBContext>();
+}).AddRoles<IdentityRole>().AddEntityFrameworkStores<OMSDBContext>().AddDefaultTokenProviders();;
 //configure IdentityOption
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -41,8 +44,19 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 
 });
-
-
+builder.Services.AddAuthentication()
+.AddFacebook(facebookOptions=>{
+    facebookOptions.AppId=builder.Configuration["Authentication:Facebook:AppId"];
+    facebookOptions.AppSecret=builder.Configuration["Authentication:Facebook:AppSecret"];
+    facebookOptions.CallbackPath="/dang-nhap-tu-facebook";
+    facebookOptions.AccessDeniedPath="/Account/Login";
+})
+.AddGoogle(googleOptions=>{
+    googleOptions.ClientId=builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret=builder.Configuration["Authentication:Google:ClientSecret"];
+    googleOptions.CallbackPath="/dang-nhap-tu-google";
+   
+});
 //Configure cookie for Identity 
 builder.Services.ConfigureApplicationCookie(options => {
 //cookie setting
@@ -52,6 +66,8 @@ options.LoginPath = "/Identity/Account/AccessDenied";    // Sets the path to the
 options.SlidingExpiration = true;                        // Reset cookie expire time when each request of client. Ensuring that the user remains authenticated as long as they continue to interact with the application within the specified time span ( 30 minutes in this case )
 
 });
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -71,7 +87,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.MapRazorPages();
+//app.MapRazorPages();
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "MyArea",

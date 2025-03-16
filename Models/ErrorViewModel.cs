@@ -1,4 +1,4 @@
-namespace OMS_Webapp.Models;
+namespace OMS_App.Models;
 
 public class ErrorViewModel
 {

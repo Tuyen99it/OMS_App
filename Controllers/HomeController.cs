@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using OMS_Webapp.Models;
+using OMS_App.Models;
 
-namespace OMS_Webapp.Controllers;
+namespace OMS_App.Controllers;
 
 public class HomeController : Controller
 {

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using OMS_Webapp.Data;
+using OMS_App.Data;
 
 #nullable disable
 
-namespace OMS_Webapp.Migrations
+namespace OMS_App.Migrations
 {
     [DbContext(typeof(OMSDBContext))]
     [Migration("20250216012936_fixFullname")]
@@ -162,7 +162,7 @@ namespace OMS_Webapp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("OMS_Webapp.Models.AppUser", b =>
+            modelBuilder.Entity("OMS_App.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -249,7 +249,7 @@ namespace OMS_Webapp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("OMS_Webapp.Models.AppUser", null)
+                    b.HasOne("OMS_App.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -258,7 +258,7 @@ namespace OMS_Webapp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("OMS_Webapp.Models.AppUser", null)
+                    b.HasOne("OMS_App.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -273,7 +273,7 @@ namespace OMS_Webapp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OMS_Webapp.Models.AppUser", null)
+                    b.HasOne("OMS_App.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -282,7 +282,7 @@ namespace OMS_Webapp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("OMS_Webapp.Models.AppUser", null)
+                    b.HasOne("OMS_App.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

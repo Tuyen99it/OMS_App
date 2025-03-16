@@ -1,16 +1,16 @@
-@inject SignInManager<AppUser> SignInManager
 @using OMS_App.Areas.Identity.Controllers;
+@inject SignInManager<AppUser> SignInManager
 @{
-    var hasExternalLogins = ( await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
 <ul class="nav nav-pills flex-column">
-    <li class="nav-item">
-        <a class="nav-link @ManageNavView.IndexNavClass(ViewContext) id="profile" asp-controller="Manager" asp-action="Index">Profile</a>
-        <a class="nav-link @ManageNavView.ChangePasswordNavClass(ViewContext)" id="="email:a asp-controller="Manager" asp-action="ChangePassword">Change Password</a>
-        @if(hasExternalLogins){
-            <a class="nav-link @ManageNavView.ExternalLoginNavClass(ViewContext)" id="externalLogins" asp-controller="Manager" asp-action="ExternalLogins">External Logins</a>
-        }
-        <a class="nav-link @ManageNavView.TwoFactorAuthenticationNavClass(ViewContext)" id="twoFactorAuthentication" asp-controller="Manager" asp-action="TwoFactorAuthentication">Two-factor Authentication</a>
-        <a class="nav-link @ManageNavView.PersonalDataNavClass(ViewContext)" id="personalData" asp-controller="Manager" asp-action="PersonalData">Personal Data</a>
-    </li>
+    <li class="nav-item"><a class="nav-link @ManageNavView.IndexNavClass(ViewContext)" id="profile" asp-action="Index">Profile</a></li>
+    <li class="nav-item"><a class="nav-link @ManageNavView.EmailNavClass(ViewContext)" id="email" asp-action="Email">Email</a></li>
+    <li class="nav-item"><a class="nav-link @ManageNavView.ChangePasswordNavClass(ViewContext)" id="change-password" asp-action="ChangePassword">Password</a></li>
+    @if (hasExternalLogins)
+    {
+        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavView.ExternalLoginNavClass(ViewContext)" asp-action="ExternalLogins">External logins</a></li>
+    }
+    <li class="nav-item"><a class="nav-link @ManageNavView.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-action="TwoFactorAuthentication">Two-factor authentication</a></li>
+    <li class="nav-item"><a class="nav-link @ManageNavView.PersonalDataNavClass(ViewContext)" id="personal-data" asp-action="PersonalData">Personal data</a></li>
 </ul>

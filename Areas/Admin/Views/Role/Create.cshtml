@@ -1,0 +1,32 @@
+@model OMS_App.Areas.Admin.Role.Models.CreateViewModel;
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create a new Role</h1>
+<div>
+    <partial name="_StatusMessge" model="@TempData["StatusMessage"]"></partial>
+    <form method="post">
+        <div class="row mb-3">
+            <label asp-for="RoleName" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+                <input asp-for="RoleName" class="form-control " placeholder=" Enter Role Name">
+            </div>
+            <span asp-validation-for="RoleName" class="text-danger "></span>
+            
+        </div>
+        <div class="col-2">
+            <button type="submit" class=" w-100 btn btn-sm btn-primary">Create</button>
+        </div>
+         
+       
+    </form>
+
+</div>           
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"></partial>
+}
+
+
+

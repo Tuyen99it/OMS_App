@@ -1,0 +1,28 @@
+@model string;
+@{
+    ViewData["Title"] = "Delete";
+}
+<h1> Delete @Model</h1>
+
+<div>
+    <partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
+    <p>
+        Do you make sure about deleting @Model?
+    </p>
+    <form method="post" >
+       
+        <div class="col-2">
+            <button type="submit" class=" w-100 btn btn-sm btn-danger">Delete</button>
+        </div>
+         
+       
+    </form>
+
+           
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"></partial>
+}
+
+
+

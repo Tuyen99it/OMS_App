@@ -1,0 +1,43 @@
+@model IdentityRole;
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<h1>The information about @Model.Name</h1>
+<div class="container">
+   <div class="row">
+        <p class="col-sm-2">
+            <strong>
+                @Html.DisplayNameFor(Model=> Model.Name)
+            </strong>
+        </p>
+        <p class="col-sm-10">
+            @Html.DisplayFor(Model=> Model.Name)
+        </p>
+   </div>
+   <div class="row">
+        <p class="col-sm-2">
+            <strong>
+                @Html.DisplayNameFor(Model=> Model.NormalizedName)
+            </strong>
+        </p>
+        <p class="col-sm-10">
+            @Html.DisplayFor(Model=> Model.NormalizedName)
+        </p>
+   </div>
+    <div class="row">
+        <p class="col-sm-2">
+            <strong>
+                @Html.DisplayNameFor(Model=> Model.ConcurrencyStamp)
+            </strong>
+        </p>
+        <p class="col-sm-10">
+            @Html.DisplayFor(Model=> Model.ConcurrencyStamp)
+        </p>
+   </div>
+   
+</div>
+<div>
+    <a asp-action="Edit" asp-controller="Role" asp-route-roleId="@Model.Id">Edit</a>
+    <a asp-action="Index" asp-controller="Role">Back to Role</a>
+</div>

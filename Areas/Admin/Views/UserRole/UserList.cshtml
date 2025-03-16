@@ -1,0 +1,80 @@
+
+@model OMS_App.Areas.Admin.UserRole.Models.UserListModel;
+
+
+@{
+    ViewData["Title"] = "User Manager";
+   
+}
+
+<h1>@ViewData["Title"]</h1>
+ <partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
+<div class="row">
+    <div class="col-md-6">
+        <section>
+            <form id="account" method="post" class="row g-2">  
+
+                <div class="col-auto">
+                    <label class="visually-hidden" asp-for="SearchUserName"></label>
+                    <input class="form-control" asp-for="SearchUserName" placeholder="Enter role name ...">
+                    <span asp-validation-for="SearchUserName" class="text-danger"></span>
+                </div>
+               
+                <div class="col-2">
+                    <button id="login-submit" type="submit" class=" btn mb-3 btn-primary">Search</button>
+                </div>
+            </form>
+        </section>
+        
+    </div>
+ 
+</div>
+    
+<div>
+    <h2> Thêm role</h2>
+</div>
+
+<hr>
+<div class="table-reponsive">
+    <table class="table align-middle">
+    <thead>
+        <tr>
+            <th class="col-1">
+                No
+            </th> 
+             <th class="col-2">
+                UserName
+            </th>
+            <th class="col-2">Email</th>
+            <th class="col-4">Roles </th>
+             
+            <th class="col-3">
+                Action
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+            @{
+                int i=1;
+            }
+            @foreach(var user in Model.Users){
+                <tr>
+                    <td >@(i++)</td>
+                    <td>@Html.DisplayFor(modelItem=>user.UserName)</td>
+                   
+                    <td>@Html.DisplayFor(modelItem=>user.Email)</td>
+                        
+                    <td>@Html.DisplayFor(modelItem=>user.RoleNames)</td>
+                    <td>
+                        <a asp-action ="AddRole" asp-controller="UserRole" asp-route-userId="@user.Id">Role</a>
+                        <a asp-action ="Reset" asp-controller="Account" asp-route-userId="@user.Id">Reset password</a>
+                    </td>
+                </tr>
+                
+                
+            }
+    </tbody>
+</table>
+</div>
+
