@@ -161,8 +161,11 @@ VD:
   </body>
 </html>
 
-
-
+2. Tạo Dropdown dùng để gán chức năng cho user
+2.1 Tạo một role có tên "AdminDropdown"
+options.AddRole("AdminDropdown",policy)=>{
+  policy.RequireRoles("Admin");
+}
 
 
 

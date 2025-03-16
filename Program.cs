@@ -21,7 +21,7 @@ builder.Services.AddDbContext<OMSDBContext>(options =>
 builder.Services.AddDefaultIdentity<AppUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
-}).AddRoles<IdentityRole>().AddEntityFrameworkStores<OMSDBContext>().AddDefaultTokenProviders();;
+}).AddRoles<IdentityRole>().AddEntityFrameworkStores<OMSDBContext>().AddDefaultTokenProviders(); ;
 //configure IdentityOption
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -45,29 +45,39 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 });
 builder.Services.AddAuthentication()
-.AddFacebook(facebookOptions=>{
-    facebookOptions.AppId=builder.Configuration["Authentication:Facebook:AppId"];
-    facebookOptions.AppSecret=builder.Configuration["Authentication:Facebook:AppSecret"];
-    facebookOptions.CallbackPath="/dang-nhap-tu-facebook";
-    facebookOptions.AccessDeniedPath="/Account/Login";
+.AddFacebook(facebookOptions =>
+{
+    facebookOptions.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+    facebookOptions.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+    facebookOptions.CallbackPath = "/dang-nhap-tu-facebook";
+    facebookOptions.AccessDeniedPath = "/Account/Login";
 })
-.AddGoogle(googleOptions=>{
-    googleOptions.ClientId=builder.Configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret=builder.Configuration["Authentication:Google:ClientSecret"];
-    googleOptions.CallbackPath="/dang-nhap-tu-google";
-   
+.AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    googleOptions.CallbackPath = "/dang-nhap-tu-google";
+
 });
 //Configure cookie for Identity 
-builder.Services.ConfigureApplicationCookie(options => {
-//cookie setting
-options.Cookie.HttpOnly = true;                          // Ensure the cookie can not be accessed from client-side cripts.
-options.ExpireTimeSpan = TimeSpan.FromMinutes(30);       // Setting expire time of cookie is 30 minutes
-options.LoginPath = "/Identity/Account/AccessDenied";    // Sets the path to the login page when access is denied
-options.SlidingExpiration = true;                        // Reset cookie expire time when each request of client. Ensuring that the user remains authenticated as long as they continue to interact with the application within the specified time span ( 30 minutes in this case )
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    //cookie setting
+    options.Cookie.HttpOnly = true;                          // Ensure the cookie can not be accessed from client-side cripts.
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);       // Setting expire time of cookie is 30 minutes
+    options.LoginPath = "/Identity/Account/AccessDenied";    // Sets the path to the login page when access is denied
+    options.SlidingExpiration = true;                        // Reset cookie expire time when each request of client. Ensuring that the user remains authenticated as long as they continue to interact with the application within the specified time span ( 30 minutes in this case )
 
 });
 
-
+//add policy for Authorization
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminDropdown", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
