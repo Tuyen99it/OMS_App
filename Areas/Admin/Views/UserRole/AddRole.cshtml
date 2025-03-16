@@ -1,5 +1,5 @@
 @model OMS_App.Areas.Admin.UserRole.Models.AddRoleViewModel;
-
+<link rel accesskey="stylesheet" href="~/lib/multiple-select/multiple-select.min.css">
 
 @{
     ViewData["Title"] = "Add Role";
@@ -27,25 +27,26 @@
         @{
             int i = 1;
         }
-        @if(@Model.Options.Count>1){
+        @if (@Model.Options.Count > 1)
+        {
             <tr>
-            <form method="post">
-                <td>0</td>
+                <form method="post">
+                    <td>0</td>
 
-                <td>
+                    <td>
 
-                   
-                    <select asp-for="SelectedRole" asp-items="Model.Options"></select>
 
-                </td>
-                <td>
-                    <input type="submit" value="Add"  asp-route-userId="@Model.User.Id" class="btn btn-primary">
-                </td>
-                
+                        <select asp-for="SelectedRole" asp-items="Model.Options"></select>
 
-            </form>
+                    </td>
+                    <td>
+                        <input type="submit" value="Add" asp-route-userId="@Model.User.Id" class="btn btn-primary">
+                    </td>
 
-        </tr>
+
+                </form>
+
+            </tr>
         }
         @if (Model.ExistingRoles.Count() > 0)
         {
@@ -64,11 +65,20 @@
             }
 
         }
-       
+
 
 
     </tbody>
 </table>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/multiple-select/multiple-select.min.js"></script>
+<script>
+    <script>
+        $("select").multipleSelect();
+</script>
+</script>
+
+</patial>
 @* <form method="post" name="add-user-role">
     <div class="form-group">
         <label class="form-label" asp-for="@Model.SelectedRole"></label>

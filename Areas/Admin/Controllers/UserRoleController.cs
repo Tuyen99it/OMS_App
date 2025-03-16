@@ -143,89 +143,96 @@ namespace OMS_App.Areas.Admin.Controllers
             var restOfRoles = totalRoles.Where(r => !existingRoles.Contains(r.Name)).ToList();
             model.User = user;
             model.ExistingRoles = existingRoles;
-            
+
             model.Options = restOfRoles.Select(r => new SelectListItem()
             {
                 Text = r.Name,
                 Value = r.Name
             }).ToList();
-            model.Options.Insert(0,new SelectListItem(){
-                Text="The list of avalable role",
-                Value="0"
+            model.Options.Insert(0, new SelectListItem()
+            {
+                Text = "The list of avalable role",
+                Value = "0"
             });
 
             return View(model);
 
         }
 
-        
+
         [HttpPost]
-        public async Task<IActionResult> AddRole(AddRoleViewModel model, string userId=null)
+        public async Task<IActionResult> AddRole(AddRoleViewModel model, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
             {
                 _logger.LogError("user id is null");
                 return NotFound("User id is null");
             }
-            if(string.IsNullOrEmpty(model.SelectedRole)){
+
+            if (string.IsNullOrEmpty(model.SelectedRole))
+            {
                 _logger.LogError("Selected role is null");
                 return NotFound("Selected role id is null");
             }
-           
+
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 _logger.LogError("Unable to load user");
                 return NotFound("Unable to load user");
             }
-            var addUserRole=await _userManager.AddToRoleAsync(user,model.SelectedRole);
-            if (!addUserRole.Succeeded){
-                 _logger.LogError("Unable to add role for user");
-                 StatusMessage="Unable to add role for user";
+
+            var addUserRole = await _userManager.AddToRoleAsync(user, model.SelectedRole);
+            if (!addUserRole.Succeeded)
+            {
+                _logger.LogError("Unable to add role for user");
+                StatusMessage = "Unable to add role for user";
                 return View();
-                
+
 
             }
-             _logger.LogInformation("Add role for user successfull");
-             return RedirectToAction("AddRole",new {userId=user.Id});
+            _logger.LogInformation("Add role for user successfull");
+            return RedirectToAction("AddRole", new { userId = user.Id });
 
-            
+
 
 
         }
 
-         [HttpGet]
-        public async Task<IActionResult> DeleteAsync( string userId=null, string roleName=null)
+        [HttpGet]
+        public async Task<IActionResult> DeleteAsync(string userId = null, string roleName = null)
         {
             if (string.IsNullOrEmpty(userId))
             {
                 _logger.LogError("user id is null");
                 return NotFound("User id is null");
             }
-            if(string.IsNullOrEmpty(roleName)){
+            if (string.IsNullOrEmpty(roleName))
+            {
                 _logger.LogError("Selected role is null");
                 return NotFound("Selected role id is null");
             }
-           
+
             var user = await _userManager.FindByIdAsync(userId);
-            
+
             if (user == null)
             {
                 _logger.LogError("Unable to load user ");
                 return NotFound("Unable to load user ");
             }
-            var removeRole=await _userManager.RemoveFromRoleAsync(user,roleName);
-            if (!removeRole.Succeeded){
-                 _logger.LogError("Unable to remove role for user");
-                 StatusMessage="Unable to remove role for user";
-                return RedirectToAction("AddRole",new {userId=user.Id});
-                
+            var removeRole = await _userManager.RemoveFromRoleAsync(user, roleName);
+            if (!removeRole.Succeeded)
+            {
+                _logger.LogError("Unable to remove role for user");
+                StatusMessage = "Unable to remove role for user";
+                return RedirectToAction("AddRole", new { userId = user.Id });
+
 
             }
-             _logger.LogInformation("Remove role for user successfull");
-             return RedirectToAction("AddRole",new {userId=user.Id});
+            _logger.LogInformation("Remove role for user successfull");
+            return RedirectToAction("AddRole", new { userId = user.Id });
 
-            
+
 
         }
     }

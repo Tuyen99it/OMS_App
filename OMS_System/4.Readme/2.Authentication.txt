@@ -89,7 +89,7 @@ Create the Google OAuth 2.0 Client ID and secret
 - Store the Google app ID and secret
 - Store the sensitive settings such as the ClientId and ClientSecret value with secret manager: Following the steps:
 1. Initialize the secret storage of project: 
-dotnet user-secretes init
+dotnet user-secrets init
 2. Set sensitive settings 
 dotnet user-secrets set "Authentication:Google:ClientId" "<ClientId value>"
 dotnet user-secrets set "Authentication:Google:ClientSecret" "<ClientSecret value>"
