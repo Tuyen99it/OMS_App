@@ -508,6 +508,7 @@ namespace OMS_App.Areas.Identity.Controllers
             _logger.LogInformation("User with Id '{UserId}' deleted themselves.",userId);
             return RedirectToAction("Index","Home");
         }
+       
 
     
     }

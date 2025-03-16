@@ -3,7 +3,7 @@
 
 
 @{
-    ViewData["Title"] = "Role Management";
+    ViewData["Title"] = "User Manager";
    
 }
 
@@ -68,6 +68,7 @@
                     <td>@Html.DisplayFor(modelItem=>user.RoleNames)</td>
                     <td>
                         <a asp-action ="AddRole" asp-controller="UserRole" asp-route-userId="@user.Id">Role</a>
+                        <a asp-action ="Reset" asp-controller="Account" asp-route-userId="@user.Id">Reset password</a>
                     </td>
                 </tr>
                 
