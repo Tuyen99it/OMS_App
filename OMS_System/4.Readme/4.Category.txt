@@ -43,3 +43,21 @@ namespace OMS_App
     }
 }
 - Cập nhật DbContext của ứng dụng Data/OMSDBContext
+ public DbSet<Category> Categories { get; set; }
+ - Đánh chỉ mục index cho trường dữ liệu Slug: Data/OMS_AppContext/OnModelCreating();
+ //Tạo Index cho cột slug bảng category
+ modelBuilder.Entity<Category>(entity=>{
+    entity.HasIndex(p=>p.Slug);
+ });
+
+ - Cập nhật database bằng EF migrations: dotnet ef migrations add AddCategory
+ - Update database: dotnet ef migrations add AddCategory
+2. Tạo CRUD cho category
+- Tạo CRUD bằng aspnet-codegenerator:
+ dotnet aspnet-codegenerator controller -name CategoryController -m mvcblog.Models.Category -dc mvcblog.Data.AppDbContext -outDir  Areas/Admin/Controllers -l _Layout
+Trong đó:
+-name Category tạo controller đặt tên là Category
+-m mvcblog.Models.Category chỉ ra lớp Model sẽ phát sinh CRUD
+-dc mvcblog.Data.AppDbContext chỉ ra lớp DbContext
+-outDir Areas/Admin/Controllers nơi lưu code Controller (đặt trong Area có tên Blog)
+-l _Layout view phát sinh sử dụng layout là _Layout

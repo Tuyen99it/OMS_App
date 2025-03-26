@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Scheme;
-namespace OMS_App
+using System.ComponentModel.DataAnnotations.Schema;
+namespace OMS_App.Models
 {
     [Table("Category")]
     public class Category
@@ -16,6 +16,7 @@ namespace OMS_App
         // Nội dung chi tiết về category
         [DataType(DataType.Text)]
         [Display(Name = "Nội dung category")]
+        [StringLength(1000, ErrorMessage = "{0} không được vượt quá {1} ký tự")]
         public string Content { get; set; }
         // Chuỗi url của category
         [Required(ErrorMessage = "Phải nhận url")]

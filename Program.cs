@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using OMS_App.Areas.Admin.Role.Models;
+
 using OMS_App.Data;
 using OMS_App.Models;
 

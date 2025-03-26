@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol.Core.Types;
+
 using OMS_App.Models;
 using OMS_App.Areas.Identity.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -13,21 +13,21 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Security.Cryptography.Xml;
 using System.Security.Claims;
 using System.Security;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
+
 namespace OMS_App.Areas.Identity.Controllers
 {
     [Authorize]
     [Area("Identity")]
-   
+
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<AccountController> _logger;
         private readonly IUserStore<AppUser> _userStore;
-       // private readonly IUserEmailStore<AppUser> _emailStore;
+        // private readonly IUserEmailStore<AppUser> _emailStore;
         private readonly IEmailSender _emailSender;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<AccountController> logger, IUserStore<AppUser> userStore,  IEmailSender emailSender)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<AccountController> logger, IUserStore<AppUser> userStore, IEmailSender emailSender)
         {
 
 
@@ -36,7 +36,7 @@ namespace OMS_App.Areas.Identity.Controllers
             _signInManager = signInManager;
             _logger = logger;
             _userStore = userStore;
-           //_emailStore = emailStore;
+            //_emailStore = emailStore;
             _emailSender = emailSender;
         }
         [TempData]
@@ -69,9 +69,10 @@ namespace OMS_App.Areas.Identity.Controllers
             ViewBag.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new AppUser(){
-                    UserName=model.Email,
-                    Email=model.Email
+                var user = new AppUser()
+                {
+                    UserName = model.Email,
+                    Email = model.Email
                 };
                 // await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
                 // await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
@@ -120,7 +121,7 @@ namespace OMS_App.Areas.Identity.Controllers
         //Get: /Account/RegisterConfirmation: Allow confirm register when using fake email addres
         [HttpGet]
         [AllowAnonymous]
-        public async Task< IActionResult> RegisterConfirmation(string email, string returnUrl = null, bool displayConfirmationAccountLink = false)
+        public async Task<IActionResult> RegisterConfirmation(string email, string returnUrl = null, bool displayConfirmationAccountLink = false)
         {
             ViewBag.DisplayConfirmationAccountLink = displayConfirmationAccountLink;
             if (email == null)
@@ -141,8 +142,8 @@ namespace OMS_App.Areas.Identity.Controllers
                     controller: "Account",
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme);
-                ViewBag.EmailConfirmationUrl=EmailConfirmationUrl;
-                _logger.LogInformation("Url:" +EmailConfirmationUrl);
+                ViewBag.EmailConfirmationUrl = EmailConfirmationUrl;
+                _logger.LogInformation("Url:" + EmailConfirmationUrl);
             }
             return View();
         }
@@ -160,7 +161,7 @@ namespace OMS_App.Areas.Identity.Controllers
             // clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
             var ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync())?.ToList();
-            ViewBag.ExternalLogins=ExternalLogins;
+            ViewBag.ExternalLogins = ExternalLogins;
             ViewBag.ReturnUrl = returnUrl;
 
             return View();
@@ -176,9 +177,9 @@ namespace OMS_App.Areas.Identity.Controllers
             ViewBag.ReturnUrl = returnUrl;
             if (!ModelState.IsValid)
             {
-                ViewBag.StatusMessage="Can not to login";
+                ViewBag.StatusMessage = "Can not to login";
                 return View();
-               
+
             }
             var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: true);
             if (!result.Succeeded)
@@ -204,8 +205,8 @@ namespace OMS_App.Areas.Identity.Controllers
                 _logger.LogWarning(2, "Account is locked");
                 return RedirectToAction("Lockout");
             }
-            return RedirectToAction("Index","Home");
-          
+            return RedirectToAction("Index", "Home");
+
 
         }
 
@@ -332,7 +333,7 @@ namespace OMS_App.Areas.Identity.Controllers
         {
             var redirectUrl = Url.Action("ExternalLoginCallBack", controller: "Account", values: new { area = "Identity", returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-           
+
             return new ChallengeResult(provider, properties);
         }
 
@@ -341,9 +342,9 @@ namespace OMS_App.Areas.Identity.Controllers
         //Get: /Account/ExternalLoginCallBack
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ExternalLoginCallBack( string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> ExternalLoginCallBack(string returnUrl = null, string remoteError = null)
         {
-             returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
@@ -356,8 +357,8 @@ namespace OMS_App.Areas.Identity.Controllers
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToAction("Login", new { ReturnUrl = returnUrl });
             }
-            Console.WriteLine("Login Provider: "+ info.LoginProvider);
-            Console.WriteLine("Login key:"+ info.ProviderKey);
+            Console.WriteLine("Login Provider: " + info.LoginProvider);
+            Console.WriteLine("Login key:" + info.ProviderKey);
 
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
@@ -374,10 +375,11 @@ namespace OMS_App.Areas.Identity.Controllers
             else
             {
                 //Kiểm tra user đã có tài khoản, chưa đăng nhập được là do chưa xác thực email
-                var existingUser=await _userManager.FindByLoginAsync(info.LoginProvider,info.ProviderKey);
-                if(existingUser!=null){
+                var existingUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                if (existingUser != null)
+                {
                     _logger.LogInformation("user has account but not confirm");
-                    return RedirectToAction("RegisterConfirmation","Account");
+                    return RedirectToAction("RegisterConfirmation", "Account");
                 }
                 _logger.LogInformation("user does not have account, ask user create an account");
                 // If the user does not have an account, then ask the user to create an account.
@@ -391,26 +393,27 @@ namespace OMS_App.Areas.Identity.Controllers
                     {
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                     };
-                    
+
                 }
-                else{
-                    externalLogin=externalLogin = new ExternalLoginViewModel
+                else
+                {
+                    externalLogin = externalLogin = new ExternalLoginViewModel
                     {
                         Email = String.Empty
                     };
                 }
                 return View(externalLogin);
-               
-                
+
+
             }
-            
+
 
         }
         // Post: Account/confirmation
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmationAsync(ExternalLoginViewModel model,string returnUrl = null)
+        public async Task<IActionResult> ConfirmationAsync(ExternalLoginViewModel model, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             // lấy lại thông tin provider đăng nhập trên cookies
@@ -423,58 +426,62 @@ namespace OMS_App.Areas.Identity.Controllers
             _logger.LogInformation("Already get provider information");
             if (ModelState.IsValid)
             {
-                var user = new AppUser(){
-                    UserName=model.Email,
-                    Email=model.Email
+                var user = new AppUser()
+                {
+                    UserName = model.Email,
+                    Email = model.Email
                 };
                 // Set username and email for user
                 // await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None );
                 // await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None );
-                 _logger.LogInformation("Confirmation: create user");
-                var result =await  _userManager.CreateAsync(user);
+                _logger.LogInformation("Confirmation: create user");
+                var result = await _userManager.CreateAsync(user);
 
                 if (result.Succeeded)
                 {
                     //Add user login information
-                    var addLoginResult=await _userManager.AddLoginAsync(user,info);
-                    if(addLoginResult.Succeeded){
-                        _logger.LogInformation("Confirmation: create user successfully");
-                    _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
-                    var userId =await _userManager.GetUserIdAsync(user);
-                    var code=await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code=WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Action(
-                        "ConfirmEmail",
-                        controller: "Account",
-                        values: new { area = "Identity", userId = userId, code = code },
-                        protocol: Request.Scheme
-
-                        );
-                    
-                    await _emailSender.SendEmailAsync(model.Email, "Confirm your email",
-                        $"Please confirm your account by >a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.");
-                    _logger.LogInformation("Sent email confirmation",code.ToString());
-                    // if account confirmation is required, we need to show the link if we don't have a real email
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    var addLoginResult = await _userManager.AddLoginAsync(user, info);
+                    if (addLoginResult.Succeeded)
                     {
-                        return RedirectToAction("RegisterConfirmation", new { email = model.Email, returnUrl = returnUrl });
+                        _logger.LogInformation("Confirmation: create user successfully");
+                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Action(
+                            "ConfirmEmail",
+                            controller: "Account",
+                            values: new { area = "Identity", userId = userId, code = code },
+                            protocol: Request.Scheme
 
+                            );
+
+                        await _emailSender.SendEmailAsync(model.Email, "Confirm your email",
+                            $"Please confirm your account by >a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>click here.");
+                        _logger.LogInformation("Sent email confirmation", code.ToString());
+                        // if account confirmation is required, we need to show the link if we don't have a real email
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        {
+                            return RedirectToAction("RegisterConfirmation", new { email = model.Email, returnUrl = returnUrl });
+
+                        }
+
+                        await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                        _logger.LogInformation("Areadly loggin");
+                        return LocalRedirect(returnUrl);
                     }
-                    
-                    await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider); 
-                    _logger.LogInformation("Areadly loggin");
-                    return LocalRedirect(returnUrl);
-                } else{
-                    _logger.LogInformation("Confirmation: Can no create user successfully");  
+                    else
+                    {
+                        _logger.LogInformation("Confirmation: Can no create user successfully");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
-                
-                foreach(var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-                }
-            
-                     
+
+
             }
             ViewBag.ProviderDisplayName = info.ProviderDisplayName;
             ViewBag.ReturnUrl = returnUrl;
@@ -489,10 +496,10 @@ namespace OMS_App.Areas.Identity.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out");
-           
-        
-             return View();
-            
+
+
+            return View();
+
         }
         //Get: /Account/ConfirmEmail
         [HttpGet]
@@ -511,7 +518,7 @@ namespace OMS_App.Areas.Identity.Controllers
         //Get: //Account/ConfirmEmailChange
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmailChangeAsync(string userId=null, string email=null, string code=null)
+        public async Task<IActionResult> ConfirmEmailChangeAsync(string userId = null, string email = null, string code = null)
         {
             if (userId == null || email == null || code == null)
             {
@@ -551,7 +558,7 @@ namespace OMS_App.Areas.Identity.Controllers
         [AllowAnonymous]
         public IActionResult ResendEmailConfirmation()
         {
-          return View();
+            return View();
         }
 
 
@@ -565,9 +572,9 @@ namespace OMS_App.Areas.Identity.Controllers
             {
                 return View();
             }
-            var user=await _userManager.FindByEmailAsync(model.Email);
-            var code =await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code=WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var callbackUrl = Url.Action(
                        "ConfirmEmail",
                        controller: "Account",
@@ -628,16 +635,17 @@ namespace OMS_App.Areas.Identity.Controllers
         //Get:/Account/Resetpassword
         [HttpGet("/resetpassword/")]
         [AllowAnonymous]
-        public IActionResult ResetPassword( string code=null)
+        public IActionResult ResetPassword(string code = null)
         {
-            if(code== null)
+            if (code == null)
             {
                 return BadRequest("A code must be supplied for password reset");
             }
             else
             {
-                var resetPasswordViewModel = new ResetPasswordViewModel{
-                    Code=Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+                var resetPasswordViewModel = new ResetPasswordViewModel
+                {
+                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
                 };
                 return View();
             }
@@ -649,18 +657,18 @@ namespace OMS_App.Areas.Identity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPasswordAsync(ResetPasswordViewModel model)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return View();
             }
-            var user= await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null) return RedirectToAction("ResetPasswordConfirmation");
             var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation");
             }
-            foreach(var error in result.Errors)
+            foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
@@ -708,6 +716,6 @@ namespace OMS_App.Areas.Identity.Controllers
         }
 
 
-      
+
     }
 }

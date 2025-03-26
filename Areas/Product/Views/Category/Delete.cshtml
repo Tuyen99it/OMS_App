@@ -1,0 +1,21 @@
+﻿@model OMS_App.Models.Category
+
+@{
+    ViewData["Title"] = "Delete category";
+    Layout = "_Layout";
+   
+}
+<h1> @ViewData["Title"]</h1>
+<h4> Tạo danh mục sản phẩm</h4>
+<row>
+    <p>@Model.Title</p>
+</row>
+<row>
+    <p>@Model.Content</p>
+</row>
+<form method="post">
+    <button class="text-danger" type="submit">Delete</button>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"></partial>
+}

@@ -9,19 +9,27 @@ namespace OMS_App.Data
     {
 
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public OMSDBContext(DbContextOptions<OMSDBContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             // remove pre-fix AspNet
-            foreach(var entityType in modelBuilder.Model.GetEntityTypes())
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                var nameTable=entityType.Name;
+                var nameTable = entityType.Name;
                 if (nameTable.StartsWith("AspNet"))
                 {
                     entityType.SetTableName(nameTable.Substring(6));
                 }
             }
+
+            // Đánh chỉ mục cho Categor 
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.HasIndex(p => p.Slug);
+            });
         }
     }
 }
