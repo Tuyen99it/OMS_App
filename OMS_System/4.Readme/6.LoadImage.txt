@@ -1,0 +1,51 @@
+Summary: Sử dụng Jquery để tải- Hiển thị ảnh ở phía client
+1. Set Up the HTML Structure
+<form>
+    <input type="file" id="imageUpload" accept="image/*" />
+    <img id="imagePreview" src="#" alt="Image Preview" style="display:none; width:300px; height:auto;" />
+</form>
+2. Write the jquery script
+- Use jquery to handle the file input change event, read the image and display it:
+$(document).ready(function(){
+  $('#imageUpload').change(function(event){
+    var file=event.target.files[0];
+    if(file){
+      var reader=new FileReader();
+      reader.onload=function(e){
+        $('#imagePreview').attr('src',e.target.result)//show and set image source
+      };
+      reader.readAsDataUrl(file);// Convert ther file to a Data Url
+    }
+  });
+});
+3. Optional Styling
+- Add Css to make the image preview visully appealing
+#imagePreView{
+  border:2px solid #ddd;
+  margin-top:10px;
+}
+4. Integrate into MVC
+- You don't need the sever-side interaction for this specific functionality since it's purely client-side. 
+However, you can use AJAX if you want to save the uploaded image to the server-side
+Example:
+$('#imageUpload').change(function(event){
+  var file=even.targer.files[0];
+  if(file){
+    var formData=new FormData();
+    formData.append('image',file);
+    $.ajax({
+      url:'/ControllerName/ActionName',
+      type:'POST',
+      data:formData,
+      contentType:false,
+      processData:false,
+      success:function(response){
+        alert('Image uploaded successfully');
+      },
+      error:function(){
+        alert('Image upload failed.');
+      }
+    });
+  }
+});
+2. Add "load-display" image in the create project

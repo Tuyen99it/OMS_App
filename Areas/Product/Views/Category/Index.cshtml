@@ -1,5 +1,6 @@
 ﻿@model OMS_App.Areas.Product.Models.CategoryIndexViewModel;
 
+
 <h1> Danh sách các chuyên mục sản phẩm</h1>
 <a class="text text-link" asp-action="Create" asp-controller="Category" asp-area="Product">Tạo chuyên mục mới"</a>
 <div>
@@ -9,19 +10,19 @@
             <th>Danh mục cha</th>
             <th>Actions</th>
         </thead>
-       <tbody>
-           
-            @foreach(var category in Model.Categories)
+        <tbody>
+
+            @foreach (var category in Model.Categories)
             {
                 int level = 0;
                 await RenderCategory(category, level);
             }
 
-           
-       </tbody>
-            
-           
-        
+
+        </tbody>
+
+
+
     </table>
 </div>
 @{
@@ -30,7 +31,7 @@
         string prefix = String.Concat(Enumerable.Repeat("&nbsp;&nbsp;&nbsp;&nbsp;", level));
         <tr>
             <td>
-                @Html.Raw(prefix) @Html.DisplayFor(modelItem=>item.Title)
+                @Html.Raw(prefix) @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ParentCategory.Title)
@@ -43,7 +44,7 @@
         </tr>
         if (item.ChildCategories?.Count > 0)
         {
-            foreach(var cCategory in item.ChildCategories)
+            foreach (var cCategory in item.ChildCategories)
             {
                 await RenderCategory(cCategory, level + 1);
             }

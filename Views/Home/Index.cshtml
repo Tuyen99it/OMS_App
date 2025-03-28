@@ -2,7 +2,12 @@
     ViewData["Title"] = "Home Page";
 }
 
+<textarea id="summernote" name="editordata"></textarea>
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+@section Scripts {
+    @await Html.PartialAsync("_Summernote", new { Height = 300, Selector = "#summernote" })
+}

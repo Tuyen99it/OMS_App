@@ -1,0 +1,78 @@
+1. Build in Summernote - Html Editor in to the website
+- There are so many Html editor such as: CkEditor, Summernote, TityMCE....
+- Install Summernote using by libman
++ libman.json:
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "multiple-select@1.2.3",
+      "destination": "wwwroot/lib/multiple-select"
+    },
+    {
+      "library": "summernote@0.9.1",
+      "destination": "wwwroot/lib/summernote "
+    }
+  ]
+}
+- download library: libman restore 
++ Add CSS/Js file into project
+<link href="~/lib/summernote/summernote.min.css" rel="stylesheet">
+<script src="~/lib/summernote/summernote.min.js" ></script>
++ Embed summernote
++ use without form:
+<div id="summernote"> Hello summernote</div>
++ use with form: should use method="post", textarea and include name attribute
+<form method="post:>
+<textare id="summernote" name="editordata"></textare>
+</form>
++ Run summernote:
+$(document).ready(function(){
+    $('#summernote').summernote();
+});
++ $(document).ready function is particularly necessary if you include the JS at the end of the document
+- Basic API:
++ initialize summernote: $('#summernote').summernote();
++ Height and focus
+$('#summernote').summernote({
+  height: 300, // set editor height
+  minHeight: null, // set minimum height of editor
+  maxHeight: null, // set maximum height of editor
+  focus: true // set focus to editable area after initializing summernote
+});
+2. Implement a partial use summernote
+Views/Shared/_Summernote.cshtml
+@model dynamic
+@{
+    int height = Model.height;
+    string selector = Model.Selector;
+}
+<script src="@Url.Content("~/summernote/summernote.min.js")"></script>
+<link href="@Url.Content("~/summernote/summernote.css")" rel="stylesheet" />
+<script>
+    $(document).ready(function () {
+        $('@selector').summernote({
+            height:@height,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['fontname', ['fontname']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview']],
+                ['help', ['help']]
+            ]
+        });
+    })
+    
+</script>
+- Use partial:
+@await Html.PartialAsync("_Summernote", new{height=200,selector="#abc"})
+Note: 
+- Đối với các thuộc tính được triển khai trong mội lớp đối tượng khác. Tên thuộc tính tương tự như ID của thẻ html, các phần tử sử dụng ở phía client sẽ sử dụng "_" thay cho "."
+VD: @Category.Content → #'Category_Content'
+@await Html.PartialAsync("_Summernote", new{height=200,selector="#Category_Content"})
