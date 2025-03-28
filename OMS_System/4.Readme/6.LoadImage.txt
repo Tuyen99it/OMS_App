@@ -6,18 +6,28 @@ Summary: Sử dụng Jquery để tải- Hiển thị ảnh ở phía client
 </form>
 2. Write the jquery script
 - Use jquery to handle the file input change event, read the image and display it:
-$(document).ready(function(){
-  $('#imageUpload').change(function(event){
-    var file=event.target.files[0];
-    if(file){
-      var reader=new FileReader();
-      reader.onload=function(e){
-        $('#imagePreview').attr('src',e.target.result)//show and set image source
-      };
-      reader.readAsDataUrl(file);// Convert ther file to a Data Url
-    }
-  });
-});
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#imageUpload').on('change', function (event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#imagePreview').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+
+            });
+        });
+    </script>
+    @await Html.PartialAsync("_Summernote", new { Height = 300, Selector = "#Category_Content" });
+    @* @await Html.PartialAsync("_AddImage", new { UploadSelector = "#imageUpload", DisplaySelector = "#imagePreview" }); *@
+
+}
+
 3. Optional Styling
 - Add Css to make the image preview visully appealing
 #imagePreView{

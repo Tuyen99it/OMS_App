@@ -1,5 +1,20 @@
 @model dynamic
 @{
-    string uploadSelector = Model.Selector;
-    string DisplaySelector = Model.DisplaySelector;
+    var UploadSelector = Model.UploadSelector;
+    var DisplaySelector = Model.DisplaySelector;
 }
+
+<script>
+    $(document).ready(function () {
+        $('@UploadSelector').on('change', function (event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('@DisplaySelector').attr('src', e.target.result)// set src of source attribute for img tag
+                };
+                reader.readAsDataURL(file); // display image on the screem
+            }
+        });
+    })
+</script>
