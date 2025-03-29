@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using OMS_App.Areas.Product.Models;
 using OMS_App.Data;
 using OMS_App.Models;
@@ -11,7 +13,7 @@ namespace OMS_App.Areas.Product.Controllers
 {
 
     [Area("Product")]
-    
+
     public class CategoryController : Controller
     {
         private readonly OMSDBContext _context;
@@ -22,23 +24,23 @@ namespace OMS_App.Areas.Product.Controllers
             _logger = logger;
         }        // GET: CategoryController
         public ActionResult Index()
-          
+
         {
             var model = new CategoryIndexViewModel();
-             model.Categories = _context.Categories
-                      .Include(c => c.ChildCategories) // Nập các categories con
-                      .AsEnumerable()
-                      .Where(c => c.ParentCategory == null) // Lấy các parentCategory 
-                      .ToList();
-          
-   
+            model.Categories = _context.Categories
+                     .Include(c => c.ChildCategories) // Nập các categories con
+                     .AsEnumerable()
+                     .Where(c => c.ParentCategory == null) // Lấy các parentCategory 
+                     .ToList();
+
+
             return View(model);
         }
 
         // GET: CategoryController/Details/5
         public ActionResult Details(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound("Can not found category");
             }
@@ -55,34 +57,34 @@ namespace OMS_App.Areas.Product.Controllers
         // GET: CategoryController/Create
         public async Task<ActionResult> Create()
         {
-            var model=new CategoryCreateModel();
+            var model = new CategoryCreateModel();
             var categories = _context
                 .Categories
-                .Include (c => c.ChildCategories)
+                .Include(c => c.ChildCategories)
                 .AsEnumerable()
                 .Where(c => c.ParentCategory == null)
                 .ToList();
             categories.Insert(0, new Category()
             {
                 Id = -1,
-                Title="Không có danh mục cha"
+                Title = "Không có danh mục cha"
             });
             List<SelectListItem> list = new List<SelectListItem>();
-            foreach( var category in categories)
+            foreach (var category in categories)
             {
                 int level = 0;
                 var clist = await RenderOptions(category, level);
                 list.AddRange(clist);
             }
             model.Options = list;
-           
+
             return View(model);
         }
 
         // POST: CategoryController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task< ActionResult> Create(CategoryCreateModel model)
+        public async Task<ActionResult> Create(CategoryCreateModel model)
         {
             _logger.LogInformation("Create category success");
             if (ModelState.IsValid)
@@ -92,7 +94,7 @@ namespace OMS_App.Areas.Product.Controllers
             }
             if (model.ParentCategoryId == null)
             {
-                _logger.LogInformation("ParentCategoryId is null" );
+                _logger.LogInformation("ParentCategoryId is null");
             }
             if (model.ParentCategoryId == -1)
             {
@@ -102,24 +104,24 @@ namespace OMS_App.Areas.Product.Controllers
             {
                 model.Category.ParentCategoryId = model.ParentCategoryId;
             }
-            _logger.LogInformation("ParentCategoryId"+model.Category.ParentCategoryId);
+            _logger.LogInformation("ParentCategoryId" + model.Category.ParentCategoryId);
             _context.Categories.Add(model.Category);
             await _context.SaveChangesAsync();
             _logger.LogInformation("Create category success1");
-            return RedirectToAction("Index","Category");
-           
+            return RedirectToAction("Index", "Category");
+
         }
 
         // GET: CategoryController/Edit/5
         [HttpGet]
         public ActionResult Edit(int? id)
         {
-            var model =new CategoryEditModel();
+            var model = new CategoryEditModel();
             if (id == null)
             {
                 return NotFound("ID is null");
             }
-            model.Category= _context.Categories.Where(c => c.Id == id).FirstOrDefault();
+            model.Category = _context.Categories.Where(c => c.Id == id).FirstOrDefault();
             model.Options = _context.Categories.Select(c => new SelectListItem()
             {
                 Text = c.Title,
@@ -143,11 +145,11 @@ namespace OMS_App.Areas.Product.Controllers
                 return View();
             }
             _logger.LogInformation("Come to update2");
-            
-            
+
+
             if (model.Category.ParentCategoryId == -1)
             {
-               model.Category.ParentCategoryId = null;
+                model.Category.ParentCategoryId = null;
             }
             _context.Categories.Update(model.Category);
             await _context.SaveChangesAsync();
@@ -163,7 +165,7 @@ namespace OMS_App.Areas.Product.Controllers
             {
                 return NotFound("Id is null");
             }
-            var category=_context.Categories.Where(c=>c.Id == id).FirstOrDefault();
+            var category = _context.Categories.Where(c => c.Id == id).FirstOrDefault();
             return View(category);
         }
 
@@ -176,9 +178,9 @@ namespace OMS_App.Areas.Product.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-        private async Task<List<SelectListItem>> RenderOptions(Category category,int level)
+        private async Task<List<SelectListItem>> RenderOptions(Category category, int level)
         {
-            var options=new List<SelectListItem>();
+            var options = new List<SelectListItem>();
             string prefix = String.Concat(Enumerable.Repeat("-", level));
             var option = new SelectListItem()
             {
@@ -186,16 +188,85 @@ namespace OMS_App.Areas.Product.Controllers
                 Value = category.Id.ToString()
             };
             options.Add(option);
-            if (category.ChildCategories?.Count > 0) {
+            if (category.ChildCategories?.Count > 0)
+            {
                 foreach (var childCategory in category.ChildCategories)
                 {
-                   var clist= await RenderOptions(childCategory, level + 1);
+                    var clist = await RenderOptions(childCategory, level + 1);
                     options.AddRange(clist);
                 }
             }
             return options;
 
         }
-       
+        public async Task<IActionResult> UploadImages()
+        {
+            return Content("Load file successfully");
+        }
+        // hander category image
+        // [HttpPost]
+        // public async Task<IActionResult> UploadImages(string? FilePath, IFormFile? forms)
+        // {
+        //     Console.WriteLine("Come to upload file");
+        //     // if (FilePath == null || forms == null)
+        //     // {
+        //     //     return Content("Unable to load file");
+        //     // }
+        //     // // create file root path
+        //     // var directorys = FilePath.Split('_');
+        //     // string filepath = Path.Combine(directorys);
+        //     // string filepathroot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Image", filepath);
+        //     // if (!Directory.Exists(filepathroot))
+        //     // {
+        //     //     Directory.CreateDirectory(filepathroot);
+        //     // }
+        //     // //get file from forms
+
+        //     // var childfilePath = Path.Combine(filepathroot, forms.FileName);
+        //     // using (var fileStream = new FileStream(childfilePath, FileMode.Create))
+        //     // {
+        //     //     await forms.CopyToAsync(fileStream);
+        //     // }
+
+        //     return Content("Load file successfully");
+
+        //}
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile uploadFile)
+        {
+            Console.WriteLine("Come to update");
+            if (uploadFile == null || uploadFile.Length == 0)
+            {
+                Console.WriteLine("No file to upload");
+                return Json(new { success = false, message = "No file uploaded." });
+            }
+
+            try
+            {
+                Console.WriteLine("start to update");
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "categories");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadFile.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await uploadFile.CopyToAsync(fileStream);
+                }
+                Console.WriteLine("Uuplad success");
+                return Json(new { success = true, filePath = $"/uploads/categories/{uniqueFileName}" });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading image");
+                return Json(new { success = false, message = "An error occurred while uploading the file." });
+            }
+        }
+
     }
 }

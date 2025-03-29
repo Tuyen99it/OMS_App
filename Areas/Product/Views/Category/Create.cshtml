@@ -9,9 +9,10 @@
 
 <h1> @ViewData["Title"]</h1>
 <h4> Tạo danh mục sản phẩm</h4>
-<div <form method="post">
-    <div class="row">
-        <div class="col-6">
+<div class="row">
+    <div class="col-6">
+        <form method="post">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
@@ -37,45 +38,47 @@
                 <input asp-for="@Model.Category.Slug" class="form-control" placeholder="Nhap tieu de category" />
                 <span asp-validation-for="@Model.Category.Slug" class="text-danger danger"></span>
             </div>
+            <button class="btn btn-primary btn-sm" type="submit" id="submit">Create</button>
+        </form>
 
-            <button class="btn btn-primary btn-sm" type="submit">Create</button>
-        </div>
-        <div class="col-6">
+    </div>
+
+
+    <div class="col-6">
+        <form action="/Category/UploadImages" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <div>
-                    <input type="file" id="imageUpload" accept="image/*" />
+                    <input type="file" id="imageUpload" name="uploadedFile" accept="image/*" />
                 </div>
 
                 <img id="imagePreview"
-                    src="@Url.Content("https://anhgaixinh.vn/wp-content/uploads/2022/08/7_hinh-gai-xinh-cute-de-thuong-nhat-viet-nam.jpg" )"
-                    alt="Dynamic Image" style="border:2px solid #ddd; margin-top:10px; height:500px" />
+                    src="https://anhgaixinh.vn/wp-content/uploads/2022/08/7_hinh-gai-xinh-cute-de-thuong-nhat-viet-nam.jpg"
+                    alt="Dynamic Image" style="border:2px solid #ddd; margin-top:10px; height:500px; width:auto;" />
             </div>
-        </div>
-
+            <button class="btn btn-primary btn-sm" type="button" id="upload">Upload</button>
+        </form>
     </div>
-    </form>
+
+
 
 
 </div>
 
 
+
+
+
 @section Scripts {
     @* <script>
         $(document).ready(function () {
-            $('#imageUpload').on('change', function (event) {
-                var file = event.target.files[0];
-                if (file) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $('#imagePreview').attr('src', e.target.result);
-                    };
-                    reader.readAsDataURL(file);
-                }
-
+            $('#upload').click(function () {
+                console.log("Clicked to button");
             });
         });
     </script> *@
+
     @await Html.PartialAsync("_Summernote", new { Height = 300, Selector = "#Category_Content" });
-    @await Html.PartialAsync("_AddImage", new { UploadSelector = "#imageUpload", DisplaySelector = "#imagePreview" });
+    @await Html.PartialAsync("_AddImage", new { UploadSelector = "#imageUpload", DisplaySelector = "#imagePreview" ,
+    Submit = "#upload", Id = "1",AreaName = "Product", ControllerName = "Category",ActionName = "UploadImage"});
 
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.Features;
 
 using OMS_App.Data;
 using OMS_App.Models;
@@ -78,7 +79,10 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Admin");
     });
 });
-
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 52428800; // 50 MB
+});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 // Add Razor page
