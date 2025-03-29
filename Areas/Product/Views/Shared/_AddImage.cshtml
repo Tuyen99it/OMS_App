@@ -33,6 +33,7 @@
             var fileInput = file; // Get the file from the input
             formData.append('uploadedFile', fileInput); // Append file data
             console.log(fileInput);
+            console.log(formData.get('uploadedFile'));
             // Send the file via AJAX
             $.ajax({
                 url: '/@AreaName/@ControllerName/@ActionName', // Replace with your controller action URL

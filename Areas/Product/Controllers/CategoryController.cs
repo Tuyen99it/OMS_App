@@ -232,10 +232,10 @@ namespace OMS_App.Areas.Product.Controllers
 
         //}
         [HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile uploadFile)
+        public async Task<IActionResult> UploadImage(IFormFile uploadedFile)
         {
             Console.WriteLine("Come to update");
-            if (uploadFile == null || uploadFile.Length == 0)
+            if (uploadedFile == null || uploadedFile.Length == 0)
             {
                 Console.WriteLine("No file to upload");
                 return Json(new { success = false, message = "No file uploaded." });
@@ -248,14 +248,15 @@ namespace OMS_App.Areas.Product.Controllers
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
+                    Console.WriteLine("Create the upload foler");
                 }
 
-                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadFile.FileName);
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadedFile.FileName);
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    await uploadFile.CopyToAsync(fileStream);
+                    await uploadedFile.CopyToAsync(fileStream);
                 }
                 Console.WriteLine("Uuplad success");
                 return Json(new { success = true, filePath = $"/uploads/categories/{uniqueFileName}" });
