@@ -3,8 +3,32 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "multiple-select@1.2.3",
+      "library": "summernote@0.9.1",
+      "destination": "wwwroot/lib/summernote"
+    },
+    {
+      "library": "multiple-select@1.2.1",
       "destination": "wwwroot/lib/multiple-select"
+    },
+    {
+      "library": "jquery@3.7.1",
+      "destination": "wwwroot/lib/jquery"
+    },
+    {
+      "library": "jqueryui@1.14.1",
+      "destination": "wwwroot/lib/jqueryui"
+    },
+    {
+      "library": "elfinder@2.1.65",
+      "destination": "wwwroot/lib/elfinder"
+    },
+    {
+      "library": "jquery-easing@1.4.1",
+      "destination": "wwwroot\\lib\\jquery-easing"
+    },
+    {
+      "library": "font-awesome@6.7.2",
+      "destination": "wwwroot\\lib\\font-awesome"
     }
   ]
 }

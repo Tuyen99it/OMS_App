@@ -1,0 +1,131 @@
+Summary: Sử dụng Jquery để tải- Hiển thị ảnh ở phía client
+1. Set Up the HTML Structure
+<form>
+    <input type="file" id="imageUpload" accept="image/*" />
+    <img id="imagePreview" src="#" alt="Image Preview" style="display:none; width:300px; height:auto;" />
+</form>
+2. Write the jquery script
+- Use jquery to handle the file input change event, read the image and display it:
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#imageUpload').on('change', function (event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#imagePreview').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+
+            });
+        });
+    </script>
+    @await Html.PartialAsync("_Summernote", new { Height = 300, Selector = "#Category_Content" });
+    @* @await Html.PartialAsync("_AddImage", new { UploadSelector = "#imageUpload", DisplaySelector = "#imagePreview" }); *@
+
+}
+- FormData: interface in JavaScript is used to construct a set of key/value pairs to send data via HTTP requests. Here are its key methods and properties:
++ append(name, value[, filename]): Adds a new value onto an existing key, or creates the key if it does not exist.
++ delete(name): Removes all entries with the specified key.
++ entries(): Returns an iterator for key/value pairs.
++ get(name): Retrieves the first value associated with the given key.
++ getAll(name): Retrieves all values associated with the given key.
++ has(name): Checks if the specified key exists in the FormData.
++ keys(): Returns an iterator for all the keys.
++ set(name, value[, filename]): Sets a new value for an existing key, or creates the key if it does not exist. It overwrites any existing values.
++ values(): Returns an iterator for all the values.
++ forEach(callback[, thisArg]): Executes a callback function for each key/value pair in the FormData.
+3. Optional Styling
+- Add Css to make the image preview visully appealing
+#imagePreView{
+  border:2px solid #ddd;
+  margin-top:10px;
+}
+4. Integrate into MVC
+- You don't need the sever-side interaction for this specific functionality since it's purely client-side. 
+However, you can use AJAX if you want to save the uploaded image to the server-side
+Example:
+$('#imageUpload').change(function(event){
+  var file=even.targer.files[0];
+  if(file){
+    var formData=new FormData();
+    formData.append('image',file);
+    $.ajax({
+      url:'/ControllerName/ActionName',
+      type:'POST',
+      data:formData,
+      contentType:false,
+      processData:false,
+      success:function(response){
+        alert('Image uploaded successfully');
+      },
+      error:function(){
+        alert('Image upload failed.');
+      }
+    });
+  }
+});
+5. Kiến thức tổng quát về ajax
+- ajax: là một dependency của jquery. Ta có thể sử dụng nó để truy cập tới các địa chỉ phía server thông qua việc gọi api.
+Dữ liệu được gửi qua server thông qua đối tượng kiểm FormData. FormData thuộc kiểu dictionary với cặp key, value,
+- Dữ liệu từ FormData được binding tới controller thông qua khoá [key] khai báo ở formData.
++ Các dữ liệu thường được sử dụng khi binding dữ liệu:
++ string : dữ liệu text
++ IFormFile: Dữ liệu lớn, được gửi thông qua phương thức HTTP
+- Chú ý: khi lấy dữ liệu phía server cần lấy theo đúng khoá key đã khởi tạo.
+- Cấu trúc của ajax
+$.ajax({
+  url:'/ControllerName/ActionName',
+      type:'POST',
+      data:formData,
+      contentType:false,
+      processData:false,
+      success:function(response){
+        alert('Image uploaded successfully');
+      },
+      error:function(){
+        alert('Image upload failed.');
+      }
+    });
+
+6. Code sử lý ảnh:
+ [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile uploadedFile)
+        {
+            Console.WriteLine("Come to update");
+            if (uploadedFile == null || uploadedFile.Length == 0)
+            {
+                Console.WriteLine("No file to upload");
+                return Json(new { success = false, message = "No file uploaded." });
+            }
+
+            try
+            {
+                Console.WriteLine("start to update");
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "categories");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                    Console.WriteLine("Create the upload foler");
+                }
+
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadedFile.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await uploadedFile.CopyToAsync(fileStream);
+                }
+                Console.WriteLine("Uuplad success");
+                return Json(new { success = true, filePath = $"/uploads/categories/{uniqueFileName}" });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading image");
+                return Json(new { success = false, message = "An error occurred while uploading the file." });
+            }
+        }

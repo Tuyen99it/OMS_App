@@ -1,0 +1,55 @@
+@model dynamic
+@{
+    var UploadSelector = Model.UploadSelector;
+    var DisplaySelector = Model.DisplaySelector;
+    var Submit = Model.Submit;
+    var Id = Model.Id;
+    var ControllerName = Model.ControllerName;
+    var ActionName = Model.ActionName;
+    var AreaName = Model.AreaName;
+}
+
+<script>
+    $(document).ready(function () {
+        // load and preview image
+        var file = null;
+        $('@UploadSelector').on('change', function (event) {
+            console.log("come to upload image");
+            file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('@DisplaySelector').attr('src', e.target.result)// set src of source attribute for img tag
+                };
+                reader.readAsDataURL(file); // display image on the screem
+            }
+            console.log(file);
+        });
+
+        // send image and hander image at backend
+        $('@Submit').click(function (event) {
+            console.log("came to click upload");
+            var formData = new FormData();
+            var fileInput = file; // Get the file from the input
+            formData.append('uploadedFile', fileInput); // Append file data
+            console.log(fileInput);
+            console.log(formData.get('uploadedFile'));
+            // Send the file via AJAX
+            $.ajax({
+                url: '/@AreaName/@ControllerName/@ActionName', // Replace with your controller action URL
+                type: 'POST',
+                data: formData,
+                contentType: false, // Important for file uploads
+                processData: false, // Prevent jQuery from transforming FormData
+                success: function (response) {
+                    alert('Upload successful!');
+                },
+                error: function (xhr, status, error) {
+                    alert('Upload failed: ' + error);
+                }
+
+            });
+
+        });
+    });
+</script>

@@ -1,0 +1,28 @@
+@model dynamic
+@{
+    int height = Model.Height ?? 200;
+    string selector = Model.Selector;
+}
+<link href="~/lib/summernote/summernote-bs4.min.css" rel="stylesheet">
+<script src="~/lib/summernote/summernote-bs4.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('@selector').summernote({
+            height:@height,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['fontname', ['fontname']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview']],
+                ['help', ['help']]
+            ]
+        });
+    });
+
+</script>
