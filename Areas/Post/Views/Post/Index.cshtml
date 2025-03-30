@@ -1,0 +1,43 @@
+﻿@using OMS_App.Areas.Post.Models
+@model List<Post>;
+
+
+<h1> Danh sách các chuyên mục sản phẩm</h1>
+<a class="text text-link" asp-action="Create" asp-controller="Post" asp-area="Product">Tạo chuyên mục mới"</a>
+<div>
+    <table class="table">
+        <thead>
+            <th>Tiêu đề </th>
+            <th>Tác giả</th>
+            <th>Ngày cập nhật</th>
+            <th>Xuất bản</th>
+            <th>Chuyên mục</th>
+            <th>Actions</th>
+
+
+        </thead>
+        <tbody>
+
+            @foreach (var Post in Model)
+            {
+                <td>@Post.Title</td>
+                <td>@Post.Author</td>
+                <td>@Post.DateUpdated</td>
+                <td>@Post.Published</td>
+                <td>@String.Join(",",Post.PostCategories.Select(p=>p.Category).ToList())</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@Post.Id">Sửa</a> |
+                <a asp-action="Delete" asp-route-id="@Post.Id">Xóa</a>
+                </td>
+
+
+            }
+
+
+
+        </tbody>
+
+
+
+    </table>
+</div>
