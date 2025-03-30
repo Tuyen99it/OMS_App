@@ -8744,27 +8744,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Nguyen Tuyen\\.nuget\\packages\\": {}
+    "C:\\Users\\F&B\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Webapp\\OMS_App\\OMS_App.csproj",
+      "projectUniqueName": "C:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
       "projectName": "OMS_App",
-      "projectPath": "C:\\Webapp\\OMS_App\\OMS_App.csproj",
-      "packagesPath": "C:\\Users\\Nguyen Tuyen\\.nuget\\packages\\",
-      "outputPath": "C:\\Webapp\\OMS_App\\obj\\",
+      "projectPath": "C:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
+      "packagesPath": "C:\\Users\\F&B\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\F&B\\Cshap\\OMS_App\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Nguyen Tuyen\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\F&B\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -8888,7 +8885,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
