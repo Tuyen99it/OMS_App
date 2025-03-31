@@ -3,7 +3,7 @@
 
 
 <h1> Danh sách các chuyên mục sản phẩm</h1>
-<a class="text text-link" asp-action="Create" asp-controller="Post" asp-area="Product">Tạo chuyên mục mới"</a>
+<a class="text text-link" asp-action="Create" asp-controller="Post" asp-area="Post">Tạo chuyên mục mới"</a>
 <div>
     <table class="table">
         <thead>
@@ -20,7 +20,8 @@
 
             @foreach (var Post in Model)
             {
-                <td>@Post.Title</td>
+                <tr>
+                    <td>@Post.Title</td>
                 <td>@Post.Author</td>
                 <td>@Post.DateUpdated</td>
                 <td>@Post.Published</td>
@@ -29,6 +30,9 @@
                     <a asp-action="Edit" asp-route-id="@Post.Id">Sửa</a> |
                 <a asp-action="Delete" asp-route-id="@Post.Id">Xóa</a>
                 </td>
+
+                </tr>
+                
 
 
             }

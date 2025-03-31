@@ -8,6 +8,8 @@ using Microsoft.Identity.Client;
 using OMS_App.Areas.Post.Models;
 using OMS_App.Data;
 using OMS_App.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 
 namespace OMS_App.Areas.Post.Controllers
@@ -18,21 +20,23 @@ namespace OMS_App.Areas.Post.Controllers
     public class PostController : Controller
     {
         private readonly OMSDBContext _context;
+        private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<PostController> _logger;
-        public PostController(OMSDBContext context, ILogger<PostController> logger)
+        public PostController(OMSDBContext context, ILogger<PostController> logger, UserManager<AppUser> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }        // GET: PostController
         public ActionResult Index()
         {
-          
-           var posts = _context.Posts
-                    .Include(p=>p.Author) // get author
-                     .Include(p => p.PostCategories) // Nập các categories con
-                     .ThenInclude(p=>p.Category)
-                     .OrderByDescending(p=>p.DateCreated)
-                     .ToList();
+
+            var posts = _context.Posts
+                     .Include(p => p.Author) // get author
+                      .Include(p => p.PostCategories) // Nập các categories con
+                      .ThenInclude(p => p.Category)
+                      .OrderByDescending(p => p.DateCreated)
+                      .ToList();
             return View(posts);
         }
 
@@ -43,73 +47,76 @@ namespace OMS_App.Areas.Post.Controllers
             {
                 return NotFound("Can not found category");
             }
-            var category = _context.Categories
-                .Include(c => c.ChildCategories).
-                FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            var post = _context.Posts
+                     .Where(p => p.Id == id)
+                     .Include(p => p.Author)
+                     .Include(p => p.PostCategories)
+                     .ThenInclude(p => p.Category)
+                     .FirstOrDefault();
+
+            if (post == null)
             {
                 return NotFound("Can not found category");
             }
-            return View(category);
+            return View(post);
         }
 
-        // // GET: PostController/Create
-        // public async Task<ActionResult> Create()
-        // {
-        //     var model = new CategoryCreateModel();
-        //     var categories = _context
-        //         .Categories
-        //         .Include(c => c.ChildCategories)
-        //         .AsEnumerable()
-        //         .Where(c => c.ParentCategory == null)
-        //         .ToList();
-        //     categories.Insert(0, new Category()
-        //     {
-        //         Id = -1,
-        //         Title = "Không có danh mục cha"
-        //     });
-        //     List<SelectListItem> list = new List<SelectListItem>();
-        //     foreach (var category in categories)
-        //     {
-        //         int level = 0;
-        //         var clist = await RenderOptions(category, level);
-        //         list.AddRange(clist);
-        //     }
-        //     model.Options = list;
+        // GET: PostController/Create
+        // Lấy thông tin về author theo tài khoản đăng nhập, lấy list category
+        // Sử dụng multi select trong Razor
+        //1. Tạo một mảng lưu trữ các categortIds
 
-        //     return View(model);
-        // }
+        public async Task<ActionResult> Create()
+        {
+            var model = new PostCreateViewModel();
 
-        // // POST: PostController/Create
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public async Task<ActionResult> Create(CategoryCreateModel model)
-        // {
-        //     _logger.LogInformation("Create category success");
-        //     if (ModelState.IsValid)
-        //     {
-        //         _logger.LogInformation("Imput is invalid");
-        //         return View();
-        //     }
-        //     if (model.ParentCategoryId == null)
-        //     {
-        //         _logger.LogInformation("ParentCategoryId is null");
-        //     }
-        //     if (model.ParentCategoryId == -1)
-        //     {
-        //         model.Category.ParentCategoryId = null;
-        //     }
-        //     else
-        //     {
-        //         model.Category.ParentCategoryId = model.ParentCategoryId;
-        //     }
-        //     _logger.LogInformation("ParentCategoryId" + model.Category.ParentCategoryId);
-        //     _context.Categories.Add(model.Category);
-        //     await _context.SaveChangesAsync();
-        //     _logger.LogInformation("Create category success1");
-        //     return RedirectToAction("Index", "Category");
+            model.Author = await _userManager.GetUserAsync(User);
+            if (model.Author == null)
+            {
+                _logger.LogInformation("Unable to load user");
+                return NotFound("Unable to load user");
+            }
+            // Lấy thông tin category
+            var categories = _context.Categories.ToList();
 
-        // }
+            var options = new MultiSelectList(categories, "Id", "Title");
+            model.Options = options;
+
+            return View(model);
+        }
+
+       // POST: Post/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(PostCreateViewModel model)
+        {
+            _logger.LogInformation("Create category success");
+            if (ModelState.IsValid)
+            {
+                _logger.LogInformation("Imput is invalid");
+                return View();
+            }
+            if (model.CategoriesId == null)
+            {
+                _logger.LogInformation("CategoriesId are null");
+            }
+            
+           model.Post.AuthorId=(await _userManager.GetUserAsync(User)).Id;
+           model.Post.DateCreated=DateTime.Now;
+            _context.Posts.Add(model.Post);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Create Post success1");
+            
+            // Thêm thông tin về PostCategoryId của bài viết
+            foreach (var categoryId in model.CategoriesId){
+                _context.PostCategories.Add(new PostCategory(){
+                    PostId=model.Post.Id,
+                    CategoryId=categoryId
+                });
+            await _context.SaveChangesAsync();            }
+            return RedirectToAction("Index", "Post");
+
+        }
 
         // // GET: PostController/Edit/5
         // [HttpGet]

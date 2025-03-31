@@ -1,0 +1,42 @@
+﻿@model OMS_App.Areas.Post.Models.Post
+<!-- include libraries(jQuery, bootstrap) -->
+
+@{
+    ViewData["Title"] = "Post detail";
+
+
+}
+
+<h1> @ViewData["Title"]</h1>
+<h4> Thông tin về @Model.Title</h4>
+<hr>
+<div class="row">
+    <div class="col-2">Title</div>
+    <div>@Model.Title</div>
+</div>
+<div class="row">
+    <div class="col-2">Author</div>
+    <div>@Model.Author.FullName</div>
+</div>
+<div class="row">
+    <div class="col-2">Date Create</div>
+    <div>@Model.DateCreated</div>
+</div>
+<div class="row">
+    <div class="col-2">Date Update</div>
+    <div>@Model.DateUpdated</div>
+</div>
+<div class="row">
+    <div class="col-2">Public</div>
+    @{
+        var result=(Model.Published)?"Published":"No publish";
+        <div>@result</div>
+    }
+</div>
+<div class="row">
+    <div class="col-2">Category</div>
+   @{
+       var categories=string.Join(",",Model.PostCategories.Select(pc => pc.Category).ToList());
+       <div>@categories</div>
+   }
+</div>

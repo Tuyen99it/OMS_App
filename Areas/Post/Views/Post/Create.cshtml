@@ -1,8 +1,8 @@
-﻿@model OMS_App.Areas.Product.Models.CategoryCreateModel
+﻿@model OMS_App.Areas.Post.Models.PostCreateViewModel
 <!-- include libraries(jQuery, bootstrap) -->
 
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "Create post";
 
 
 }
@@ -10,57 +10,46 @@
 <h1> @ViewData["Title"]</h1>
 <h4> Tạo danh mục sản phẩm</h4>
 <div class="row">
-    <div class="col-6">
-        <form method="post">
+    <form method="post">
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="@Model.Category.Title" class="form-label"></label>
-                <input asp-for="@Model.Category.Title" class="form-control" placeholder="Nhap tieu de category" />
-                <span asp-validation-for="@Model.Category.Title" class="text-danger danger"></span>
-            </div>
+        <div class="form-group">
+            <label asp-for="@Model.Post.Title" class="form-label"></label>
+            <input asp-for="@Model.Post.Title" class="form-control" placeholder="Nhap tieu de category" />
+            <span asp-validation-for="@Model.Post.Title" class="text-danger danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CategoriesId" class="form-label"></label>
+           @Html.ListBox("CategoriesId",Model.Options,new {@class="w-100"})
+        </div>
 
-            <div class="form-group">
-                <label asp-for="@Model.ParentCategoryId" class="form-label"></label>
-                <select asp-for="@Model.ParentCategoryId" class="form-control" asp-items="@Model.Options"></select>
+        <div class="form-group">
+            <label asp-for="@Model.Post.Description" class="form-label"></label>
+            <input asp-for="@Model.Post.Description" class="form-control" >
 
-                <span asp-validation-for="@Model.ParentCategoryId" class="text-danger danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Category.Content" class="control-label"></label>
-                <textarea asp-for="Category.Content" class="form-control"></textarea>
-                <span asp-validation-for="Category.Content" class="text-danger"></span>
-            </div>
+            <span asp-validation-for="@Model.Post.Description" class="text-danger danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Post.Slug" class="control-label"></label>
+            <input asp-for="@Model.Post.Slug" class="form-control">
+            <span asp-validation-for="@Model.Post.Slug" class="text-danger"></span>
+        </div>
+         <div class="form-group">
+            <label asp-for="@Model.Post.Content1" class="control-label"></label>
+            <textarea asp-for="@Model.Post.Content1 " id="content" class="form-control"></textarea>
+            <span asp-validation-for="@Model.Post.Content1" class="text-danger"></span>
+        </div>
+            <div class="form-group form-check">
+            <label asp-for="@Model.Post.Published" class="control-label"></label>
+            <input  asp-for="@Model.Post.Published" class="form-check-input" type="checkbox">
+            
+        </div>
+        <div class="form-group">Author: <strong>@Model.Author.UserName</strong></div>
 
-            <div class="form-group">
-                <label asp-for="@Model.Category.Slug" class="form-label"></label>
-                <input asp-for="@Model.Category.Slug" class="form-control" placeholder="Nhap tieu de category" />
-                <span asp-validation-for="@Model.Category.Slug" class="text-danger danger"></span>
-            </div>
-            <button class="btn btn-primary btn-sm" type="submit" id="submit">Create</button>
-        </form>
-
-    </div>
-
-
-    <div class="col-6">
-        <form action="/Category/UploadImages" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <div>
-                    <input type="file" id="imageUpload" name="uploadedFile" accept="image/*" />
-                </div>
-
-                <img id="imagePreview"
-                    src="https://anhgaixinh.vn/wp-content/uploads/2022/08/7_hinh-gai-xinh-cute-de-thuong-nhat-viet-nam.jpg"
-                    alt="Dynamic Image" style="border:2px solid #ddd; margin-top:10px; height:500px; width:auto;" />
-            </div>
-            <button class="btn btn-primary btn-sm" type="button" id="upload">Upload</button>
-        </form>
-    </div>
-
-
-
+        
+        <button class="btn btn-primary btn-sm" type="submit" id="submit">Create</button>
+    </form>
 
 </div>
 
@@ -69,16 +58,17 @@
 
 
 @section Scripts {
-    @* <script>
-        $(document).ready(function () {
-            $('#upload').click(function () {
-                console.log("Clicked to button");
+    
+@await Html.PartialAsync("_Summernote", new {Height = 200, Selector = "#content"})
+    
+    <script src="~/lib/multiple-select/multiple-select.min.js"></script>
+    <link rel="stylesheet" href="~/lib/multiple-select/multiple-select.min.css" />
+    <script>
+          $('#CategoriesId').multipleSelect({
+                selectAll: true,
+                keepOpen: false,
+                isOpen: false,
+                placeholder: 'Select the category'
             });
-        });
-    </script> *@
-
-    @await Html.PartialAsync("_Summernote", new { Height = 300, Selector = "#Category_Content" });
-    @await Html.PartialAsync("_AddImage", new { UploadSelector = "#imageUpload", DisplaySelector = "#imagePreview" ,
-    Submit = "#upload", Id = "1",AreaName = "Product", ControllerName = "Category",ActionName = "UploadImage"});
-
+    </script>
 }

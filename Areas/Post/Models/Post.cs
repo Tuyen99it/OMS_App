@@ -20,7 +20,7 @@ namespace OMS_App.Areas.Post.Models
         [RegularExpression(@"^[a-z0-9-]*$", ErrorMessage = "Chỉ dùng các ký tự [a-z0-9-]")]
         public string Slug {get;set;}
         [Display(Name ="Nội dung")]
-        public string Content {get;set;}
+        public string Content1 {get;set;}
         [Display(Name = "Xuất bản")]
         public bool Published {get;set;}
         public List<PostCategory>PostCategories {get;set;}
