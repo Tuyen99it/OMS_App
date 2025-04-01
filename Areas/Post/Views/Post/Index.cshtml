@@ -22,17 +22,18 @@
             {
                 <tr>
                     <td>@Post.Title</td>
-                <td>@Post.Author</td>
-                <td>@Post.DateUpdated</td>
-                <td>@Post.Published</td>
-                <td>@String.Join(",",Post.PostCategories.Select(p=>p.Category).ToList())</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@Post.Id">Sửa</a> |
-                <a asp-action="Delete" asp-route-id="@Post.Id">Xóa</a>
-                </td>
+                    <td>@Post.Author</td>
+                    <td>@Post.DateUpdated</td>
+                    <td>@Post.Published</td>
+                    <td>@String.Join(",", Post.PostCategories.Select(p => p.Category.Title).ToList())</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@Post.PostId">Sửa</a> |
+                        <a asp-action="Delete" asp-route-id="@Post.PostId">Xóa</a>|
+                        <a asp-action="Detail" asp-route-id="@Post.PostId">Chi tiết</a>
+                    </td>
 
                 </tr>
-                
+
 
 
             }

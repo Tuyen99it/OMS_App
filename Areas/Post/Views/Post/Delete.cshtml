@@ -1,7 +1,7 @@
-﻿@model OMS_App.Models.Category
+﻿@model OMS_App.Areas.Post.Models.Post
 
 @{
-    ViewData["Title"] = "Delete category";
+    ViewData["Title"] = "Delete Post";
     Layout = "_Layout";
    
 }
@@ -11,9 +11,10 @@
     <p>@Model.Title</p>
 </row>
 <row>
-    <p>@Model.Content</p>
+    @Html.Raw(Model.Content1)
 </row>
 <form method="post">
+
     <button class="text-danger" type="submit">Delete</button>
 </form>
 @section Scripts {

@@ -7,7 +7,7 @@ namespace OMS_App.Areas.Post.Models
     public class PostBase
     {
         [Key]
-        public int Id { get; set; }
+        public int PostId { get; set; }
         [Required(ErrorMessage ="Please enter the post title")]
         [Display(Name ="Tiêu đề")]
         [StringLength(160,MinimumLength =3,ErrorMessage ="{0} dài từ {1} đến {2}")]

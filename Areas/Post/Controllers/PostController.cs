@@ -41,14 +41,14 @@ namespace OMS_App.Areas.Post.Controllers
         }
 
         // GET: PostController/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Detail(int? id)
         {
             if (id == null)
             {
                 return NotFound("Can not found category");
             }
             var post = _context.Posts
-                     .Where(p => p.Id == id)
+                     .Where(p => p.PostId == id)
                      .Include(p => p.Author)
                      .Include(p => p.PostCategories)
                      .ThenInclude(p => p.Category)
@@ -110,7 +110,7 @@ namespace OMS_App.Areas.Post.Controllers
             // Thêm thông tin về PostCategoryId của bài viết
             foreach (var categoryId in model.CategoriesId){
                 _context.PostCategories.Add(new PostCategory(){
-                    PostId=model.Post.Id,
+                    PostId=model.Post.PostId,
                     CategoryId=categoryId
                 });
             await _context.SaveChangesAsync();            }
@@ -118,162 +118,89 @@ namespace OMS_App.Areas.Post.Controllers
 
         }
 
-        // // GET: PostController/Edit/5
-        // [HttpGet]
-        // public ActionResult Edit(int? id)
-        // {
-        //     var model = new CategoryEditModel();
-        //     if (id == null)
-        //     {
-        //         return NotFound("ID is null");
-        //     }
-        //     model.Category = _context.Categories.Where(c => c.Id == id).FirstOrDefault();
-        //     model.Options = _context.Categories.Select(c => new SelectListItem()
-        //     {
-        //         Text = c.Title,
-        //         Value = c.ParentCategoryId.ToString()
-        //     }).ToList();
-        //     if (model.Category == null)
-        //     {
-        //         return NotFound("Unable to load category");
-        //     }
-        //     return View(model);
-        // }
+        public async Task<ActionResult> Edit(int? id)
+        {
+            var model = new PostEditViewModel();
 
-        // // POST: PostController/Edit/5
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public async Task<ActionResult> Edit(CategoryEditModel model)
-        // {
-        //     _logger.LogInformation("Come to update1");
-        //     if (ModelState.IsValid)
-        //     {
-        //         return View();
-        //     }
-        //     _logger.LogInformation("Come to update2");
+            var author = await _userManager.GetUserAsync(User);
+            if (author == null)
+            {
+                _logger.LogInformation("Unable to load user");
+                return NotFound("Unable to load user");
+            }
+
+            // Lấy thông tin Post
+           var post=_context.Posts.Where(p=>p.PostId==id).Include(p=>p.Author).Include(p=>p.PostCategories).ThenInclude(p=>p.Category).FirstOrDefault();
+            if(author!=post.Author){
+                return NotFound("Author is different, can not update");
+            }
+            var categories= await _context.Categories.ToListAsync();
+            model.Post=post;
+            model.Author=author;
+            model.Options= new MultiSelectList(categories,"Id","Title");
+            
+            return View(model);
+        }
+
+       // POST: Post/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(PostEditViewModel model)
+        {
+            _logger.LogInformation("Create category success");
+            if (ModelState.IsValid)
+            {
+                _logger.LogInformation("Imput is invalid");
+                return View();
+            }
+            if (model.CategoriesId == null)
+            {
+                _logger.LogInformation("CategoriesId are null");
+            }
+           
+           
+            
+           model.Post.AuthorId=(await _userManager.GetUserAsync(User)).Id;
+           model.Post.DateUpdated=DateTime.Now;
+            _context.Posts.Update(model.Post);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Create Post success1");
+            
+            // Thêm thông tin về PostCategoryId của bài viết
+            foreach (var categoryId in model.CategoriesId){
+                _context.PostCategories.Update(new PostCategory(){
+                    PostId=model.Post.PostId,
+                    CategoryId=categoryId
+                });
+            await _context.SaveChangesAsync();            }
+            return RedirectToAction("Index", "Post");
+
+        }
 
 
-        //     if (model.Category.ParentCategoryId == -1)
-        //     {
-        //         model.Category.ParentCategoryId = null;
-        //     }
-        //     _context.Categories.Update(model.Category);
-        //     await _context.SaveChangesAsync();
-        //     return RedirectToAction("Index");
-        // }
+        // GET: PostController/Delete/5
+        public ActionResult Delete(int id)
+        {
+            if (id == null)
+            {
+                return NotFound("Id is null");
+            }
+            var post = _context.Posts.Where(c => c.PostId == id).FirstOrDefault();
+            return View(post);
+        }
 
+        // POST: PostController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Delete(OMS_App.Areas.Post.Models.Post post)
+        {
+            _context.Posts.Remove(post);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index","Post");
+        }
+       
 
-
-        // // GET: PostController/Delete/5
-        // public ActionResult Delete(int id)
-        // {
-        //     if (id == null)
-        //     {
-        //         return NotFound("Id is null");
-        //     }
-        //     var category = _context.Categories.Where(c => c.Id == id).FirstOrDefault();
-        //     return View(category);
-        // }
-
-        // // POST: PostController/Delete/5
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public async Task<ActionResult> Delete(Category category)
-        // {
-        //     _context.Categories.Remove(category);
-        //     await _context.SaveChangesAsync();
-        //     return RedirectToAction("Index");
-        // }
-        // private async Task<List<SelectListItem>> RenderOptions(Category category, int level)
-        // {
-        //     var options = new List<SelectListItem>();
-        //     string prefix = String.Concat(Enumerable.Repeat("-", level));
-        //     var option = new SelectListItem()
-        //     {
-        //         Text = prefix + category.Title,
-        //         Value = category.Id.ToString()
-        //     };
-        //     options.Add(option);
-        //     if (category.ChildCategories?.Count > 0)
-        //     {
-        //         foreach (var childCategory in category.ChildCategories)
-        //         {
-        //             var clist = await RenderOptions(childCategory, level + 1);
-        //             options.AddRange(clist);
-        //         }
-        //     }
-        //     return options;
-
-        // }
-        // public async Task<IActionResult> UploadImages()
-        // {
-        //     return Content("Load file successfully");
-        // }
-        // // hander category image
-        // // [HttpPost]
-        // // public async Task<IActionResult> UploadImages(string? FilePath, IFormFile? forms)
-        // // {
-        // //     Console.WriteLine("Come to upload file");
-        // //     // if (FilePath == null || forms == null)
-        // //     // {
-        // //     //     return Content("Unable to load file");
-        // //     // }
-        // //     // // create file root path
-        // //     // var directorys = FilePath.Split('_');
-        // //     // string filepath = Path.Combine(directorys);
-        // //     // string filepathroot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Image", filepath);
-        // //     // if (!Directory.Exists(filepathroot))
-        // //     // {
-        // //     //     Directory.CreateDirectory(filepathroot);
-        // //     // }
-        // //     // //get file from forms
-
-        // //     // var childfilePath = Path.Combine(filepathroot, forms.FileName);
-        // //     // using (var fileStream = new FileStream(childfilePath, FileMode.Create))
-        // //     // {
-        // //     //     await forms.CopyToAsync(fileStream);
-        // //     // }
-
-        // //     return Content("Load file successfully");
-
-        // //}
-        // [HttpPost]
-        // public async Task<IActionResult> UploadImage(IFormFile uploadedFile)
-        // {
-        //     Console.WriteLine("Come to update");
-        //     if (uploadedFile == null || uploadedFile.Length == 0)
-        //     {
-        //         Console.WriteLine("No file to upload");
-        //         return Json(new { success = false, message = "No file uploaded." });
-        //     }
-
-        //     try
-        //     {
-        //         Console.WriteLine("start to update");
-        //         var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "categories");
-        //         if (!Directory.Exists(uploadsFolder))
-        //         {
-        //             Directory.CreateDirectory(uploadsFolder);
-        //             Console.WriteLine("Create the upload foler");
-        //         }
-
-        //         var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadedFile.FileName);
-        //         var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-        //         using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //         {
-        //             await uploadedFile.CopyToAsync(fileStream);
-        //         }
-        //         Console.WriteLine("Uuplad success");
-        //         return Json(new { success = true, filePath = $"/uploads/categories/{uniqueFileName}" });
-
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         _logger.LogError(ex, "Error uploading image");
-        //         return Json(new { success = false, message = "An error occurred while uploading the file." });
-        //     }
-        // }
+        
 
     }
 }
