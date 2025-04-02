@@ -1,0 +1,247 @@
+Summary:
+1. Tạo layout hiển thị
+2. Tạo view Post Controller
+3.Thêm các danh mục vào side bootstrap
+4. Hiển thị danh sách bài viết
+5. Thêm breadcrumb
+6. Xây dựng trang hiển thị chi tiết bài viết
+1. Tạo layout hiển thị bài viết
+- Phần hiện thị bài viết, danh sách bài viết sẽ dử dụng một Layout riêng, tạo ra một Layout đặt tên là _PostLayout.cshtml trong đường dẫn đầy đủ Views/Shared/_PostLayout.cshtml, nội dung của layout này như sau:
+<div class="container">
+    <div class="row">
+        <main role="main" class="col8 pd-3">
+            @RenderBody()
+        </main>
+        <div class="col-4 pb-3">
+            @RenderSection("Sidebar",false)
+        </div>
+    </div>
+</div>
+2. Tạo viewpostController
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using OMS_App.Data;
+[Route("/post/")]
+public class ViewPostController:Controller{
+    private readonly ILogger<ViewPostController> _logger ;
+    private readonly OMSDBContext _context;
+    private IMemoryCache _cache;
+    // Số bài viết hiển thị trên một trang danh mục
+    public const int ITEM_PER_PAGE =4;
+    public ViewPostController(ILogger<ViewPostController> logger,OMSDBContext context, IMemoryCache cache){
+        _logger=logger;
+        _context=context;
+        _cache=cache;
+    }
+
+    [Route("{slug?}",Name ="listpost")]
+    public async Task<IActionResult> Index ([Bind(Prefix="page")] int pageNumber){
+        return View();
+    }
+}
+
+- Controller trên được inject các dịch vụ: Logger , OMSDBContext, và IMemoryCache dùng để lưu cache vào bộ nhớ
+- Action index khai báo trên để hiển thị danh sách các bài viết thuộc 1 danh mục được xác định bởi một tham số slug, danh sách bài viết được tách ra thành 
+nhiều trang, trang hiện tại được binding với tham số query là page
+- [Route ("{slug?}", Name = "listpost")] tạo ra một route đặt tên là listpost, với định nghĩa template "{slug?} trên, kết với với route controller thì Action này thi hành khi truy cập các Url ví dụ nhứ:
+/posts
+/posts/slug-chuyen-muc
+/posts/slug-chuyen-muc1?page=5
+...
+
+Yoga
+Lập trình C# (C Sharp)
+(ASP.NET MVC) Xây dựng Website(3)  (Bài trước)
+(Bài tiếp)  (ASP.NET MVC) Giỏ hàng - Cart (5)
+(ASP.NET Core MVC) Xây dựng ứng dụng mẫu - Trang hiện thị các bài viết (phần 4)
+Xây dựng các trang hiện thị bài viết tới người dùng cuối, gồm duyệt các danh mục và xem chi tiết bài viết
+
+Tạo Layout hiện thị
+Tạo ViewPostController
+Thêm các danh mục vào Sidebar
+Hiện thị danh sách bài viết
+Thêm Breadcrumb
+Xây dựng trang hiện thị chi tiết bài viết
+Trong phần này sẽ tạo ra các trang trình bày, duyệt và hiện thị các bài Post của Blog đến người dùng cuối.
+
+Bài thực hành này tiếp tục trên ví dụ cũ mvcblog: Quản lý bài viết của Blog, tải mã nguồn về mở ra tiếp tục phát triển ex068-post
+
+Tạo Layout hiện thị bài viết
+Phần hiện thị bài viết, danh sách bài viết sẽ dử dụng một Layout riêng, tạo ra một Layout đặt tên là _PostLayout.cshtml trong đường dẫn đầy đủ Views/Shared/_PostLayout.cshtml, nội dung của layout này như sau:
+
+Xem chi tiết tại: _PostLayout.cshtml
+
+Bố cục chính thể hiện ở đoạn code:
+
+<div class="container">
+    <div class="row">
+        <main role="main" class="col-8 pb-3">
+            @RenderBody()
+        </main>
+        <div class="col-4 pb-3">
+            @RenderSection("Sidebar", false)
+        </div>
+    </div>
+</div>
+
+Tức là có hai cột, trái sẽ dùng hiện thị nội dung và phải là điều hướng danh mục (tạo ra từ sectionn Sidebar).
+
+Tạo ViewPostController
+Tạo và xây dựng Controller - ViewPostController với các Action để truy cập các danh mục và hiện thị các bài viết thuộc danh mục, xem nội dung chi tiết một bài post.
+
+Tạo ban đầu như sau:
+
+Controllers/ViewPostController.cs
+
+[Route ("/posts")]
+public class ViewPostController : Controller {
+
+    private readonly ILogger<ViewPostController> _logger;
+    private readonly AppDbContext _context;
+    private IMemoryCache _cache;
+
+
+    // Số bài hiện thị viết trên một trang danh mục
+    public const int ITEMS_PER_PAGE = 4;
+
+    public ViewPostController (ILogger<ViewPostController> logger,
+        AppDbContext context,
+        IMemoryCache cache) {
+        _logger = logger;
+        _context = context;
+        _cache = cache;
+    }
+
+    [Route ("{slug?}", Name = "listpost")]
+    public async Task<IActionResult> Index ([Bind (Prefix = "page")] int pageNumber)
+        return View ();
+    }
+}
+Controller trên được Inject vào các dịch vụ: ILogger (để in log nếu muốn), AppDbContext (để truy cập Db), IMemoryCache (lưu cache vào bộ nhớ).
+
+Action Index khai báo trên để hiện thị danh sách các bài viết thuộc 1 danh mục, danh mục được xác định bởi tham số slug, danh sách bài viết sẽ tách ra thành nhiều trang, trang hiện tại được binding với tham số query là page
+
+[Route ("{slug?}", Name = "listpost")] tạo ra một route đặt tên là listpost, với định nghĩa template "{slug?} trên, kết với với route controller thì Action này thi hành khi truy cập các Url ví dụ nhứ:
+
+/posts
+/posts/slug-chuyen-muc
+/posts/slug-chuyen-muc1?page=5
+...
+Các View của Controller này sẽ tương ứng ở thư mục: Views/ViewPost, trước tiên trong thư mục này tạo ra file Views/_ViewStart.cshtml với nội dung:
+@{
+    Layout = "_PostLayout";
+}
+- Tạo thư mục ViewPost/ Index.cshtml để hiển thị nội dung với code như sau:
+@{
+    ViewData["Title"]="Các chuyên mục";
+
+}
+<div class="index-page"> 
+    Các bài viết của chuyên mục 
+</div>
+@section Sidebar{
+    Nội dung phần side bar
+}
+3. Thêm danh mục vào sidebar
+- Trước tiên xây dựng một View Component, nhận dữ liệu là cây danh mục List<Category> để sinh ra HTML các danh mục. Component này tên CategorySidebar tạo ra tại thư mục Views/Shared/Components/CategorySidebar gồm 2 file sau:
+using Microsoft.AspNetCore.Mvc;
+using OMS_App.Models;
+[ViewComponent]
+public class CategorySidebar: ViewComponent{
+    public class CategorySidebarData{
+        public List<Category>categories {get;set;}
+        public int Level {get;set;}
+        public string slugCategory {get;set;}
+    }
+    public const string COMPONENT_NAME="CategorySidebar";
+    public CategorySidebar(){}
+    public IViewComponentResult Invoke(CategorySidebarData data){
+        return View();
+    }
+
+}
+@model CategorySidebar.CategorySidebarData
+@{
+    List<Category> categories = Model.categories;
+    int level = Model.Level;
+}
+@if(categories.Count>0){
+    if(level==0){
+        @Html.Raw("<div class=\"categorysidebar\">")
+        <h3><a asp-controller="ViewPost" asp-action="Index" asp-route-slug="">Các chủ đề</a></h3>
+    }
+    <ul>
+        @foreach(var category in categories){
+            var cssclass=(category.Slug==Model.slugCategory)?"active":null;
+            <li><a asp-controller="ViewPost" asp-action="Index" asp-route-slug="@category.Slug" class="@cssclass">@category.Title</a></li>
+            @if(category.ChildCategories?.Count>0){
+                @await Component.InvokeAsync(CategorySidebar.COMPONENT_NAME,new CategorySidebar.CategorySidebarData(){
+                    categories=category.ChildCategories.ToList(),
+                    Level=Model.Level+1,
+                    slugCategory=Model.slugCategory
+                })
+            }
+        }
+    </ul>
+    if(level==0){
+        @Html.Raw("/div")
+    }
+}  
+- Trong ViewPostController thêm vào hai phương thức GetCategories và FindCategoryBySlug
+// lấy thông tin category có sử dụng cache
+    [NonAction]
+    private List<Category> GetCategories()
+    {
+        List<Category> categories;
+        string keyCacheCategories = "_listallcategories";
+        //phuc hoi cache tu Memory cache, khong co thi truy van database
+        if (!_cache.TryGetValue(keyCacheCategories, out categories))
+        {
+            categories = _context.Categories.Include(c => c.ChildCategories).Where(c => c.ParentCategoryId == null).ToList();
+            // Thiet lap cache, luu vao cache
+            var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(300));
+            _cache.Set(keyCacheCategories, categories, cacheEntryOptions);
+        }
+
+        return categories;
+    }
+
+    // Tìm đệ quy trong cây, một category theo slug
+    [NonAction]
+    private Category FindCategoryBySlug(List<Category> categories, string Slug)
+    {
+        foreach (var category in categories)
+        {
+            if (category.Slug == Slug) return category;
+            var c1 = FindCategoryBySlug(category.ChildCategories.ToList(), Slug);
+            if (c1 != null)
+            {
+                return c1;
+            }
+        }
+        return null;
+
+    }
+}
+
+- Update lại Index như sau:
+ public async Task<IActionResult> Index([Bind(Prefix = "page")] int pageNumber, [FromRoute(Name = "slug")] string slugCategory)
+    {
+        var categories = GetCategories();
+        Category category = null;
+        if (!string.IsNullOrEmpty(slugCategory))
+        {
+
+            category = FindCategoryBySlug(categories, slugCategory);
+            if (category == null)
+            {
+                return NotFound("Không thấy Category");
+            }
+
+        }
+        ViewData["categories"] = categories;
+        ViewData["slugCategory"] = slugCategory;
+        ViewData["CurrentCategory"] = category;
+        return View();
+    }
+

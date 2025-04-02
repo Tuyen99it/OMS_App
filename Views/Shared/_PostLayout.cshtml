@@ -1,0 +1,13 @@
+@{
+    Layout="_Layout";
+}
+<div class="container">
+    <div class="row">
+        <main role="main" class="col-8 pd-3">
+            @RenderBody()
+        </main>
+        <div class="col-4 pb-3">
+            @await RenderSectionAsync("Sidebar",false)
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+@{
+ 
+    Layout = "_PostLayout";
+
+    ViewData["Title"] = "Các chuyên mục";
+
+
+}
+<div class="index-page">
+    Các bài viết của chuyên mục
+</div>
+@section Sidebar {
+    @{
+        
+        @await Component.InvokeAsync(CategorySidebar.COMPONENT_NAME, new CategorySidebar.CategorySidebarData()
+        {
+            Level = 0,
+            categories = ViewBag.Categories,
+            slugCategory = ViewBag.slugCategory
+        });
+    }
+}
