@@ -1,22 +1,75 @@
+@using OMS_App.Areas.Post.Models
+
+@model List<Post>;
 @{
- 
+
     Layout = "_PostLayout";
 
     ViewData["Title"] = "Các chuyên mục";
+    Category category = ViewBag.Category;
+    List<Category> categories = ViewBag.Categories;
+
 
 
 }
 <div class="index-page">
-    Các bài viết của chuyên mục
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="ViewPost" asp-action="Index" asp-route-slug="">Blog</a></li>
+            @if (category != null)
+            {
+                var parentsCategory = RenderParentsCategory(category);
+                parentsCategory.Reverse();
+                foreach (var li in parentsCategory)
+                {
+
+                    <li class="breadcrumb-item"><a asp-controller="ViewPost" asp-action="Index"
+                            asp-route-slug="@li.Slug">@li.Title</a>
+                    </li>
+                }
+            }
+        </ol>
+    </nav>
+    @foreach (var post in Model)
+    {
+        <div class="detailpost">
+            <h1><a asp-area="Post" asp-controller="Post" asp-action="Detail" asp-route-id="@post.PostId">@post.Title</a></h1>
+            <div class="sapo">@post.Description</div>
+            @Html.Raw(post.Content1)
+        </div>
+    }
 </div>
+@{
+    List<Category> RenderParentsCategory(Category category, List<Category> list = null)
+    {
+        var List = new List<Category>();
+        if (category == null)
+        {
+            return List;
+        }
+        List.Add(category);
+        var parentCategory = category.ParentCategory;
+        if (parentCategory == null)
+        {
+            return List;
+        }
+
+        List.AddRange(RenderParentsCategory(parentCategory, List));
+        return List;
+
+
+    }
+}
 @section Sidebar {
     @{
-        
+
         @await Component.InvokeAsync(CategorySidebar.COMPONENT_NAME, new CategorySidebar.CategorySidebarData()
-        {
-            Level = 0,
-            categories = ViewBag.Categories,
-            slugCategory = ViewBag.slugCategory
-        });
+            {
+                Level = 0,
+                categories = categories,
+                slugCategory = ViewBag.slugCategory
+                });
+                
     }
 }

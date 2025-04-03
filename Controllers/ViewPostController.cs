@@ -22,27 +22,53 @@ public class ViewPostController : Controller
     [Route("{slug?}", Name = "listpost")]
     public async Task<IActionResult> Index([Bind(Prefix = "page")] int pageNumber, [FromRoute(Name = "slug")] string slugCategory)
     {
-     
-        
+
+
         var Categories = GetCategories();
-        Category Category=null;
-        
+        Category Category = null;
+
         if (!string.IsNullOrEmpty(slugCategory))
         {
 
-             Category = FindCategoryBySlug(Categories, slugCategory);
-            if (Category == null)
-            {
-                return NotFound("Không thấy Category");
-            }
-
+            Category = FindCategoryBySlug(Categories, slugCategory);
         }
-        Console.WriteLine(Categories[0].Title);
-        ViewBag.Categories=Categories;
-        ViewBag.Category=Category;
-        ViewBag.slugCategory=slugCategory;
-       
-        return View();
+        // Lây các bài viết theo category
+
+        var posts = _context.Posts
+        .Include(p => p.Author)
+        .Include(p => p.PostCategories)
+        .ThenInclude(c => c.Category)
+        .ToList();
+        if (Category != null)
+        {
+            // get all childCategories Id of category
+            var childCategoryIds = Category.ChildCategories.Select(c => c.Id).ToList();
+            // add categoryID in the list
+            childCategoryIds.Add(Category.Id);
+            // Filter all post include category and its children
+            posts = posts.Where(p => p.PostCategories.Where(c => childCategoryIds.Contains(c.CategoryId)).Any()).ToList();
+        }
+        // Lấy tổng dòng dữ liệu
+        var totalItems = posts.Count();
+        // Tính số trang hiên tại 
+        int totalPages = (int)Math.Ceiling((double)totalItems / ITEM_PER_PAGE);
+        if (totalPages < 1) totalPages = 1;
+        if (pageNumber == 0) pageNumber = 1;
+        // format pageNumber
+        pageNumber = (pageNumber > totalPages) ? totalPages : (pageNumber >= 1) ? pageNumber : 1;
+        // Get item following page Number
+        posts=posts
+        .Skip(ITEM_PER_PAGE*(pageNumber-1))
+        .Take(ITEM_PER_PAGE)
+        .OrderByDescending(p=>p.DateUpdated)
+        .ToList();
+        ViewData["pageNumber"]=pageNumber;
+        ViewData["totalPage"]=totalPages;
+        ViewBag.Categories = Categories;
+        ViewBag.Category = Category;
+        ViewBag.slugCategory = slugCategory;
+
+        return View(posts);
     }
     // lấy thông tin category có sử dụng cache
     [NonAction]
