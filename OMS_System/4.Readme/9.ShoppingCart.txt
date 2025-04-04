@@ -1,3 +1,29 @@
+Summary:
++ Tạo Model Product
++ Xây dựng controller hiển thị sản phẩm
++ Kích hoạt section
++ Xây dựng cấu trúc dữ liệu Cart
++ Thêm mặt hàng vào Cart
++ Trang hiển thị Cart
++ Tạo cartPartial, giỏ hàng ở menu
+
+1. Tạo model Product
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace OMS_App.MODels
+{
+    [Table("Product")]
+    public class Product
+    {
+        [Key]
+        public int ProductId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public double Price { get; set; }
+    }
+}
+- Update table vào DBContext
 using Microsoft.EntityFrameworkCore;
 
 using OMS_App.Models;
@@ -38,7 +64,7 @@ namespace OMS_App.Data
             modelBuilder.Entity<PostCategory>().HasKey(p => new { p.PostId, p.CategoryId });
 
             /// Thực hiện trèn 4 sản phẩm vào bảng khi bảng Product được tạo
-            modelBuilder.Entity<Product>().HasData(
+            modelBuilder.Entry<Product>().HasData(
                new Product()
                {
                    ProductId = 1,
@@ -71,3 +97,65 @@ namespace OMS_App.Data
         }
     }
 }
+- Thực hiện tạo migrations và update database update
+dotnet ef migrations add AddProductModel
+dotnet ef database update
+2. Thực hiện tạo controller hiển thị danh sách sản phẩm
+- Xây dựng một controller dùng để hiển thị tất cả các Product/ thêm product vào cart
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+
+using OMS_App.Data;
+using OMS_App.Models;
+using Microsoft.EntityFrameworkCore;
+[Route("/product/")]
+public class ProductController : Controller
+{
+    private readonly ILogger<ProductController> _logger;
+    private readonly OMSDBContext _context;
+    private IMemoryCache _cache;
+    // Số bài viết hiển thị trên một trang danh mục
+    public const int ITEM_PER_PAGE = 4;
+    public ProductController(ILogger<ProductController> logger, OMSDBContext context, IMemoryCache cache)
+    {
+        _logger = logger;
+        _context = context;
+        _cache = cache;
+    }
+
+
+    public async Task<IActionResult> Index()
+    {
+        var products = await _context.Products.TolistAsync();
+        return View(products)
+
+    }
+}
+
+- Trang View/product/Index.cshtml
+@using OMS_App.Models
+
+@model List<Product>;
+@{
+
+    Layout = "_Layout";
+
+    ViewData["Title"] = "Các sản phẩm ";
+
+}
+<div class="card-columns">
+    @foreach (var product in Model)
+    {
+        <div class="card">
+            <h3 class="card-header">@product.Name</h3>
+            <div class="card-body" style="height:150px">@product.Description</div>
+            <div class="card-footer">
+                <span class="text-muted">@(product.Price.Tostring("n0")) VND</span>
+                <a asp-route="addcart" asp-route-productid="@product.ProductId"
+                    class="btn btn-secondary btn-sm float-right">
+                    Order
+                </a>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,30 @@
+@using OMS_App.Models
+
+@model List<Product>;
+@{
+
+    Layout = "_Layout";
+
+    ViewData["Title"] = "Các sản phẩm ";
+
+}
+<div class="container">
+
+    <div class="d-flex flex-wrap justify-content-center">
+        @foreach (var product in Model)
+        {
+            <div class="card m-2" style="width: 18rem;">
+                <h3 class="card-header">@product.Name</h3>
+                <div class="card-body" style="width:150px">@product.Description</div>
+                <div class="card-footer">
+                    <span class="text-muted">@(product.Price.ToString("n0")) VND</span>
+                    <a asp-route="addcart" asp-route-productid="@product.ProductId"
+                        class="btn btn-secondary btn-sm float-right">
+                        Order
+                    </a>
+                </div>
+            </div>
+        }
+    </div>>
+
+</div>
