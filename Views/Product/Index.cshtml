@@ -18,7 +18,7 @@
                 <div class="card-body" style="width:150px">@product.Description</div>
                 <div class="card-footer">
                     <span class="text-muted">@(product.Price.ToString("n0")) VND</span>
-                    <a asp-route="addcart" asp-route-productid="@product.ProductId"
+                    <a  asp-controller="Product" asp-action="AddToCart"  asp-route-productid="@product.ProductId"
                         class="btn btn-secondary btn-sm float-right">
                         Order
                     </a>

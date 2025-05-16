@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.Features;
 
 using OMS_App.Data;
 using OMS_App.Models;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,10 +80,20 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Admin");
     });
 });
+
 builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 52428800; // 50 MB
 });
+
+// Config session for Cart
+builder.Services.AddDistributedMemoryCache();// register use Memory cache to store session data
+builder.Services.AddSession(cfg =>           // Đăng ký dịch vụ Session
+{
+    cfg.Cookie.Name = "Tuyen99it";             // Đặt tên Session - tên này sử dụng ở Browser (Cookie)
+    cfg.IdleTimeout = new TimeSpan(0, 30, 0);   // Thời gian tồn tại của Session
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 // Add Razor page
@@ -99,7 +110,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 //app.MapRazorPages();
 app.UseAuthorization();
