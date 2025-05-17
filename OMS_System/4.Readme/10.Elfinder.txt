@@ -118,3 +118,137 @@ namespace OMS_App.Controllers
 
 }
 - Trong Index.cshtml tương ứng với Action Index có nội dung như sau:
+@{
+    ViewBag.Title = "File Manager";
+}
+
+<div id="elfinder"></div>
+
+@section Scripts {
+    <link rel="stylesheet" href="~/lib/jqueryui/themes/base/theme.css" />
+    <link rel="stylesheet" href="~/lib/jqueryui/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="~/lib/elfinder/css/elfinder.full.css" />
+    <link rel="stylesheet" href="~/lib/elfinder/css/theme.min.css" />
+    <link rel="stylesheet" href="~/css/elfinder-material-theme/Material/css/theme-gray.css" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/lib/elfinder/js/elfinder.min.js"></script>
+
+    <script type="text/javascript">
+        // Documentation for client options:
+        // https://github.com/Studio-42/elFinder/wiki/Client-configuration-options
+        $(document).ready(function () {
+            var myCommands = elFinder.prototype._options.commands;
+
+            // Not yet implemented commands in elFinder.NetCore
+            var disabled = ['callback', 'chmod', 'editor', 'netmount', 'ping', 'search', 'zipdl', 'help'];
+            elFinder.prototype.i18.en.messages.TextArea = "Edit";
+
+            $.each(disabled, function (i, cmd) {
+                (idx = $.inArray(cmd, myCommands)) !== -1 && myCommands.splice(idx, 1);
+            });
+
+            var options = {
+                baseUrl: "/lib/elfinder/",
+                url: "/el-finder-file-system/connector",
+                rememberLastDir: false,
+                commands: myCommands,
+                lang: 'vi',
+                uiOptions: {
+                    toolbar: [
+                        ['back', 'forward'],
+                        ['reload'],
+                        ['home', 'up'],
+                        ['mkdir', 'mkfile', 'upload'],
+                        ['open', 'download'],
+                        ['undo', 'redo'],
+                        ['info'],
+                        ['quicklook'],
+                        ['copy', 'cut', 'paste'],
+                        ['rm'],
+                        ['duplicate', 'rename', 'edit'],
+                        ['selectall', 'selectnone', 'selectinvert'],
+                        ['view', 'sort']
+                    ]
+                },
+                //onlyMimes: ["image", "text/plain"] // Get files of requested mime types only
+                lang: 'vi',
+            };
+            $('#elfinder').elfinder(options).elfinder('instance');
+        });
+    </script>
+}
+4. Tích hợp elFinder vào Summernote
+Để tích hợp elFinder vào công cụ soạn thảo HTML WYSIWYG Summernote ta thực hiện các bước như sau:
+
+Tạo một plugin của Summernote - plugin này tạo ra một nút bấm - khi bấm vào đó sẽ gọi một hàm
+Xây dựng hàm mà nút bấm đó gọi đến, trong hàm này khởi tạo elFinder để chọn ảnh chèn vào Summernote
+- Cách tạo ra một Plugin cho Summernote thực hiện theo hướng dẫn tại creating-plugins
+(function (factory) {
+        if (typeof define === 'function' && define.amd) {
+            define(['jquery'], factory);
+        } 
+        else if (typeof module === 'object' && module.exports) {
+            module.exports = factory(require('jquery'));
+        } else {
+            factory(window.jQuery);
+        }
+    }(function ($) {
+      $.extend($.summernote.plugins, {
+            // Tạo plugin tên elfinder  
+            'elfinder': function (context) {
+                var self = this;
+                // ui has renders to build ui elements.
+                var ui = $.summernote.ui;
+                // Tạo nút bấm
+                context.memo('button.elfinder', function () {
+                    var button = ui.button({
+                        contents: '<i class="note-icon-picture"/> elFinder',
+                        tooltip: 'Quản lý file',
+                        click: function () {
+                            // Bấm vào nút bấm gọi hàm elfinderDialog   
+                            elfinderDialog(context); 
+                        }
+                    });
+                    // create jQuery object from button instance.
+                    var $elfinder = button.render();
+                    return $elfinder;
+                });
+                // This methods will be called when editor is destroyed by $('..').summernote('destroy');
+                // You should remove elements on `initialize`.
+                this.destroy = function () {
+                    this.$panel.remove();
+                    this.$panel = null;
+                };
+            }
+      
+        });
+    }));
+- Có trên nạp vào trước khi tạo Summernote, thì Summernote sẽ có nút bấm. Cũng nhớ là phải nạp các thư viện css, js của jQuery, elFinder, Summernote trước khi thi hành
+
+'<i class="note-icon-picture"/> elFinder'
+
+- Khi bấm vào nút bấm sẽ gọi hàm elfinderDialog, với tham số là đối tượng Summernote. Ta sẽ xây dựng hàm này khi thi hành sẽ mở elFinder, nội dung hàm này như sau
+- function elfinderDialog(editor) {
+  	    var fm = $('<div/>').dialogelfinder({
+  		url : '/el-finder-file-system/connector',
+                baseUrl: "/lib/elfinder/",
+  		lang : 'vi',
+  		width : 840,
+  		height: 450,
+  		destroyOnClose : true,
+  		getFileCallback : function(files, fm) {
+  			console.log(files);
+                        editor.invoke('editor.insertImage', files.url);
+  		},
+  		commandsOptions : {
+  			getfile : {
+  			    oncomplete : 'close',
+  			    folders : false
+  			}
+  		}
+  	}).dialogelfinder('instance');
+}   
+- Trở lại mã nguồn ví dụ trước, bạn có thể cập nhật các code trên vào file _Summernote.cshtml, nội dung đầy đủ tại: _Summernote.cshtml partial
+Giờ đã có elFinder để bạn upload ảnh, chọn ảnh chèn vào khi soạn thảo bằng Summernote
