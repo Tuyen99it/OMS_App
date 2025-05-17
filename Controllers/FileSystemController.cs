@@ -1,32 +1,3 @@
-1. Giới thiệu elFinder
-- Trong ứng dụng ASP.NET CORE MVC trước tiên tải các thư viện client-side gồm: jquery, jqueryui, elfinder - ta sẽ sử dụng LibMan trong .NET Core
-Tạo file libman.json với nội dung:
-{
-  "version": "1.0",
-  "defaultProvider": "cdnjs",
-  "libraries": [
-    {
-      "library": "jquery@3.5.1",
-      "destination": "wwwroot/lib/jquery"
-    },
-    {
-      "library": "jqueryui@1.12.1",
-      "destination": "wwwroot/lib/jqueryui"
-    },
-    {
-      "library": "elfinder@2.1.57",
-      "destination": "wwwroot/lib/elfinder"
-    }
-  ]
-}
-- Sau đó thực hiện lệnh để tải về từ CDN:  libman restore
-- Ngoài ra nếu bạn có thể tải về theme đẹp hơn thay cho theme mặc định, ví dụ sử dụng theme: elFinder-Material-Theme
-
-npm install elfinder-material-theme
-2. Tích hợp elFinder vào ASP.NET CORE MVC
-- Trước tiên tích hợp gói elFinder.NetCore vào dự án bằng lệnh
-dotnet add package elFinder.NetCore
-- Create FileSystemController to connect to Backend server: Controllers/FileSystemController
 using Microsoft.AspNetCore.Mvc;
 using elFinder.NetCore.Drivers.FileSystem;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -37,7 +8,7 @@ using elFinder.NetCore;
 namespace OMS_App.Controllers
 {
     //[Authorize] // Have to login can access
-    [Route("/el-finder-system")]
+    [Route("el-finder-file-system")]
     public class FileSystemController : Controller
     {
         private readonly ILogger<FileSystemController> _logger;
@@ -48,6 +19,7 @@ namespace OMS_App.Controllers
             _logger = logger;
         }
         // Create method to client site connect to backend
+        [Route("connector")]
         public async Task<IActionResult> Connector()
         {
             var connector = GetConnector();
@@ -98,23 +70,3 @@ namespace OMS_App.Controllers
         }
     }
 }
-- Với controller này, bạn có Url để client side kết nối với backend elFinder.netcore là /el-finder-file-system/connector, bạn dùng nó để cấu hình elFinder client
-3. Tạo trang quản lý file
-- Áp dụng xây dựng một trang quản lý file, trước tiên tạo ra một controller FileManagerController.cs
-using Microsoft.AspNetCore.Mvc;
-
-namespace OMS_App.Controllers
-{
-    //[Authorize] // Have to login can access
-    [Route("/file-manager")]
-    public class FileManagerController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-    }
-
-}
-- Trong Index.cshtml tương ứng với Action Index có nội dung như sau:
