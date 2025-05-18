@@ -1,0 +1,73 @@
+1. Giới thiệu một số template admin miễn phí
+- Để nhanh chóng có được giao diện đẹp mắt, khoa học thì thường sẽ sử dụng và tùy biến từ một thiết kế giao diễn mẫu nào đó, đặc biệt là dành cho trang quản trị admin. Có nhiều mẫu template miễn phí để lựa chọn, dưới đây là vài trường hợp
+Gentelella Admin: https://github.com/ColorlibHQ/gentelella/tree/master/production
+- Start Bootstrap - SB Admin 2: https://github.com/StartBootstrap/startbootstrap-sb-admin-2
+
+- Ngoài ra bạn có thể tham khảo các template khác như:
+CoreUI Free Bootstrap Admin Template
+Bootflat-Admin
+Free HTML5 Admin Template
+2. Tích hợp Template: Gentellela Admin
+Với Bootstrap và jQuery mặc định tích hợp trong ASP.NET mẫu đã xây dựng, chart.js ở đây không dùng đến nên chưa cần tích hợp. Còn lại Font Awesome và jQuery-easinng ta tích hợp vào dự án bằng LibMan
+libman install jquery-easing
+libman install font-awesome
+Như vậy các thành phần đã có, hãy truy cập  Gentellela Admin, bấm vào Free Download để tải về  Gentellela Admin, giải nén để có mã nguồn, từ đây ta sẽ tích hợp dần nó vào trang.
+
+Bước đầu tiên hãy tạo trong dự án ASP.NET thư mục wwwroot/GentellelaAdmin, copy hai thư mục css và js từ nguồn tải về vào thư mục mới tạo ra trên.
+2.1 Tích hợp GentellelaAdmin cho trang Login
+- Trang Login, Logout, Quyên mật khẩu, Đăng ký mà ta đã xây dựng từ ví dụ trước sử dụng Identity, đối với SB Admin nó cùng cấu trúc - trang không có phần side bar, menu bar ... nên nhưng trang này ta xây dựng cùng một Layout.
+- Hình thức của chúng đều có dạng như sau: login.html
+- HTML để tùy biến - xuất phát từ đây xây dựng Layout có nội dung tại: code login.html
+- Từ tham khảo code index.html, ta xây dựng một file Layout dùng chung cho các trang đăng nhập, đăng ký, quyên mật khẩu, layout tại file Area/Identity/View/Account/_LoginLayout.cshtml, có nội dung đầy đủ tại Views/Shared/Admin/_LoginLayout.cshtml
++ Copy folders build và vendors vào wwwroot.
++ Nội dung của trang _LoginLayout.cshtml
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <!-- Bootstrap -->
+    <link href="~/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="~/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="~/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="~/vendors/animate.css/animate.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="~/build/css/custom.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Mvc.styles.css" asp-append-version="true" />
+
+</head>
+
+<body>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - Mvc - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>
+- Edit trang Login.cshtml theo form Login.html
