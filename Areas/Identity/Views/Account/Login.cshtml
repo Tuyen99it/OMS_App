@@ -7,62 +7,70 @@
     List<AuthenticationScheme> externalLogins = ViewBag.ExternalLogins;
 }
 
-<div class="login_wrapper">
-    <div class="animate form login_form">
 
-        <section class="login_content">
+<div class="login_wrapper ">
 
-            <form>
-                <h1>Đăng Nhập</h1>
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <section class="login_content">
+
+        <form method="post">
+            <h1>Đăng Nhập</h1>
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div>
+                <input asp-for="@Model.UserName" class="form-control" placeholder="name@example.com" />
+                <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="@Model.Password" class="form-control" autocomplete="current-password"
+                    aria-required="true" placeholder="password" />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="checkbox mb-3 text-start">
+                <input class="form-check-input" asp-for="@Model.RememberMe" />
+                <label asp-for="@Model.RememberMe" class="form-label">
+                    @Html.DisplayNameFor(m => m.RememberMe)
+                </label>
+            </div>
+            <div>
+                <button id="login-submit" type="submit" class="w-100 btn btn-sm btn-round btn-primary">Log
+                    in</button>
+            </div>
+        </form>
+        <div class="separator">
+            <p>External Login</p>
+            <form id="external-account" asp-action="ExternalLogin" asp-route-returnUrl="@ReturnUrl" method="post"
+                class="form-horizontal">
                 <div>
-                    <input asp-for="@Model.UserName" class="form-control" placeholder="name@example.com" />
-                    <span asp-validation-for="@Model.UserName" class="text-danger"></span>
-                </div>
-                <div>
-                    <input asp-for="@Model.Password" class="form-control" autocomplete="current-password"
-                        aria-required="true" placeholder="password" />
-                    <span asp-validation-for="@Model.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="@Model.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="@Model.RememberMe" />
-                        @Html.DisplayNameFor(m => m.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button type="submit" asp-action="login" class="btn btn-default submit">Log in</button>
-                    <a class="reset_pass" id="forgot-password" asp-action="ForgotPassword">Forgot your password?</a>
+                    <p>
+                        <button type="submit" class="w-100 btn btn-sm btn-round btn-danger" name="provider"
+                            value="Facebook" title="Log in using your Facebook account"><i class="fa fa-facebook"></i>
+                            Facebook</button>
+                    </p>
+                    <p>
+                        <button type="submit" class="w-100 btn btn-sm btn-round btn-success" name="provider"
+                            value="Google" title="Log in using your Google account"><i class="fa fa-google"></i>
+                            Google</button>
+                    </p>
                 </div>
             </form>
-
-        </section>
-        <div class="clearfix"></div>
-
-        <div class="separator">
-            <p class="change_link">New to site?
-                <a href="#signup" class="to_register"> Create Account </a>
-            </p>
-            <p>
-                <a asp-action="Register" asp-route-returnUrl="@ReturnUrl">Register as a new user</a>
-            </p>
-            <p>
-                <a id="resend-confirmation" asp-action="ResendEmailConfirmation">Resend email
-                    confirmation</a>
-            </p>
-
-            <div class="clearfix"></div>
-            <br />
-
-            <div>
-                <h1><i class="fa fa-paw"></i> Gentelella Alela!</h1>
-                <p>©2016 All Rights Reserved. Gentelella Alela! is a Bootstrap 4 template. Privacy and Terms
-                </p>
-            </div>
         </div>
+    </section>
+    <div class="separator">
+        <p>
+            <a id="forgot-password" asp-action="ForgotPassword">Forgot your password?</a>
+        </p>
+        <p>
+            <a asp-action="Register" asp-route-returnUrl="@ReturnUrl">Register as a new user</a>
+        </p>
+        <p>
+            <a id="resend-confirmation" asp-action="ResendEmailConfirmation">Resend email confirmation</a>
+        </p>
 
     </div>
+
 </div>
+
+
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

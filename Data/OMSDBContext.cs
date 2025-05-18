@@ -14,6 +14,7 @@ namespace OMS_App.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<UserImage> UserImages { get; set; }
         public OMSDBContext(DbContextOptions<OMSDBContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +38,16 @@ namespace OMS_App.Data
             // Tạo mối quan hệ many -many between Post and Category bằng việc tạo key cho bảng bằng việc kết hợp PostId và CategoryId
             modelBuilder.Entity<PostCategory>().HasKey(p => new { p.PostId, p.CategoryId });
 
+            // // Tạo quan hệ giữa appuser và userImage
+            modelBuilder.Entity<AppUser>()
+                .HasMany(a => a.UserImages)
+                .WithOne(u => u.AppUser)
+                .HasForeignKey(a => a.AppUserId);
+
+            modelBuilder.Entity<UserImage>()
+                .HasOne(u => u.AppUser)
+                .WithMany(a => a.UserImages)
+                .HasForeignKey(a => a.AppUserId);
             /// Thực hiện trèn 4 sản phẩm vào bảng khi bảng Product được tạo
             modelBuilder.Entity<Product>().HasData(
                new Product()

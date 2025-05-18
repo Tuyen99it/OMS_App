@@ -70,4 +70,202 @@ Bước đầu tiên hãy tạo trong dự án ASP.NET thư mục wwwroot/Gentel
 </body>
 
 </html>
-- Edit trang Login.cshtml theo form Login.html
+- Edit trang Login.cshtml theo form Login.html:
+@model LoginViewModel
+
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Log in";
+    string ReturnUrl = ViewBag.ReturnUrl;
+    List<AuthenticationScheme> externalLogins = ViewBag.ExternalLogins;
+}
+
+
+<div class="login_wrapper ">
+
+    <section class="login_content">
+
+        <form method="post">
+            <h1>Đăng Nhập</h1>
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div>
+                <input asp-for="@Model.UserName" class="form-control" placeholder="name@example.com" />
+                <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="@Model.Password" class="form-control" autocomplete="current-password"
+                    aria-required="true" placeholder="password" />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="checkbox mb-3 text-start">
+                <input class="form-check-input" asp-for="@Model.RememberMe" />
+                <label asp-for="@Model.RememberMe" class="form-label">
+                    @Html.DisplayNameFor(m => m.RememberMe)
+                </label>
+            </div>
+            <div>
+                <button id="login-submit" type="submit" class="w-100 btn btn-sm btn-round btn-primary">Log
+                    in</button>
+            </div>
+        </form>
+        <div class="separator">
+            <p>External Login</p>
+            <form id="external-account" asp-action="ExternalLogin" asp-route-returnUrl="@ReturnUrl" method="post"
+                class="form-horizontal">
+                <div>
+                    <p>
+                        <button type="submit" class="w-100 btn btn-sm btn-round btn-danger" name="provider"
+                            value="Facebook" title="Log in using your Facebook account"><i class="fa fa-facebook"></i>
+                            Facebook</button>
+                    </p>
+                    <p>
+                        <button type="submit" class="w-100 btn btn-sm btn-round btn-success" name="provider"
+                            value="Google" title="Log in using your Google account"><i class="fa fa-google"></i>
+                            Google</button>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </section>
+    <div class="separator">
+        <p>
+            <a id="forgot-password" asp-action="ForgotPassword">Forgot your password?</a>
+        </p>
+        <p>
+            <a asp-action="Register" asp-route-returnUrl="@ReturnUrl">Register as a new user</a>
+        </p>
+        <p>
+            <a id="resend-confirmation" asp-action="ResendEmailConfirmation">Resend email confirmation</a>
+        </p>
+
+    </div>
+
+</div>
+
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+- Edit Register 
+@inject SignInManager<AppUser> SignInManager
+@model RegisterViewModel
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Đăng ký tài khoản mới";
+    string returnUrl = ViewBag.ReturnUrl;
+    var ExtenalLogins = ViewBag.ExternalLogins as List<AuthenticationScheme>;
+}
+
+<div class="login_wrapper ">
+    <section class="login_content">
+        <form method="post">
+            <h1>Đăng ký</h1>
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div>
+                <input asp-for="@Model.Email" class="form-control" placeholder="name@example.com" />
+                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="@Model.Password" class="form-control" autocomplete="current-password"
+                    aria-required="true" placeholder="password" />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="checkbox mb-3 text-start">
+                <input asp-for="@Model.ConfirmPassword" class="form-control" autocomplete="current-password"
+                    aria-required="true" placeholder="password" />
+                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div>
+                <button id="login-submit" type="submit" class="w-100 btn btn-sm btn-round btn-primary">Đăng ký</button>
+            </div>
+        </form>
+        <div>
+            <div class="d-flex align-items-center my-4">
+                <hr class="flex-grow-1">
+                <span class="mx-3">External Login</span>
+                <hr class="flex-grow-1">
+            </div>
+        </div>
+        <form id="external-account" asp-action="ExternalLogin" asp-route-returnUrl="@returnUrl" method="post"
+            class="form-horizontal">
+            <div>
+                <p>
+                    <button type="submit" class="w-100 btn btn-sm btn-round btn-danger" name="provider" value="Facebook"
+                        title="Log in using your Facebook account"><i class="fa fa-facebook"></i>
+                        Facebook</button>
+                </p>
+                <p>
+                    <button type="submit" class="w-100 btn btn-sm btn-round btn-success" name="provider" value="Google"
+                        title="Log in using your Google account"><i class="fa fa-google"></i>
+                        Google</button>
+                </p>
+            </div>
+        </form>
+        <div>
+            <div class="d-flex align-items-center my-4">
+                <hr class="flex-grow-1">
+                <span class="mx-3">Other utility</span>
+                <hr class="flex-grow-1">
+            </div>
+            <div>
+                <p>
+                    <a id="forgot-password" asp-action="ForgotPassword">Forgot your password?</a>
+                </p>
+                <p>
+                    <a asp-action="Register" asp-route-returnUrl="@returnUrl">Register as a new user</a>
+                </p>
+                <p>
+                    <a id="resend-confirmation" asp-action="ResendEmailConfirmation">Resend email confirmation</a>
+                </p>
+            </div>
+
+
+        </div>
+</div>
+</section>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+2.2 Tuỳ biến trang UserManager
+- Thêm Image cho user, Lưu urladdress vào Database
+- Tạo model UserImage.cs
+using System.ComponentModel.DataAnnotations;
+
+namespace OMS_App.Models
+{
+    public class UserImage
+    {
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        public string UrlAddress { get; set; }
+        [Required]
+        public int AppUserId { get; set; }
+    }
+}
+- Thêm thuộc tính UserImage vào AppUser
+using System;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+namespace OMS_App.Models
+{
+    public class AppUser : IdentityUser
+    {
+        [MaxLength(100)]
+        public string? FullName { get; set; }
+        [MaxLength(255)]
+        public string? Address { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? Birthday { get; set; }
+        public ICollection<UserImage> UserImages { get; set; }
+
+    }
+}
+- Tạo quan hệ 1 appuser nhiều UserImage
+Data/OMSDbContext.cs

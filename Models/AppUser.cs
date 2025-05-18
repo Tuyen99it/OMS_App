@@ -11,6 +11,7 @@ namespace OMS_App.Models
         public string? Address { get; set; }
         [DataType(DataType.Date)]
         public DateTime? Birthday { get; set; }
+        public ICollection<UserImage> UserImages { get; set; }
 
     }
 }
