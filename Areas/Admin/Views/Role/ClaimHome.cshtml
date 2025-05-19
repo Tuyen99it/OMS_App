@@ -1,4 +1,3 @@
-
 @using OMS_App.Areas.Admin.Role.Models
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Identity;
@@ -6,88 +5,88 @@
 
 @{
     ViewData["Title"] = "Claim Management";
-    var Claims=ViewBag.Claims as List<Claim>;
-        var role=ViewBag.Role as IdentityRole;
- 
+    var Claims = ViewBag.Claims as List<Claim>;
+    var role = ViewBag.Role as IdentityRole;
 
-    
+
+
 }
 
 <h1>@ViewData["Title"]</h1>
- <partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
+<partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
 
 <div class="col-md-6">
-        <section>
-            <form id="account" method="post" class="row g-2">  
 
-                <div class="col-auto">
+    <div class="d-flex align-items-center my-4">
+        <form id="account" method="post" class="row g-2">
 
-                    <label class="visually-hidden"></label>
-                    <input class="form-control" asp-for="SearchingClaimName" placeholder="Enter claim type ...">
-                    <span asp-validation-for="SearchingClaimName" class="text-danger"></span>
-                </div>
-               
-                <div class="col-2">
-                    <button id="login-submit" type="submit" class=" btn mb-3 btn-primary" asp-route-roleid="@role.Id">Search</button>
-                </div>
-            </form>
-        </section>
-        
+            <div class="col-auto">
+                <input class="form-control" asp-for="SearchingClaimName" placeholder="Enter claim type ...">
+                <label class="visually-hidden"></label <span asp-validation-for="SearchingClaimName"
+                    class="text-danger"></span>
+            </div>
+
+            <div class="col-2">
+                <button id="login-submit" type="submit" class=" btn mb-3 btn-primary"
+                    asp-route-roleid="@role.Id">Search</button>
+            </div>
+        </form>
     </div>
-</div>
-    
-<div>
-    <h2> Thêm Claim cho @role.Name</h2>
-</div>
-<div >
     <div>
-
-        <a asp-action="CreateClaim" asp-controller="Role" asp-route-roleid="@role.Id" class="text-link text-primary">Add Claim</a>
-         <a asp-action="Index" asp-controller="Role"  class="text-link text-primary">Back to Role</a>
+        <h2><a asp-action="CreateClaim" asp-controller="Role" asp-route-roleid="@role.Id"
+                class="text-link text-primary">Thêm Claim</a></h2>
+        <a asp-action="Index" asp-controller="Role" class="text-link text-primary">Back to Role</a>
     </div>
+
+</div>
+
+<div>
+
 
 </div>
 <hr>
 
-    <table class="table">
+<table class="table">
     <thead>
         <tr>
             <th>
                 No
             </th>
-             <th>
+            <th>
                 ClaimType
             </th>
             <th></th>
             <th>ClaimValue</th>
-             
+
             <th>
-               
+
             </th>
 
         </tr>
     </thead>
     <tbody>
-            @{
-                int i=1;
-            }
-            @foreach(Claim claim in Claims){
-                <tr>
-                    <td>@(i++)</td>
-                    <td>@Html.DisplayFor(modelItem=>claim.Type)</td>
-                    <td>@Html.DisplayFor(modelItem=>claim.Value)</td>
-                   
-                    
-                    <td>
-     
-                        <a class=" btn-danger btn-sm " asp-action="DeleteClaim"  asp-controller="Role"  asp-route-claimtype="@claim.Type" asp-route-claimvalue="@claim.Value" asp-route-roleId="@role.Id">Delete</a>
+        @{
+            int i = 1;
+        }
+        @foreach (Claim claim in Claims)
+        {
+            <tr>
+                <td>@(i++)</td>
+                <td>@Html.DisplayFor(modelItem => claim.Type)</td>
+                <td>@Html.DisplayFor(modelItem => claim.Value)</td>
 
 
-                    </td>
-                </tr>
-                
-                
-            }
+                <td>
+
+                    <a class=" btn-danger btn-sm " asp-action="DeleteClaim" asp-controller="Role"
+                        asp-route-claimtype="@claim.Type" asp-route-claimvalue="@claim.Value"
+                        asp-route-roleId="@role.Id">Delete</a>
+
+
+                </td>
+            </tr>
+
+
+        }
     </tbody>
 </table>
-

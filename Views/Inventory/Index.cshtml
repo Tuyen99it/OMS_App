@@ -1,0 +1,9 @@
+﻿@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Admin Manager";
+}
+
+<h1>Inventory Manager</h1>
+@section Scripts {
+    @await Html.PartialAsync("_Summernote", new { Height = 300, Selector = "#summernote" })
+}

@@ -21,9 +21,15 @@ builder.Services.AddDbContext<OMSDBContext>(options =>
 
 //Add Identity Services to container
 builder.Services.AddDefaultIdentity<AppUser>(options =>
-{
-    options.SignIn.RequireConfirmedAccount = true;
-}).AddRoles<IdentityRole>().AddEntityFrameworkStores<OMSDBContext>().AddDefaultTokenProviders(); ;
+                {
+                    options.SignIn.RequireConfirmedAccount = true;
+                })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<OMSDBContext>()
+                .AddDefaultTokenProviders();
+
+// Add IUserImageRepo and UserImageRepo
+builder.Services.AddScoped<IUserImageRepo, UserImageRepo>();
 //configure IdentityOption
 builder.Services.Configure<IdentityOptions>(options =>
 {

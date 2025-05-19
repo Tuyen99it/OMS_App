@@ -21,33 +21,33 @@
         </div>
         <div class="form-group">
             <label asp-for="@Model.CategoriesId" class="form-label"></label>
-           @Html.ListBox("CategoriesId",Model.Options,new {@class="w-100"})
+            @Html.ListBox("CategoriesId",Model.Options,new {@class="w-100"})
         </div>
 
-        <div class="form-group">
+        @* <div class="form-group"></div>
             <label asp-for="@Model.Post.Description" class="form-label"></label>
             <input asp-for="@Model.Post.Description" class="form-control" >
 
             <span asp-validation-for="@Model.Post.Description" class="text-danger danger"></span>
-        </div>
+        </div> *@
         <div class="form-group">
             <label asp-for="@Model.Post.Slug" class="control-label"></label>
             <input asp-for="@Model.Post.Slug" class="form-control">
             <span asp-validation-for="@Model.Post.Slug" class="text-danger"></span>
         </div>
-         <div class="form-group">
+        <div class="form-group">
             <label asp-for="@Model.Post.Content1" class="control-label"></label>
             <textarea asp-for="@Model.Post.Content1 " id="content" class="form-control"></textarea>
             <span asp-validation-for="@Model.Post.Content1" class="text-danger"></span>
         </div>
-            <div class="form-group form-check">
+        <div class="form-group form-check">
             <label asp-for="@Model.Post.Published" class="control-label"></label>
-            <input  asp-for="@Model.Post.Published" class="form-check-input" type="checkbox">
-            
+            <input asp-for="@Model.Post.Published" class="form-check-input" type="checkbox">
+
         </div>
         <div class="form-group">Author: <strong>@Model.Author.UserName</strong></div>
 
-        
+
         <button class="btn btn-primary btn-sm" type="submit" id="submit">Create</button>
     </form>
 
@@ -58,17 +58,17 @@
 
 
 @section Scripts {
-    
-@await Html.PartialAsync("_Summernote", new {Height = 200, Selector = "#content"})
-    
+
+    @await Html.PartialAsync("_Summernote", new { Height = 200, Selector = "#content" })
+
     <script src="~/lib/multiple-select/multiple-select.min.js"></script>
     <link rel="stylesheet" href="~/lib/multiple-select/multiple-select.min.css" />
     <script>
-          $('#CategoriesId').multipleSelect({
-                selectAll: true,
-                keepOpen: false,
-                isOpen: false,
-                placeholder: 'Select the category'
-            });
+        $('#CategoriesId').multipleSelect({
+            selectAll: true,
+            keepOpen: false,
+            isOpen: false,
+            placeholder: 'Select the category'
+        });
     </script>
 }

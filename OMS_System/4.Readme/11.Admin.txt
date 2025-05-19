@@ -269,3 +269,55 @@ namespace OMS_App.Models
 }
 - Tạo quan hệ 1 appuser nhiều UserImage
 Data/OMSDbContext.cs
+            modelBuilder.Entity<AppUser>()
+                .HasMany(a => a.UserImages)
+                .WithOne(u => u.AppUser)
+                .HasForeignKey(a => a.AppUserId);
+
+            modelBuilder.Entity<UserImage>()
+                .HasOne(u => u.AppUser)
+                .WithMany(a => a.UserImages)
+                .HasForeignKey(a => a.AppUserId);
+- Tạo IUserImageRepo/UserImageRepo.cs
+- Đăng ký và dependency của hệ thống:
+builder.Services.AddScroped(IUserImageRepo,UserImageRepo);
+- Edit _LoginPartial.cshtml
+@using Microsoft.AspNetCore.Identity
+@using OMS_App.Models
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+<div class="d-flex align-items-center my-4">
+    <ul class="navbar-nav"></ul>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div>
+            <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-action="Index" asp-controller="Manager"
+                title="Manage">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle overflow-hidden border border-secondary" style="width:30px; height:30px;">
+                        <img src="~/files/userimages/ilogin.png" alt="Profile"
+                            class="img-fluid w-100 h-100 object-fit-cover">
+                    </div>
+                    <span class="ms-2">@UserManager.GetUserName(User)</span>
+                </div>
+            </a>
+
+
+        </div>
+    }
+    else
+    {
+        <div>
+            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-controller="Account"
+                asp-action="Register">Register</a>
+        </div>
+        <div class="nav-item">
+            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-controller="Account"
+                asp-action="Login">Login</a>
+        </div>
+    }
+    </ul>
+</div>
+3. Tạo ra Admin controller
