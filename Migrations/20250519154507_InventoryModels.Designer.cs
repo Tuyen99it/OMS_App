@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OMS_App.Data;
 
@@ -11,9 +12,11 @@ using OMS_App.Data;
 namespace OMS_App.Migrations
 {
     [DbContext(typeof(OMSDBContext))]
-    partial class OMSDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250519154507_InventoryModels")]
+    partial class InventoryModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,40 +175,6 @@ namespace OMS_App.Migrations
                     b.HasIndex("ProductCategoryId");
 
                     b.ToTable("CategoryProducts");
-                });
-
-            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.InventoryImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageUrlPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductInventoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductCategoryId");
-
-                    b.HasIndex("ProductInventoryId");
-
-                    b.ToTable("InventoryImage");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductCategory", b =>
@@ -550,25 +519,6 @@ namespace OMS_App.Migrations
                     b.Navigation("ProductInventory");
                 });
 
-            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.InventoryImage", b =>
-                {
-                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductCategory", "ProductCategory")
-                        .WithMany("CategoryImages")
-                        .HasForeignKey("ProductCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductInventory", "ProductInventory")
-                        .WithMany("ProductImages")
-                        .HasForeignKey("ProductInventoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductCategory");
-
-                    b.Navigation("ProductInventory");
-                });
-
             modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductCategory", b =>
                 {
                     b.HasOne("OMS_App.Areas.Inventory.Models.ProductCategory", "productCategory")
@@ -630,16 +580,12 @@ namespace OMS_App.Migrations
 
             modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductCategory", b =>
                 {
-                    b.Navigation("CategoryImages");
-
                     b.Navigation("ChildrenCategory");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductInventory", b =>
                 {
                     b.Navigation("CategoriesProduct");
-
-                    b.Navigation("ProductImages");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>

@@ -15,5 +15,6 @@ namespace OMS_App.Areas.Inventory.Models
         [ForeignKey(nameof(ParentCategoryId))]
         public ProductCategory productCategory { get; set; }
         public ICollection<ProductCategory> ChildrenCategory { get; set; }
+        public ICollection<InventoryImage> CategoryImages { get; set; }
     }
 }

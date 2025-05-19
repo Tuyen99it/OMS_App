@@ -12,6 +12,7 @@ namespace OMS_App.Areas.Inventory.Models
         public DateTime ExpirationDate { get; set; }
         public double Price { get; set; }
         public int Quantity { get; set; }
+        public ICollection<InventoryImage> ProductImages { get; set; }
 
         public ICollection<CategoryProduct> CategoriesProduct { get; set; }
 
