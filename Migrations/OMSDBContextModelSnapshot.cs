@@ -17,7 +17,7 @@ namespace OMS_App.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -159,6 +159,114 @@ namespace OMS_App.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.CategoryProduct", b =>
+                {
+                    b.Property<int>("ProductInventoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductInventoryId", "ProductCategoryId");
+
+                    b.HasIndex("ProductCategoryId");
+
+                    b.ToTable("CategoryProducts");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.InventoryImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrlPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductInventoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductCategoryId");
+
+                    b.HasIndex("ProductInventoryId");
+
+                    b.ToTable("InventoryImage");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCategoryId");
+
+                    b.ToTable("Product Category");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductInventory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ManufactureDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductInventories");
+                });
+
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
                 {
                     b.Property<int>("PostId")
@@ -181,22 +289,16 @@ namespace OMS_App.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("Published")
                         .HasColumnType("bit");
 
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasMaxLength(160)
-                        .HasColumnType("nvarchar(160)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(160)
-                        .HasColumnType("nvarchar(160)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PostId");
 
@@ -306,21 +408,18 @@ namespace OMS_App.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ParentCategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -353,36 +452,32 @@ namespace OMS_App.Migrations
                     b.HasKey("ProductId");
 
                     b.ToTable("Product");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            ProductId = 1,
-                            Description = "Số 1 cao 40cm rộng 20cm dày 20cm màu xanh lá cây đậm",
-                            Name = "Đá phong thuỷ tự nhiên",
-                            Price = 1000000.0
-                        },
-                        new
-                        {
-                            ProductId = 2,
-                            Description = "Trang trí trong nhà Chất liệu : • Đá muối",
-                            Name = "Đèn đá muối hình tròn",
-                            Price = 1500000.0
-                        },
-                        new
-                        {
-                            ProductId = 3,
-                            Description = "Tranh sơn mài loại nhỏ 15x 15 giá 50.000",
-                            Name = "Tranh sơn mài",
-                            Price = 50000.0
-                        },
-                        new
-                        {
-                            ProductId = 4,
-                            Description = "Nguyên liệu thể hiện :    Sơn dầu",
-                            Name = "Tranh sơn dầu - Ngựa",
-                            Price = 450000.0
-                        });
+            modelBuilder.Entity("UserImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("User Image");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -436,6 +531,53 @@ namespace OMS_App.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.CategoryProduct", b =>
+                {
+                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductCategory", "ProductCategory")
+                        .WithMany()
+                        .HasForeignKey("ProductCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductInventory", "ProductInventory")
+                        .WithMany("CategoriesProduct")
+                        .HasForeignKey("ProductInventoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductCategory");
+
+                    b.Navigation("ProductInventory");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.InventoryImage", b =>
+                {
+                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductCategory", "ProductCategory")
+                        .WithMany("CategoryImages")
+                        .HasForeignKey("ProductCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductInventory", "ProductInventory")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductInventoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductCategory");
+
+                    b.Navigation("ProductInventory");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductCategory", b =>
+                {
+                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductCategory", "productCategory")
+                        .WithMany("ChildrenCategory")
+                        .HasForeignKey("ParentCategoryId");
+
+                    b.Navigation("productCategory");
+                });
+
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
                 {
                     b.HasOne("OMS_App.Models.AppUser", "Author")
@@ -475,9 +617,39 @@ namespace OMS_App.Migrations
                     b.Navigation("ParentCategory");
                 });
 
+            modelBuilder.Entity("UserImage", b =>
+                {
+                    b.HasOne("OMS_App.Models.AppUser", "AppUser")
+                        .WithMany("UserImages")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductCategory", b =>
+                {
+                    b.Navigation("CategoryImages");
+
+                    b.Navigation("ChildrenCategory");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductInventory", b =>
+                {
+                    b.Navigation("CategoriesProduct");
+
+                    b.Navigation("ProductImages");
+                });
+
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
                 {
                     b.Navigation("PostCategories");
+                });
+
+            modelBuilder.Entity("OMS_App.Models.AppUser", b =>
+                {
+                    b.Navigation("UserImages");
                 });
 
             modelBuilder.Entity("OMS_App.Models.Category", b =>

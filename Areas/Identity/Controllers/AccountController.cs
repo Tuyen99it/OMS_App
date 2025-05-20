@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Security.Cryptography.Xml;
 using System.Security.Claims;
 using System.Security;
+using OMS_App.Data;
 
 namespace OMS_App.Areas.Identity.Controllers
 {
@@ -21,13 +22,14 @@ namespace OMS_App.Areas.Identity.Controllers
 
     public class AccountController : Controller
     {
+        private readonly IUserImageRepo _userImageRepo;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<AccountController> _logger;
         private readonly IUserStore<AppUser> _userStore;
         // private readonly IUserEmailStore<AppUser> _emailStore;
         private readonly IEmailSender _emailSender;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<AccountController> logger, IUserStore<AppUser> userStore, IEmailSender emailSender)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ILogger<AccountController> logger, IUserStore<AppUser> userStore, IEmailSender emailSender, IUserImageRepo userImageRepo)
         {
 
 
@@ -38,6 +40,7 @@ namespace OMS_App.Areas.Identity.Controllers
             _userStore = userStore;
             //_emailStore = emailStore;
             _emailSender = emailSender;
+            _userImageRepo = userImageRepo;
         }
         [TempData]
         public string ErrorMessage { get; set; }
@@ -488,15 +491,24 @@ namespace OMS_App.Areas.Identity.Controllers
             return View("ExternalLoginCallBack");
         }
 
+        [HttpGet]
 
-        //Get: /Account/Logout
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout(string returnUrl = null)
         {
+            Console.WriteLine("Come to get logout");
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out");
 
+            return View();
+
+        }
+        //Get: /Account/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogoutAync(string returnUrl = null)
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out");
 
             return View();
 
@@ -511,7 +523,19 @@ namespace OMS_App.Areas.Identity.Controllers
             if (user == null) return NotFound();
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            ViewBag.StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+            if (result.Succeeded)
+            {
+                var userImage = new UserImage();
+                userImage.AppUserId = userId;
+                userImage.ImagePath = "~/files/userimages/user-default.png";
+                userImage.IsActive = true;
+                _userImageRepo.CreateUserImageAsync(userImage);
+                ViewBag.StatusMessage = "Thank you for confirming your email.";
+            }
+            else
+            {
+                ViewBag.StatusMessage = "Error confirming your email."; ;
+            }
             return View();
         }
 

@@ -34,8 +34,9 @@
     @foreach (var post in Model)
     {
         <div class="detailpost">
-            <h1><a asp-area="Post" asp-controller="Post" asp-action="Detail" asp-route-id="@post.PostId">@post.Title</a></h1>
-            <div class="sapo">@post.Description</div>
+            <h1><a asp-area="Post" asp-controller="Post" asp-action="Detail" asp-route-id="@post.PostId">@post.Title</a>
+            </h1>
+            @* <div class="sapo">@post.Description</div> *@
             @Html.Raw(post.Content1)
         </div>
     }
@@ -65,11 +66,12 @@
     @{
 
         @await Component.InvokeAsync(CategorySidebar.COMPONENT_NAME, new CategorySidebar.CategorySidebarData()
-            {
-                Level = 0,
-                categories = categories,
-                slugCategory = ViewBag.slugCategory
-                });
-                
+        {
+            Level = 0,
+categories = categories,
+slugCategory = ViewBag.slugCategory
+})
+;
+
     }
 }

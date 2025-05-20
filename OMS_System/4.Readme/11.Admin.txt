@@ -1,0 +1,323 @@
+1. Giới thiệu một số template admin miễn phí
+- Để nhanh chóng có được giao diện đẹp mắt, khoa học thì thường sẽ sử dụng và tùy biến từ một thiết kế giao diễn mẫu nào đó, đặc biệt là dành cho trang quản trị admin. Có nhiều mẫu template miễn phí để lựa chọn, dưới đây là vài trường hợp
+Gentelella Admin: https://github.com/ColorlibHQ/gentelella/tree/master/production
+- Start Bootstrap - SB Admin 2: https://github.com/StartBootstrap/startbootstrap-sb-admin-2
+
+- Ngoài ra bạn có thể tham khảo các template khác như:
+CoreUI Free Bootstrap Admin Template
+Bootflat-Admin
+Free HTML5 Admin Template
+2. Tích hợp Template: Gentellela Admin
+Với Bootstrap và jQuery mặc định tích hợp trong ASP.NET mẫu đã xây dựng, chart.js ở đây không dùng đến nên chưa cần tích hợp. Còn lại Font Awesome và jQuery-easinng ta tích hợp vào dự án bằng LibMan
+libman install jquery-easing
+libman install font-awesome
+Như vậy các thành phần đã có, hãy truy cập  Gentellela Admin, bấm vào Free Download để tải về  Gentellela Admin, giải nén để có mã nguồn, từ đây ta sẽ tích hợp dần nó vào trang.
+
+Bước đầu tiên hãy tạo trong dự án ASP.NET thư mục wwwroot/GentellelaAdmin, copy hai thư mục css và js từ nguồn tải về vào thư mục mới tạo ra trên.
+2.1 Tích hợp GentellelaAdmin cho trang Login
+- Trang Login, Logout, Quyên mật khẩu, Đăng ký mà ta đã xây dựng từ ví dụ trước sử dụng Identity, đối với SB Admin nó cùng cấu trúc - trang không có phần side bar, menu bar ... nên nhưng trang này ta xây dựng cùng một Layout.
+- Hình thức của chúng đều có dạng như sau: login.html
+- HTML để tùy biến - xuất phát từ đây xây dựng Layout có nội dung tại: code login.html
+- Từ tham khảo code index.html, ta xây dựng một file Layout dùng chung cho các trang đăng nhập, đăng ký, quyên mật khẩu, layout tại file Area/Identity/View/Account/_LoginLayout.cshtml, có nội dung đầy đủ tại Views/Shared/Admin/_LoginLayout.cshtml
++ Copy folders build và vendors vào wwwroot.
++ Nội dung của trang _LoginLayout.cshtml
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <!-- Bootstrap -->
+    <link href="~/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="~/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="~/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="~/vendors/animate.css/animate.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="~/build/css/custom.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Mvc.styles.css" asp-append-version="true" />
+
+</head>
+
+<body>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - Mvc - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>
+- Edit trang Login.cshtml theo form Login.html:
+@model LoginViewModel
+
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Log in";
+    string ReturnUrl = ViewBag.ReturnUrl;
+    List<AuthenticationScheme> externalLogins = ViewBag.ExternalLogins;
+}
+
+
+<div class="login_wrapper ">
+
+    <section class="login_content">
+
+        <form method="post">
+            <h1>Đăng Nhập</h1>
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div>
+                <input asp-for="@Model.UserName" class="form-control" placeholder="name@example.com" />
+                <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="@Model.Password" class="form-control" autocomplete="current-password"
+                    aria-required="true" placeholder="password" />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="checkbox mb-3 text-start">
+                <input class="form-check-input" asp-for="@Model.RememberMe" />
+                <label asp-for="@Model.RememberMe" class="form-label">
+                    @Html.DisplayNameFor(m => m.RememberMe)
+                </label>
+            </div>
+            <div>
+                <button id="login-submit" type="submit" class="w-100 btn btn-sm btn-round btn-primary">Log
+                    in</button>
+            </div>
+        </form>
+        <div class="separator">
+            <p>External Login</p>
+            <form id="external-account" asp-action="ExternalLogin" asp-route-returnUrl="@ReturnUrl" method="post"
+                class="form-horizontal">
+                <div>
+                    <p>
+                        <button type="submit" class="w-100 btn btn-sm btn-round btn-danger" name="provider"
+                            value="Facebook" title="Log in using your Facebook account"><i class="fa fa-facebook"></i>
+                            Facebook</button>
+                    </p>
+                    <p>
+                        <button type="submit" class="w-100 btn btn-sm btn-round btn-success" name="provider"
+                            value="Google" title="Log in using your Google account"><i class="fa fa-google"></i>
+                            Google</button>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </section>
+    <div class="separator">
+        <p>
+            <a id="forgot-password" asp-action="ForgotPassword">Forgot your password?</a>
+        </p>
+        <p>
+            <a asp-action="Register" asp-route-returnUrl="@ReturnUrl">Register as a new user</a>
+        </p>
+        <p>
+            <a id="resend-confirmation" asp-action="ResendEmailConfirmation">Resend email confirmation</a>
+        </p>
+
+    </div>
+
+</div>
+
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+- Edit Register 
+@inject SignInManager<AppUser> SignInManager
+@model RegisterViewModel
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Đăng ký tài khoản mới";
+    string returnUrl = ViewBag.ReturnUrl;
+    var ExtenalLogins = ViewBag.ExternalLogins as List<AuthenticationScheme>;
+}
+
+<div class="login_wrapper ">
+    <section class="login_content">
+        <form method="post">
+            <h1>Đăng ký</h1>
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div>
+                <input asp-for="@Model.Email" class="form-control" placeholder="name@example.com" />
+                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="@Model.Password" class="form-control" autocomplete="current-password"
+                    aria-required="true" placeholder="password" />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="checkbox mb-3 text-start">
+                <input asp-for="@Model.ConfirmPassword" class="form-control" autocomplete="current-password"
+                    aria-required="true" placeholder="password" />
+                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div>
+                <button id="login-submit" type="submit" class="w-100 btn btn-sm btn-round btn-primary">Đăng ký</button>
+            </div>
+        </form>
+        <div>
+            <div class="d-flex align-items-center my-4">
+                <hr class="flex-grow-1">
+                <span class="mx-3">External Login</span>
+                <hr class="flex-grow-1">
+            </div>
+        </div>
+        <form id="external-account" asp-action="ExternalLogin" asp-route-returnUrl="@returnUrl" method="post"
+            class="form-horizontal">
+            <div>
+                <p>
+                    <button type="submit" class="w-100 btn btn-sm btn-round btn-danger" name="provider" value="Facebook"
+                        title="Log in using your Facebook account"><i class="fa fa-facebook"></i>
+                        Facebook</button>
+                </p>
+                <p>
+                    <button type="submit" class="w-100 btn btn-sm btn-round btn-success" name="provider" value="Google"
+                        title="Log in using your Google account"><i class="fa fa-google"></i>
+                        Google</button>
+                </p>
+            </div>
+        </form>
+        <div>
+            <div class="d-flex align-items-center my-4">
+                <hr class="flex-grow-1">
+                <span class="mx-3">Other utility</span>
+                <hr class="flex-grow-1">
+            </div>
+            <div>
+                <p>
+                    <a id="forgot-password" asp-action="ForgotPassword">Forgot your password?</a>
+                </p>
+                <p>
+                    <a asp-action="Register" asp-route-returnUrl="@returnUrl">Register as a new user</a>
+                </p>
+                <p>
+                    <a id="resend-confirmation" asp-action="ResendEmailConfirmation">Resend email confirmation</a>
+                </p>
+            </div>
+
+
+        </div>
+</div>
+</section>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+2.2 Tuỳ biến trang UserManager
+- Thêm Image cho user, Lưu urladdress vào Database
+- Tạo model UserImage.cs
+using System.ComponentModel.DataAnnotations;
+
+namespace OMS_App.Models
+{
+    public class UserImage
+    {
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        public string UrlAddress { get; set; }
+        [Required]
+        public int AppUserId { get; set; }
+    }
+}
+- Thêm thuộc tính UserImage vào AppUser
+using System;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+namespace OMS_App.Models
+{
+    public class AppUser : IdentityUser
+    {
+        [MaxLength(100)]
+        public string? FullName { get; set; }
+        [MaxLength(255)]
+        public string? Address { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? Birthday { get; set; }
+        public ICollection<UserImage> UserImages { get; set; }
+
+    }
+}
+- Tạo quan hệ 1 appuser nhiều UserImage
+Data/OMSDbContext.cs
+            modelBuilder.Entity<AppUser>()
+                .HasMany(a => a.UserImages)
+                .WithOne(u => u.AppUser)
+                .HasForeignKey(a => a.AppUserId);
+
+            modelBuilder.Entity<UserImage>()
+                .HasOne(u => u.AppUser)
+                .WithMany(a => a.UserImages)
+                .HasForeignKey(a => a.AppUserId);
+- Tạo IUserImageRepo/UserImageRepo.cs
+- Đăng ký và dependency của hệ thống:
+builder.Services.AddScroped(IUserImageRepo,UserImageRepo);
+- Edit _LoginPartial.cshtml
+@using Microsoft.AspNetCore.Identity
+@using OMS_App.Models
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+<div class="d-flex align-items-center my-4">
+    <ul class="navbar-nav"></ul>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div>
+            <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-action="Index" asp-controller="Manager"
+                title="Manage">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle overflow-hidden border border-secondary" style="width:30px; height:30px;">
+                        <img src="~/files/userimages/ilogin.png" alt="Profile"
+                            class="img-fluid w-100 h-100 object-fit-cover">
+                    </div>
+                    <span class="ms-2">@UserManager.GetUserName(User)</span>
+                </div>
+            </a>
+
+
+        </div>
+    }
+    else
+    {
+        <div>
+            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-controller="Account"
+                asp-action="Register">Register</a>
+        </div>
+        <div class="nav-item">
+            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-controller="Account"
+                asp-action="Login">Login</a>
+        </div>
+    }
+    </ul>
+</div>
+3. Tạo ra Admin controller

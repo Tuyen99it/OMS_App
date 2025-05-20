@@ -1,0 +1,23 @@
+@using Microsoft.AspNetCore.Identity
+@using OMS_App.Models
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="profile clearfix">
+        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-action="Index" asp-controller="Manager"
+            title="Manage">
+            <div class="profile_pic">
+                <img src="~/files/userimages/user-default.png" alt="..." class="img-circle profile_img">
+            </div>
+            <div class="profile_info">
+                <span>Welcome,</span>
+                <h2>@UserManager.GetUserName(User)</h2>
+            </div>
+        </a>
+    </div>
+
+}

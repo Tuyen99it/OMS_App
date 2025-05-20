@@ -1,60 +1,55 @@
-
 @model IndexViewModel;
 @inject RoleManager<IdentityRole> _roleManager;
 
 @{
+    Layout = "_AdminLayout";
     ViewData["Title"] = "Role Management";
-    var Roles=ViewBag.Roles as List<IdentityRole>;
+    var Roles = ViewBag.Roles as List<IdentityRole>;
 
-    
+
 }
 
 <h1>@ViewData["Title"]</h1>
- <partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
+<partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
 <div class="row">
     <div class="col-md-6">
         <section>
-            <form id="account" method="post" class="row g-2">  
+            <form id="account" method="post" class="row g-2">
 
                 <div class="col-auto">
-                    <label class="visually-hidden">Email</label>
                     <input class="form-control" asp-for="SearchingRoleName" placeholder="Enter role name ...">
                     <span asp-validation-for="SearchingRoleName" class="text-danger"></span>
                 </div>
-               
+
                 <div class="col-2">
                     <button id="login-submit" type="submit" class=" btn mb-3 btn-primary">Search</button>
                 </div>
             </form>
         </section>
-        
+
     </div>
 </div>
-    
 <div>
-    <h2> Thêm role</h2>
-</div>
-<div >
     <div>
 
-        <a asp-action="Create" asp-controller="Role" class="text-link text-primary">Add Role</a>
+        <h2><a asp-action="Create" asp-controller="Role" class="text-link text-primary">Thêm Role</a></h2>
     </div>
 
 </div>
 <hr>
 
-    <table class="table">
+<table class="table">
     <thead>
         <tr>
             <th>
                 No
             </th>
-             <th>
+            <th>
                 RoleName
             </th>
             <th>NormalizeName</th>
             <th>Claims</th>
-             
+
             <th>
                 Action
             </th>
@@ -62,36 +57,38 @@
         </tr>
     </thead>
     <tbody>
-            @{
-                int i=1;
-            }
-            @foreach(var role in Roles){
-                <tr>
-                    <td>@(i++)</td>
-                    <td>@Html.DisplayFor(modelItem=>role.Name)</td>
-                    <td>@Html.DisplayFor(modelItem=>role.NormalizedName)</td>
-                    @{
-                        string claimsInList=string.Empty;
-                        var claims=await _roleManager.GetClaimsAsync(role);
-                        if(claims.Count==0){
-                            claimsInList="No Claims";
-                        }
-                        else{
-                            claimsInList=string.Join(",",claims.ToList());
-                        }
-                        <td>@claimsInList</td>
+        @{
+            int i = 1;
+        }
+        @foreach (var role in Roles)
+        {
+            <tr>
+                <td>@(i++)</td>
+                <td>@Html.DisplayFor(modelItem => role.Name)</td>
+                <td>@Html.DisplayFor(modelItem => role.NormalizedName)</td>
+                @{
+                    string claimsInList = string.Empty;
+                    var claims = await _roleManager.GetClaimsAsync(role);
+                    if (claims.Count == 0)
+                    {
+                        claimsInList = "No Claims";
                     }
-                    
-                    <td>
-                        <a asp-action ="Detail" asp-controller="Role" asp-route-roleid="@role.Id">Detail</a>
-                        <a asp-action ="ClaimHome" asp-controller="Role" asp-route-roleid="@role.Id">Claim</a>
-                        <a asp-action ="Update" asp-controller="Role" asp-route-roleid="@role.Id">Update</a>
-                        <a asp-action ="Delete" asp-controller="Role" asp-route-roleid="@role.Id">Delete</a>
-                    </td>
-                </tr>
-                
-                
-            }
+                    else
+                    {
+                        claimsInList = string.Join(",", claims.ToList());
+                    }
+                    <td>@claimsInList</td>
+                }
+
+                <td>
+                    <a asp-action="Detail" asp-controller="Role" asp-route-roleid="@role.Id">Detail</a>
+                    <a asp-action="ClaimHome" asp-controller="Role" asp-route-roleid="@role.Id">Claim</a>
+                    <a asp-action="Update" asp-controller="Role" asp-route-roleid="@role.Id">Update</a>
+                    <a asp-action="Delete" asp-controller="Role" asp-route-roleid="@role.Id">Delete</a>
+                </td>
+            </tr>
+
+
+        }
     </tbody>
 </table>
-

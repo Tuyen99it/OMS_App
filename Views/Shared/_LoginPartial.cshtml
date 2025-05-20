@@ -4,30 +4,36 @@
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 
-<ul class="navbar-nav">
+<div class="d-flex align-items-center my-4">
+    <ul class="navbar-nav"></ul>
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
+        <div>
             <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-action="Index" asp-controller="Manager"
-                title="Manage">Hello @UserManager.GetUserName(User)!</a>
-        </li>
-        <li class="nav-item">
-            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-action="Logout" asp-controller="Account"
-                asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
-            </form>
-        </li>
+                title="Manage">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle overflow-hidden border border-secondary" style="width:30px; height:30px;">
+                        <img src="~/files/userimages/ilogin.png" alt="Profile"
+                            class="img-fluid w-100 h-100 object-fit-cover">
+                    </div>
+                    <span class="ms-2">@UserManager.GetUserName(User)</span>
+                </div>
+            </a>
+
+
+        </div>
+
     }
     else
     {
-        <li class="nav-item">
+        <div>
             <a class="nav-link text-dark" id="register" asp-area="Identity" asp-controller="Account"
                 asp-action="Register">Register</a>
-        </li>
-        <li class="nav-item">
+        </div>
+        <div class="nav-item">
             <a class="nav-link text-dark" id="login" asp-area="Identity" asp-controller="Account"
                 asp-action="Login">Login</a>
-        </li>
+        </div>
     }
-    <partial name="_AdminDropdownMenu"></partial>
-</ul>
+    </ul>
+</div>

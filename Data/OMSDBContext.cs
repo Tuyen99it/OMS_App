@@ -4,6 +4,7 @@ using OMS_App.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using OMS_App.Areas.Post.Models;
+using OMS_App.Areas.Inventory.Models;
 namespace OMS_App.Data
 {
     public class OMSDBContext : IdentityDbContext<AppUser>
@@ -14,6 +15,12 @@ namespace OMS_App.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostCategory> PostCategories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<UserImage> UserImages { get; set; }
+
+        // Register Product Category table
+        public DbSet<ProductInventory> ProductInventories { get; set; }
+        public DbSet<CategoryProduct> CategoryProducts { get; set; }
+        public DbSet<ProductCategory> ProductCategories { get; set; }
         public OMSDBContext(DbContextOptions<OMSDBContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,37 +44,21 @@ namespace OMS_App.Data
             // Tạo mối quan hệ many -many between Post and Category bằng việc tạo key cho bảng bằng việc kết hợp PostId và CategoryId
             modelBuilder.Entity<PostCategory>().HasKey(p => new { p.PostId, p.CategoryId });
 
+
+            // Tạo mối quan hệ many -many between Product and ProductCategory bằng việc tạo key cho bảng bằng việc kết hợp ProductId và CategoryId
+            modelBuilder.Entity<CategoryProduct>().HasKey(c => new { c.ProductInventoryId, c.ProductCategoryId });
+            // // Tạo quan hệ giữa appuser và userImage
+            modelBuilder.Entity<AppUser>()
+                .HasMany(a => a.UserImages)
+                .WithOne(u => u.AppUser)
+                .HasForeignKey(a => a.AppUserId);
+
+            modelBuilder.Entity<UserImage>()
+                .HasOne(u => u.AppUser)
+                .WithMany(a => a.UserImages)
+                .HasForeignKey(a => a.AppUserId);
             /// Thực hiện trèn 4 sản phẩm vào bảng khi bảng Product được tạo
-            modelBuilder.Entity<Product>().HasData(
-               new Product()
-               {
-                   ProductId = 1,
-                   Name = "Đá phong thuỷ tự nhiên",
-                   Description = "Số 1 cao 40cm rộng 20cm dày 20cm màu xanh lá cây đậm",
-                   Price = 1000000
-               },
-                new Product()
-                {
-                    ProductId = 2,
-                    Name = "Đèn đá muối hình tròn",
-                    Description = "Trang trí trong nhà Chất liệu : • Đá muối",
-                    Price = 1500000
-                },
-                new Product()
-                {
-                    ProductId = 3,
-                    Name = "Tranh sơn mài",
-                    Description = "Tranh sơn mài loại nhỏ 15x 15 giá 50.000",
-                    Price = 50000
-                },
-                new Product()
-                {
-                    ProductId = 4,
-                    Name = "Tranh sơn dầu - Ngựa",
-                    Description = "Nguyên liệu thể hiện :    Sơn dầu",
-                    Price = 450000
-                }
-            );
+
         }
     }
 }
