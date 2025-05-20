@@ -1,8 +1,14 @@
 @using Microsoft.AspNetCore.Identity
+@using OMS_App.Data
 @using OMS_App.Models
-
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
+@inject IUserImageRepo UserImage
+@{
+    var userName = UserManager.GetUserName(User);
+    var userId = UserManager.GetUserId(User);
+    string userUrlPath = userId != null ? await UserImage.GetUserProfileUrlAsync(userId) : null;
+}
 
 
 @if (SignInManager.IsSignedIn(User))
@@ -11,11 +17,11 @@
         <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-action="Index" asp-controller="Manager"
             title="Manage">
             <div class="profile_pic">
-                <img src="~/files/userimages/user-default.png" alt="..." class="img-circle profile_img">
+                <img src="@Url.Content(userUrlPath)" alt="..." class="img-circle profile_img">
             </div>
             <div class="profile_info">
                 <span>Welcome,</span>
-                <h2>@UserManager.GetUserName(User)</h2>
+                <h2>@userName</h2>
             </div>
         </a>
     </div>

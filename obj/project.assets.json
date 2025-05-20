@@ -8989,11 +8989,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
+      "projectUniqueName": "C:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
       "projectName": "OMS_App",
-      "projectPath": "c:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
+      "projectPath": "C:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
       "packagesPath": "C:\\Users\\F&B\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\F&B\\Cshap\\OMS_App\\obj\\",
+      "outputPath": "C:\\Users\\F&B\\Cshap\\OMS_App\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\F&B\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -9019,8 +9019,6 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.300"
       },
       "SdkAnalysisLevel": "9.0.300"
     },
@@ -9136,24 +9134,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.16, 8.0.16]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[8.0.16, 8.0.16]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.16, 8.0.16]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.16, 8.0.16]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -9163,16 +9143,7 @@
           }
         },
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file C:\\Users\\F&B\\Cshap\\OMS_App\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0."
-    }
-  ]
+  }
 }
