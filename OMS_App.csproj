@@ -51,8 +51,6 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
   </ItemGroup>
-  <PropertyGroup>
-  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-</PropertyGroup>
+
 
 </Project>
