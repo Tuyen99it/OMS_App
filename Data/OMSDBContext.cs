@@ -21,6 +21,7 @@ namespace OMS_App.Data
         public DbSet<ProductInventory> ProductInventories { get; set; }
         public DbSet<CategoryProduct> CategoryProducts { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
+        public DbSet<InventoryImage> InventoryImages { get; set; }
         public OMSDBContext(DbContextOptions<OMSDBContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

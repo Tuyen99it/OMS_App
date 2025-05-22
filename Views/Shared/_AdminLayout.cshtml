@@ -122,12 +122,17 @@
       </div>
 
       <!-- top navigation -->
-      <partial name="_AdminTopNavbarPartial"></partial>
+      <div class="mx-3">
+          <partial name="_AdminTopNavbarPartial"></partial>
+        </div>
+     
       <!-- /top navigation -->
 
       <!-- page content -->
-      <div class="right_col" role="main">
-        @RenderBody()
+      <div class="right_col " role="main">
+        <div class="mx-3">
+          @RenderBody()
+        </div>
       </div>
       <!-- /page content -->
 

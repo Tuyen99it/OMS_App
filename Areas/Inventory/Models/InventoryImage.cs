@@ -7,7 +7,7 @@ namespace OMS_App.Areas.Inventory.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Type { get; set; }
+        public ImageType Type { get; set; }
         public int ProductCategoryId { get; set; }
         public int ProductInventoryId { get; set; }
         [ForeignKey("ProductCategoryId")]
@@ -17,5 +17,8 @@ namespace OMS_App.Areas.Inventory.Models
         public DateTime CreateDate { get; set; }
         public string ImageUrlPath { get; set; }
 
+
     }
+    public enum ImageType { ProductInventory, ProductCategory }
+    
 }

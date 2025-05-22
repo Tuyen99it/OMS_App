@@ -68,9 +68,21 @@ namespace OMS_App.Areas.Inventory.Data
             return product;
         }
 
-        public Task<bool> UpdateProductInventoryAsync(ProductInventory product)
+        public async Task<bool> UpdateProductInventoryAsync(ProductInventory product)
         {
-            throw new NotImplementedException();
+            if (product == null)
+            {
+                throw new NullReferenceException("Product is null");
+            }
+            var existProduct = await _context.ProductInventories.FirstOrDefaultAsync(p => p.Id == product.Id);
+            if (existProduct == null)
+            {
+                _logger.LogInformation("Product not found for update");
+                return false;
+            }
+            _context.Entry(existProduct).CurrentValues.SetValues(product);
+            _logger.LogInformation("Product is updated");
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }
