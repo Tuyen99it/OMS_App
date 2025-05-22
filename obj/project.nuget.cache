@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "1L5EzDj39YY=",
+  "dgSpecHash": "xRBqFa5ews4=",
   "success": true,
   "projectFilePath": "C:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\F&B\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\F&B\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\F&B\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\F&B\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
     "C:\\Users\\F&B\\.nuget\\packages\\elfinder.net.core\\1.5.0\\elfinder.net.core.1.5.0.nupkg.sha512",
@@ -98,6 +100,7 @@
     "C:\\Users\\F&B\\.nuget\\packages\\microsoft.codeanalysis.scripting.common\\4.8.0\\microsoft.codeanalysis.scripting.common.4.8.0.nupkg.sha512",
     "C:\\Users\\F&B\\.nuget\\packages\\microsoft.codeanalysis.workspaces.common\\4.8.0\\microsoft.codeanalysis.workspaces.common.4.8.0.nupkg.sha512",
     "C:\\Users\\F&B\\.nuget\\packages\\microsoft.codeanalysis.workspaces.msbuild\\4.8.0\\microsoft.codeanalysis.workspaces.msbuild.4.8.0.nupkg.sha512",
+    "C:\\Users\\F&B\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\F&B\\.nuget\\packages\\microsoft.data.sqlclient\\6.0.1\\microsoft.data.sqlclient.6.0.1.nupkg.sha512",
     "C:\\Users\\F&B\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\6.0.2\\microsoft.data.sqlclient.sni.runtime.6.0.2.nupkg.sha512",
     "C:\\Users\\F&B\\.nuget\\packages\\microsoft.diasymreader\\2.0.0\\microsoft.diasymreader.2.0.0.nupkg.sha512",

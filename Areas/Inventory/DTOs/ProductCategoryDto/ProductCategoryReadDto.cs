@@ -1,6 +1,6 @@
 using OMS_App.Areas.Inventory.Models;
 
-namespace OMS_App.Areas.Inventory.Dto
+namespace OMS_App.Areas.Inventory.Dtos
 {
     public class ProductCategoryReadDto
     {

@@ -48,9 +48,37 @@ namespace OMS_App.Areas.Inventory.Data
             return _context.SaveChanges() > 0;
         }
 
-        public async Task<List<ProductInventory>> GetAllProductInventoryAsync()
+        public async Task<List<ProductInventory>> GetAllProductInventoryAsync(int itemShowNumber, int existPage)
         {
-            return await _context.ProductInventories.ToListAsync();
+            
+            itemShowNumber = ( itemShowNumber <= 0) ? 1 : itemShowNumber;
+            var totalItem = _context.ProductInventories.Count();
+            var totalPage = (int)Math.Ceiling((double)totalItem / itemShowNumber);
+            if (existPage <= 0) existPage = 1;
+            if (existPage >= totalPage) existPage = totalPage;
+            return await _context.ProductInventories.Skip((existPage - 1) * itemShowNumber)
+                                                    .Take(itemShowNumber)
+                                                    .Include(p => p.ProductImages)
+                                                    .Include(p => p.CategoriesProduct)
+                                                    .ThenInclude(c => c.ProductCategory).ToListAsync();
+                                               
+        }
+        
+        public async Task<List<ProductInventory>> GetProductsInventoryByNameAsync(string searchName, int itemShowNumber, int existPage)
+        {
+
+            itemShowNumber = (itemShowNumber <= 0) ? 1 : itemShowNumber;
+            var totalItem = _context.ProductInventories.Count();
+            var totalPage = (int)Math.Ceiling((double)totalItem / itemShowNumber);
+            if (existPage <= 0) existPage = 1;
+            if (existPage >= totalPage) existPage = totalPage;
+            return await _context.ProductInventories.Where(p => p.Name.Contains(searchName))
+                                                    .Skip((existPage - 1) * itemShowNumber)
+                                                    .Take(itemShowNumber)
+                                                    .Include(p => p.ProductImages)
+                                                    .Include(p => p.CategoriesProduct)
+                                                    .ThenInclude(c => c.ProductCategory).ToListAsync();
+
         }
 
         public async Task<ProductInventory> GetProductInventoryByIdAsync(string productId)
@@ -64,10 +92,21 @@ namespace OMS_App.Areas.Inventory.Data
                                                            .Include(p => p.CategoriesProduct)
                                                            .ThenInclude(c => c.ProductCategory)
                                                            .FirstOrDefaultAsync();
-                                                           
+
             return product;
         }
+       public  async Task<ProductInventory> GetProductInventoryByNameAsync(string productName)
+        {
+             if (String.IsNullOrEmpty(productName))
+            {
+                throw new NullReferenceException("Product name is null");
+            }
+            var product = await _context.ProductInventories.Where(p => p.Name.Contains(productName))
+                                                           .FirstOrDefaultAsync();
 
+            return product;
+            
+         }
         public async Task<bool> UpdateProductInventoryAsync(ProductInventory product)
         {
             if (product == null)
@@ -84,5 +123,7 @@ namespace OMS_App.Areas.Inventory.Data
             _logger.LogInformation("Product is updated");
             return await _context.SaveChangesAsync() > 0;
         }
+
+       
     }
 }

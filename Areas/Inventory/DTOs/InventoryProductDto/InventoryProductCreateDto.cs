@@ -1,10 +1,9 @@
 using OMS_App.Areas.Inventory.Models;
 
-namespace OMS_App.Areas.Inventory.Dto
+namespace OMS_App.Areas.Inventory.Dtos
 {
-    public class InventoryProductUpdateDto
+    public class InventoryProductCreateDto
     {
-        public int Id { get; set; }
          public string Name { get; set; }
         public string Description { get; set; }
         public DateTime ManufactureDate { get; set; }
