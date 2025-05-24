@@ -60,7 +60,7 @@ namespace OMS_App.Areas.Inventory.Data
             }
             if (type == ImageType.ProductInventory)
             {
-                var images = await _context.InventoryImages.Where(i => i.ProductInventoryId == Convert.ToInt32(imageTypeId)).ToListAsync();
+                var images = await _context.InventoryImages.Where(i => i.ProductNameId == Convert.ToInt32(imageTypeId)).ToListAsync();
                 return images;
             }
             else

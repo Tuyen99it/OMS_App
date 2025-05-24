@@ -4,7 +4,7 @@ using NuGet.Protocol.Plugins;
 
 namespace OMS_App.Areas.Inventory.Models
 {
-    [Table("Product Category")]
+
     public class ProductCategory
     {
         [Key]

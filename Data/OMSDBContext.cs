@@ -18,6 +18,7 @@ namespace OMS_App.Data
         public DbSet<UserImage> UserImages { get; set; }
 
         // Register Product Category table
+        public DbSet<ProductName> ProductNames { get; set; }
         public DbSet<ProductInventory> ProductInventories { get; set; }
         public DbSet<CategoryProduct> CategoryProducts { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
@@ -47,7 +48,7 @@ namespace OMS_App.Data
 
 
             // Tạo mối quan hệ many -many between Product and ProductCategory bằng việc tạo key cho bảng bằng việc kết hợp ProductId và CategoryId
-            modelBuilder.Entity<CategoryProduct>().HasKey(c => new { c.ProductInventoryId, c.ProductCategoryId });
+            modelBuilder.Entity<CategoryProduct>().HasKey(c => new { c.ProductNameId, c.ProductCategoryId });
             // // Tạo quan hệ giữa appuser và userImage
             modelBuilder.Entity<AppUser>()
                 .HasMany(a => a.UserImages)

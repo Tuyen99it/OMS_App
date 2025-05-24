@@ -7,7 +7,7 @@ namespace OMS_App.Areas.Inventory.Data
     {
         public static void AddInventoryServices(this IServiceCollection services)
         {
-            services.AddScoped<IProductInventoryRepo, ProductInventoryServiceRepo>();
+            services.AddScoped<IProductNameRepo, ProductNameServiceRepo>();
             services.AddScoped<IProductCategoryRepo, ProductCategoryServiceRepo>();
             services.AddScoped<IInventoryImageRepo, InventoryImageServiceRepo>();
         }

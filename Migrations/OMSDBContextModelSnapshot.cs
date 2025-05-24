@@ -161,13 +161,13 @@ namespace OMS_App.Migrations
 
             modelBuilder.Entity("OMS_App.Areas.Inventory.Models.CategoryProduct", b =>
                 {
-                    b.Property<int>("ProductInventoryId")
+                    b.Property<int>("ProductNameId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductCategoryId")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductInventoryId", "ProductCategoryId");
+                    b.HasKey("ProductNameId", "ProductCategoryId");
 
                     b.HasIndex("ProductCategoryId");
 
@@ -192,7 +192,7 @@ namespace OMS_App.Migrations
                     b.Property<int>("ProductCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductInventoryId")
+                    b.Property<int>("ProductNameId")
                         .HasColumnType("int");
 
                     b.Property<int>("Type")
@@ -202,7 +202,7 @@ namespace OMS_App.Migrations
 
                     b.HasIndex("ProductCategoryId");
 
-                    b.HasIndex("ProductInventoryId");
+                    b.HasIndex("ProductNameId");
 
                     b.ToTable("InventoryImages");
                 });
@@ -230,7 +230,7 @@ namespace OMS_App.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Product Category");
+                    b.ToTable("ProductCategories");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductInventory", b =>
@@ -241,15 +241,33 @@ namespace OMS_App.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("DateCreate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpireDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductNameId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductNameId");
+
+                    b.ToTable("ProductInventories");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductName", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ManufactureDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -263,7 +281,7 @@ namespace OMS_App.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductInventories");
+                    b.ToTable("ProductNames");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
@@ -538,15 +556,15 @@ namespace OMS_App.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductInventory", "ProductInventory")
+                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductName", "ProductName")
                         .WithMany("CategoriesProduct")
-                        .HasForeignKey("ProductInventoryId")
+                        .HasForeignKey("ProductNameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ProductCategory");
 
-                    b.Navigation("ProductInventory");
+                    b.Navigation("ProductName");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Inventory.Models.InventoryImage", b =>
@@ -557,15 +575,15 @@ namespace OMS_App.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductInventory", "ProductInventory")
+                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductName", "ProductName")
                         .WithMany("ProductImages")
-                        .HasForeignKey("ProductInventoryId")
+                        .HasForeignKey("ProductNameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ProductCategory");
 
-                    b.Navigation("ProductInventory");
+                    b.Navigation("ProductName");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductCategory", b =>
@@ -575,6 +593,17 @@ namespace OMS_App.Migrations
                         .HasForeignKey("ParentCategoryId");
 
                     b.Navigation("productCategory");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductInventory", b =>
+                {
+                    b.HasOne("OMS_App.Areas.Inventory.Models.ProductName", "ProductName")
+                        .WithMany("ProductInventories")
+                        .HasForeignKey("ProductNameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductName");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
@@ -634,11 +663,13 @@ namespace OMS_App.Migrations
                     b.Navigation("ChildrenCategory");
                 });
 
-            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductInventory", b =>
+            modelBuilder.Entity("OMS_App.Areas.Inventory.Models.ProductName", b =>
                 {
                     b.Navigation("CategoriesProduct");
 
                     b.Navigation("ProductImages");
+
+                    b.Navigation("ProductInventories");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
