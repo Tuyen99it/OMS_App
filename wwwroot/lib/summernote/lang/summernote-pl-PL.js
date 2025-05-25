@@ -1,28 +1,5 @@
-/*!
- * 
- * Super simple WYSIWYG editor v0.9.1
- * https://summernote.org
- *
- * Copyright 2013~ Hackerwins and contributors
- * Summernote may be freely distributed under the MIT license.
- *
- * Date: 2024-10-09T10:28Z
- *
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
-var __webpack_exports__ = {};
 (function ($) {
-  $.extend(true, $.summernote.lang, {
+  $.extend($.summernote.lang, {
     'pl-PL': {
       font: {
         bold: 'Pogrubienie',
@@ -32,8 +9,6 @@ var __webpack_exports__ = {};
         height: 'Interlinia',
         name: 'Czcionka',
         strikethrough: 'Przekreślenie',
-        subscript: 'Indeks dolny',
-        superscript: 'Indeks górny',
         size: 'Rozmiar'
       },
       image: {
@@ -42,8 +17,8 @@ var __webpack_exports__ = {};
         resizeFull: 'Zmień rozmiar na 100%',
         resizeHalf: 'Zmień rozmiar na 50%',
         resizeQuarter: 'Zmień rozmiar na 25%',
-        floatLeft: 'Do lewej',
-        floatRight: 'Do prawej',
+        floatLeft: 'Po lewej',
+        floatRight: 'Po prawej',
         floatNone: 'Równo z tekstem',
         shapeRounded: 'Kształt: zaokrąglone',
         shapeCircle: 'Kształt: okrąg',
@@ -55,15 +30,14 @@ var __webpack_exports__ = {};
         maximumFileSize: 'Limit wielkości pliku',
         maximumFileSizeError: 'Przekroczono limit wielkości pliku.',
         url: 'Adres URL grafiki',
-        remove: 'Usuń grafikę',
-        original: 'Oryginał'
+        remove: 'Usuń grafikę'
       },
       video: {
         video: 'Wideo',
         videoLink: 'Adres wideo',
         insert: 'Wstaw wideo',
         url: 'Adres wideo',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion lub Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, lub Youku)'
       },
       link: {
         link: 'Odnośnik',
@@ -75,21 +49,14 @@ var __webpack_exports__ = {};
         openInNewWindow: 'Otwórz w nowym oknie'
       },
       table: {
-        table: 'Tabela',
-        addRowAbove: 'Dodaj wiersz powyżej',
-        addRowBelow: 'Dodaj wiersz poniżej',
-        addColLeft: 'Dodaj kolumnę po lewej',
-        addColRight: 'Dodaj kolumnę po prawej',
-        delRow: 'Usuń wiersz',
-        delCol: 'Usuń kolumnę',
-        delTable: 'Usuń tabelę'
+        table: 'Tabela'
       },
       hr: {
         insert: 'Wstaw poziomą linię'
       },
       style: {
-        style: 'Styl',
-        p: 'Paragraf',
+        style: 'Style',
+        normal: 'Normalny',
         blockquote: 'Cytat',
         pre: 'Kod',
         h1: 'Nagłówek 1',
@@ -124,7 +91,7 @@ var __webpack_exports__ = {};
         foreground: 'Czcionka',
         transparent: 'Przeźroczysty',
         setTransparent: 'Przeźroczyste',
-        reset: 'Zresetuj',
+        reset: 'Reset',
         resetToDefault: 'Domyślne'
       },
       shortcut: {
@@ -136,48 +103,10 @@ var __webpack_exports__ = {};
         documentStyle: 'Styl dokumentu',
         extraKeys: 'Dodatkowe klawisze'
       },
-      help: {
-        'insertParagraph': 'Wstaw paragraf',
-        'undo': 'Cofnij poprzednią operację',
-        'redo': 'Przywróć poprzednią operację',
-        'tab': 'Tabulacja',
-        'untab': 'Usuń tabulację',
-        'bold': 'Pogrubienie',
-        'italic': 'Kursywa',
-        'underline': 'Podkreślenie',
-        'strikethrough': 'Przekreślenie',
-        'removeFormat': 'Usuń formatowanie',
-        'justifyLeft': 'Wyrównaj do lewej',
-        'justifyCenter': 'Wyrównaj do środka',
-        'justifyRight': 'Wyrównaj do prawej',
-        'justifyFull': 'Justyfikacja',
-        'insertUnorderedList': 'Nienumerowana lista',
-        'insertOrderedList': 'Wypunktowana lista',
-        'outdent': 'Zmniejsz wcięcie paragrafu',
-        'indent': 'Zwiększ wcięcie paragrafu',
-        'formatPara': 'Zamień format bloku na paragraf (tag P)',
-        'formatH1': 'Zamień format bloku na H1',
-        'formatH2': 'Zamień format bloku na H2',
-        'formatH3': 'Zamień format bloku na H3',
-        'formatH4': 'Zamień format bloku na H4',
-        'formatH5': 'Zamień format bloku na H5',
-        'formatH6': 'Zamień format bloku na H6',
-        'insertHorizontalRule': 'Wstaw poziomą linię',
-        'linkDialog.show': 'Pokaż okno linkowania'
-      },
       history: {
         undo: 'Cofnij',
         redo: 'Ponów'
-      },
-      specialChar: {
-        specialChar: 'ZNAKI SPECJALNE',
-        select: 'Wybierz Znak specjalny'
       }
     }
   });
 })(jQuery);
-/******/ 	return __webpack_exports__;
-/******/ })()
-;
-});
-//# sourceMappingURL=summernote-pl-PL.js.map

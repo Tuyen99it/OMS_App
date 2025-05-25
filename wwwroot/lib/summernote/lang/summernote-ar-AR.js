@@ -1,28 +1,5 @@
-/*!
- * 
- * Super simple WYSIWYG editor v0.9.1
- * https://summernote.org
- *
- * Copyright 2013~ Hackerwins and contributors
- * Summernote may be freely distributed under the MIT license.
- *
- * Date: 2024-10-09T10:28Z
- *
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
-var __webpack_exports__ = {};
 (function ($) {
-  $.extend(true, $.summernote.lang, {
+  $.extend($.summernote.lang, {
     'ar-AR': {
       font: {
         bold: 'عريض',
@@ -32,8 +9,6 @@ var __webpack_exports__ = {};
         height: 'إرتفاع السطر',
         name: 'الخط',
         strikethrough: 'فى وسطه خط',
-        subscript: 'مخطوطة',
-        superscript: 'حرف فوقي',
         size: 'الحجم'
       },
       image: {
@@ -45,28 +20,20 @@ var __webpack_exports__ = {};
         floatLeft: 'تطيير لليسار',
         floatRight: 'تطيير لليمين',
         floatNone: 'ثابته',
-        shapeRounded: 'الشكل: تقريب',
-        shapeCircle: 'الشكل: دائرة',
-        shapeThumbnail: 'الشكل: صورة مصغرة',
-        shapeNone: 'الشكل: لا شيء',
         dragImageHere: 'إدرج الصورة هنا',
-        dropImage: 'إسقاط صورة أو نص',
         selectFromFiles: 'حدد ملف',
-        maximumFileSize: 'الحد الأقصى لحجم الملف',
-        maximumFileSizeError: 'تم تجاوز الحد الأقصى لحجم الملف',
         url: 'رابط الصورة',
-        remove: 'حذف الصورة',
-        original: 'Original'
+        remove: 'حذف الصورة'
       },
       video: {
         video: 'فيديو',
         videoLink: 'رابط الفيديو',
         insert: 'إدراج الفيديو',
         url: 'رابط الفيديو',
-        providers: '(YouTube, Google Drive, Vimeo, Vine, Instagram, DailyMotion or Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
       },
       link: {
-        link: 'رابط',
+        link: 'رابط رابط',
         insert: 'إدراج',
         unlink: 'حذف الرابط',
         edit: 'تعديل',
@@ -75,21 +42,14 @@ var __webpack_exports__ = {};
         openInNewWindow: 'فتح في نافذة جديدة'
       },
       table: {
-        table: 'جدول',
-        addRowAbove: 'إضافة سطر أعلاه',
-        addRowBelow: 'إضافة سطر أدناه',
-        addColLeft: 'إضافة عمود قبله',
-        addColRight: 'إضافة عمود بعده',
-        delRow: 'حذف سطر',
-        delCol: 'حذف عمود',
-        delTable: 'حذف الجدول'
+        table: 'جدول'
       },
       hr: {
         insert: 'إدراج خط أفقي'
       },
       style: {
         style: 'تنسيق',
-        p: 'عادي',
+        normal: 'عادي',
         blockquote: 'إقتباس',
         pre: 'شفيرة',
         h1: 'عنوان رئيسي 1',
@@ -125,8 +85,7 @@ var __webpack_exports__ = {};
         transparent: 'شفاف',
         setTransparent: 'بدون خلفية',
         reset: 'إعادة الضبط',
-        resetToDefault: 'إعادة الضبط',
-        cpSelect: 'اختار'
+        resetToDefault: 'إعادة الضبط'
       },
       shortcut: {
         shortcuts: 'إختصارات',
@@ -134,51 +93,12 @@ var __webpack_exports__ = {};
         textFormatting: 'تنسيق النص',
         action: 'Action',
         paragraphFormatting: 'تنسيق الفقرة',
-        documentStyle: 'تنسيق المستند',
-        extraKeys: 'أزرار إضافية'
-      },
-      help: {
-        'insertParagraph': 'إدراج فقرة',
-        'undo': 'تراجع عن آخر أمر',
-        'redo': 'إعادة تنفيذ آخر أمر',
-        'tab': 'إزاحة (تاب)',
-        'untab': 'سحب النص باتجاه البداية',
-        'bold': 'تنسيق عريض',
-        'italic': 'تنسيق مائل',
-        'underline': 'تنسيق خط سفلي',
-        'strikethrough': 'تنسيق خط متوسط للنص',
-        'removeFormat': 'إزالة التنسيقات',
-        'justifyLeft': 'محاذاة لليسار',
-        'justifyCenter': 'محاذاة توسيط',
-        'justifyRight': 'محاذاة لليمين',
-        'justifyFull': 'محاذاة كاملة',
-        'insertUnorderedList': 'قائمة منقّطة',
-        'insertOrderedList': 'قائمة مرقّمة',
-        'outdent': 'إزاحة للأمام على الفقرة الحالية',
-        'indent': 'إزاحة للخلف على الفقرة الحالية',
-        'formatPara': 'تغيير التنسيق للكتلة الحالية إلى فقرة',
-        'formatH1': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 1',
-        'formatH2': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 2',
-        'formatH3': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 3',
-        'formatH4': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 4',
-        'formatH5': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 5',
-        'formatH6': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 6',
-        'insertHorizontalRule': 'إدراج خط أفقي',
-        'linkDialog.show': 'إظهار خصائص الرابط'
+        documentStyle: 'تنسيق المستند'
       },
       history: {
         undo: 'تراجع',
         redo: 'إعادة'
-      },
-      specialChar: {
-        specialChar: 'محارف خاصة',
-        select: 'اختر المحرف الخاص'
       }
     }
   });
 })(jQuery);
-/******/ 	return __webpack_exports__;
-/******/ })()
-;
-});
-//# sourceMappingURL=summernote-ar-AR.js.map

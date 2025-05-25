@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.Features;
-
+using OMS_App.Areas.Inventory.Data;
 using OMS_App.Data;
 using OMS_App.Models;
 using Microsoft.CodeAnalysis.FlowAnalysis;
+using OMS_App.Areas.Inventory.Dtos;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +20,13 @@ builder.Services.AddDbContext<OMSDBContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
+//Add Inventory service
 
+// builder.Services.AddScoped<IProductNameRepo, ProductNameServiceRepo>();
+// builder.Services.AddScoped<IProductCategoryRepo, ProductCategoryServiceRepo>();
+// builder.Services.AddScoped<IInventoryImageRepo, InventoryImageServiceRepo>();
+// builder.Services.AddScoped<IProductInventoryRepo, ProductInventoryServiceRepo>();
+builder.Services.AddInventoryServices();
 //Add Identity Services to container
 builder.Services.AddDefaultIdentity<AppUser>(options =>
                 {
@@ -27,7 +35,12 @@ builder.Services.AddDefaultIdentity<AppUser>(options =>
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<OMSDBContext>()
                 .AddDefaultTokenProviders();
-
+// Add automapper
+// ...existing code...
+builder.Services.AddAutoMapper(typeof(Program)); // Scans for profiles in the current assembly
+// OR, if your profiles are in another assembly:
+// builder.Services.AddAutoMapper(typeof(YourProfileClass));
+// ...existing code...
 // Add IUserImageRepo and UserImageRepo
 builder.Services.AddScoped<IUserImageRepo, UserImageRepo>();
 //configure IdentityOption
@@ -103,6 +116,8 @@ builder.Services.AddSession(cfg =>           // Đăng ký dịch vụ Session
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 // Add Razor page
+
+
 //builder.Services.AddRazorPages();
 var app = builder.Build();
 
@@ -127,5 +142,16 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+// SeedData for database
+var factoryScoped = app.Services.GetRequiredService<IServiceScopeFactory>();
+using (var scope = factoryScoped.CreateScope())
+{
+    var _context = scope.ServiceProvider.GetRequiredService<OMSDBContext>();
+    var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+    Console.WriteLine("Start seed data");
 
+
+    DbProductInventorySeedData.Initialize(_context, _mapper);
+
+}
 app.Run();

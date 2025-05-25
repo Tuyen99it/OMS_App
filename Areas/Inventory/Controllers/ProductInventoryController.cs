@@ -8,32 +8,35 @@ using OMS_App.Areas.Inventory.Models;
 namespace OMS_App.Areas.Inventory.Controllers
 {
     [Area("Inventory")]
-    public class ProductNameController : Controller
+    public class ProductInventoryController : Controller
     {
         private readonly IProductNameRepo _repository;
 
-        private readonly ILogger<ProductNameController> _logger;
+        private readonly ILogger<ProductInventoryController> _logger;
         private readonly IMapper _mapper;
         private readonly IProductInventoryRepo _productRepository;
 
-        public ProductNameController(IProductNameRepo repository, ILogger<ProductNameController> logger, IMapper mapper, IProductInventoryRepo productRepository)
+        public ProductInventoryController(IProductNameRepo repository, ILogger<ProductInventoryController> logger, IMapper mapper, IProductInventoryRepo productRepository)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
             _productRepository = productRepository;
         }
-        [HttpGet()]
-        public async Task<IActionResult> Index(string? productName, int itemShowNumber, int existPage)
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
             var products = new List<ProductName>();
+            string productName = "";
+            int itemShowNumber = 10;
+            int existPage = 1;
             if (string.IsNullOrEmpty(productName))
             {
                 products = await _repository.GetAllProductNameAsync(itemShowNumber, existPage);
             }
             else
             {
-                products = await _repository.GetProductsNameByNameAsync(productName, itemShowNumber, existPage);
+                products = await _repository.GetProductNameByNameAsync(productName, itemShowNumber, existPage);
             }
 
 
@@ -154,9 +157,9 @@ namespace OMS_App.Areas.Inventory.Controllers
             }
             else
             {
-                 Console.WriteLine("--> Could not update product Name");
+                Console.WriteLine("--> Could not update product Name");
                 return View();
-                
+
             }
         }
 

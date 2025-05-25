@@ -1,28 +1,5 @@
-/*!
- * 
- * Super simple WYSIWYG editor v0.9.1
- * https://summernote.org
- *
- * Copyright 2013~ Hackerwins and contributors
- * Summernote may be freely distributed under the MIT license.
- *
- * Date: 2024-10-09T10:28Z
- *
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
-var __webpack_exports__ = {};
 (function ($) {
-  $.extend(true, $.summernote.lang, {
+  $.extend($.summernote.lang, {
     'hu-HU': {
       font: {
         bold: 'Félkövér',
@@ -32,8 +9,6 @@ var __webpack_exports__ = {};
         height: 'Sorköz',
         name: 'Betűtípus',
         strikethrough: 'Áthúzott',
-        subscript: 'Subscript',
-        superscript: 'Superscript',
         size: 'Betűméret'
       },
       image: {
@@ -45,25 +20,18 @@ var __webpack_exports__ = {};
         floatLeft: 'Igazítás balra',
         floatRight: 'Igazítás jobbra',
         floatNone: 'Igazítás törlése',
-        shapeRounded: 'Shape: Rounded',
-        shapeCircle: 'Shape: Circle',
-        shapeThumbnail: 'Shape: Thumbnail',
-        shapeNone: 'Shape: None',
         dragImageHere: 'Ide húzhat képet vagy szöveget',
         dropImage: 'Engedje el a képet vagy szöveget',
         selectFromFiles: 'Fájlok kiválasztása',
-        maximumFileSize: 'Maximum file size',
-        maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'Kép URL címe',
-        remove: 'Kép törlése',
-        original: 'Original'
+        remove: 'Kép törlése'
       },
       video: {
         video: 'Videó',
         videoLink: 'Videó hivatkozás',
         insert: 'Videó beszúrása',
         url: 'Videó URL címe',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion vagy Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, vagy Youku)'
       },
       link: {
         link: 'Hivatkozás',
@@ -75,21 +43,14 @@ var __webpack_exports__ = {};
         openInNewWindow: 'Megnyitás új ablakban'
       },
       table: {
-        table: 'Táblázat',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        table: 'Táblázat'
       },
       hr: {
         insert: 'Elválasztó vonal beszúrása'
       },
       style: {
         style: 'Stílus',
-        p: 'Normál',
+        normal: 'Normál',
         blockquote: 'Idézet',
         pre: 'Kód',
         h1: 'Fejléc 1',
@@ -133,8 +94,7 @@ var __webpack_exports__ = {};
         textFormatting: 'Szöveg formázása',
         action: 'Művelet',
         paragraphFormatting: 'Bekezdés formázása',
-        documentStyle: 'Dokumentumstílus',
-        extraKeys: 'Extra keys'
+        documentStyle: 'Dokumentumstílus'
       },
       help: {
         'insertParagraph': 'Új bekezdés',
@@ -168,16 +128,8 @@ var __webpack_exports__ = {};
       history: {
         undo: 'Visszavonás',
         redo: 'Újra'
-      },
-      specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
       }
+
     }
   });
 })(jQuery);
-/******/ 	return __webpack_exports__;
-/******/ })()
-;
-});
-//# sourceMappingURL=summernote-hu-HU.js.map

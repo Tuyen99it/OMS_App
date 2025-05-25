@@ -4,7 +4,7 @@ namespace OMS_App.Areas.Inventory.Data
     public interface IProductNameRepo
     {
         Task<List<ProductName>> GetAllProductNameAsync(int itemShowNumber, int existPage);
-        Task<List<ProductName>> GetProductsInventoryByNameAsync(string searchname,int itemShowNumber, int existPage);
+        Task<List<ProductName>> GetProductNameByNameAsync(string searchname, int itemShowNumber, int existPage);
         Task<ProductName> GetProductNameByIdAsync(string productId);
         Task<ProductName> GetProductNameByNameAsync(string productName);
         Task<bool> CreateProductNameAsync(ProductName product);

@@ -1,96 +1,60 @@
-/*!
- * 
- * Super simple WYSIWYG editor v0.9.1
- * https://summernote.org
- *
- * Copyright 2013~ Hackerwins and contributors
- * Summernote may be freely distributed under the MIT license.
- *
- * Date: 2024-10-09T10:28Z
- *
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
-var __webpack_exports__ = {};
 (function ($) {
-  $.extend(true, $.summernote.lang, {
+  $.extend($.summernote.lang, {
     'de-DE': {
       font: {
         bold: 'Fett',
         italic: 'Kursiv',
-        underline: 'Unterstrichen',
+        underline: 'Unterstreichen',
         clear: 'Zurücksetzen',
         height: 'Zeilenhöhe',
-        name: 'Schriftart',
         strikethrough: 'Durchgestrichen',
-        subscript: 'Tiefgestellt',
-        superscript: 'Hochgestellt',
         size: 'Schriftgröße'
       },
       image: {
-        image: 'Bild',
-        insert: 'Bild einfügen',
+        image: 'Grafik',
+        insert: 'Grafik einfügen',
         resizeFull: 'Originalgröße',
-        resizeHalf: '1/2 Größe',
-        resizeQuarter: '1/4 Größe',
+        resizeHalf: 'Größe 1/2',
+        resizeQuarter: 'Größe 1/4',
         floatLeft: 'Linksbündig',
         floatRight: 'Rechtsbündig',
         floatNone: 'Kein Textfluss',
-        shapeRounded: 'Abgerundete Ecken',
-        shapeCircle: 'Kreisförmig',
-        shapeThumbnail: '"Vorschaubild"',
+        shapeRounded: 'Rahmen: Abgerundet',
+        shapeCircle: 'Rahmen: Kreisförmig',
+        shapeThumbnail: 'Rahmen: Thumbnail',
         shapeNone: 'Kein Rahmen',
-        dragImageHere: 'Bild hierher ziehen',
-        dropImage: 'Bild oder Text nehmen',
-        selectFromFiles: 'Datei auswählen',
+        dragImageHere: 'Ziehen Sie ein Bild mit der Maus hierher',
+        selectFromFiles: 'Wählen Sie eine Datei aus',
         maximumFileSize: 'Maximale Dateigröße',
         maximumFileSizeError: 'Maximale Dateigröße überschritten',
-        url: 'Bild URL',
-        remove: 'Bild entfernen',
-        original: 'Original'
+        url: 'Grafik URL',
+        remove: 'Grafik entfernen'
       },
       video: {
         video: 'Video',
-        videoLink: 'Videolink',
+        videoLink: 'Video Link',
         insert: 'Video einfügen',
-        url: 'Video URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion oder Youku)'
+        url: 'Video URL?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, oder Youku)'
       },
       link: {
         link: 'Link',
         insert: 'Link einfügen',
         unlink: 'Link entfernen',
-        edit: 'Bearbeiten',
+        edit: 'Editieren',
         textToDisplay: 'Anzeigetext',
-        url: 'Link URL',
-        openInNewWindow: 'In neuem Fenster öffnen'
+        url: 'Ziel des Links?',
+        openInNewWindow: 'In einem neuen Fenster öffnen'
       },
       table: {
-        table: 'Tabelle',
-        addRowAbove: '+ Zeile oberhalb',
-        addRowBelow: '+ Zeile unterhalb',
-        addColLeft: '+ Spalte links',
-        addColRight: '+ Spalte rechts',
-        delRow: 'Zeile löschen',
-        delCol: 'Spalte löschen',
-        delTable: 'Tabelle löschen'
+        table: 'Tabelle'
       },
       hr: {
-        insert: 'Horizontale Linie einfügen'
+        insert: 'Eine horizontale Linie einfügen'
       },
       style: {
         style: 'Stil',
         normal: 'Normal',
-        p: 'Normal',
         blockquote: 'Zitat',
         pre: 'Quellcode',
         h1: 'Überschrift 1',
@@ -107,12 +71,12 @@ var __webpack_exports__ = {};
       options: {
         help: 'Hilfe',
         fullscreen: 'Vollbild',
-        codeview: 'Quellcode anzeigen'
+        codeview: 'HTML-Code anzeigen'
       },
       paragraph: {
         paragraph: 'Absatz',
-        outdent: 'Einzug verkleinern',
-        indent: 'Einzug vergrößern',
+        outdent: 'Einzug vergrößern',
+        indent: 'Einzug verkleinern',
         left: 'Links ausrichten',
         center: 'Zentriert ausrichten',
         right: 'Rechts ausrichten',
@@ -120,7 +84,7 @@ var __webpack_exports__ = {};
       },
       color: {
         recent: 'Letzte Farbe',
-        more: 'Weitere Farben',
+        more: 'Mehr Farben',
         background: 'Hintergrundfarbe',
         foreground: 'Schriftfarbe',
         transparent: 'Transparenz',
@@ -134,51 +98,13 @@ var __webpack_exports__ = {};
         textFormatting: 'Textformatierung',
         action: 'Aktion',
         paragraphFormatting: 'Absatzformatierung',
-        documentStyle: 'Dokumentenstil',
-        extraKeys: 'Weitere Tasten'
-      },
-      help: {
-        insertParagraph: 'Absatz einfügen',
-        undo: 'Letzte Anweisung rückgängig',
-        redo: 'Letzte Anweisung wiederholen',
-        tab: 'Einzug hinzufügen',
-        untab: 'Einzug entfernen',
-        bold: 'Schrift Fett',
-        italic: 'Schrift Kursiv',
-        underline: 'Unterstreichen',
-        strikethrough: 'Durchstreichen',
-        removeFormat: 'Entfernt Format',
-        justifyLeft: 'Linksbündig',
-        justifyCenter: 'Mittig',
-        justifyRight: 'Rechtsbündig',
-        justifyFull: 'Blocksatz',
-        insertUnorderedList: 'Unnummerierte Liste',
-        insertOrderedList: 'Nummerierte Liste',
-        outdent: 'Aktuellen Absatz ausrücken',
-        indent: 'Aktuellen Absatz einrücken',
-        formatPara: 'Formatiert aktuellen Block als Absatz (P-Tag)',
-        formatH1: 'Formatiert aktuellen Block als H1',
-        formatH2: 'Formatiert aktuellen Block als H2',
-        formatH3: 'Formatiert aktuellen Block als H3',
-        formatH4: 'Formatiert aktuellen Block als H4',
-        formatH5: 'Formatiert aktuellen Block als H5',
-        formatH6: 'Formatiert aktuellen Block als H6',
-        insertHorizontalRule: 'Fügt eine horizontale Linie ein',
-        'linkDialog.show': 'Zeigt den Linkdialog'
+        documentStyle: 'Dokumentenstil'
       },
       history: {
         undo: 'Rückgängig',
         redo: 'Wiederholen'
-      },
-      specialChar: {
-        specialChar: 'Sonderzeichen',
-        select: 'Zeichen auswählen'
       }
+
     }
   });
 })(jQuery);
-/******/ 	return __webpack_exports__;
-/******/ })()
-;
-});
-//# sourceMappingURL=summernote-de-DE.js.map

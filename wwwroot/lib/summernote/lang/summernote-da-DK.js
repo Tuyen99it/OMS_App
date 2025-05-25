@@ -1,28 +1,5 @@
-/*!
- * 
- * Super simple WYSIWYG editor v0.9.1
- * https://summernote.org
- *
- * Copyright 2013~ Hackerwins and contributors
- * Summernote may be freely distributed under the MIT license.
- *
- * Date: 2024-10-09T10:28Z
- *
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
-var __webpack_exports__ = {};
 (function ($) {
-  $.extend(true, $.summernote.lang, {
+  $.extend($.summernote.lang, {
     'da-DK': {
       font: {
         bold: 'Fed',
@@ -55,8 +32,7 @@ var __webpack_exports__ = {};
         maximumFileSize: 'Maks fil størrelse',
         maximumFileSizeError: 'Filen er større end maks tilladte fil størrelse!',
         url: 'Billede URL',
-        remove: 'Fjern billede',
-        original: 'Original'
+        remove: 'Fjern billede'
       },
       video: {
         video: 'Video',
@@ -75,21 +51,14 @@ var __webpack_exports__ = {};
         openInNewWindow: 'Åbn i nyt vindue'
       },
       table: {
-        table: 'Tabel',
-        addRowAbove: 'Tilføj række over',
-        addRowBelow: 'Tilføj række under',
-        addColLeft: 'Tilføj venstre kolonne',
-        addColRight: 'Tilføj højre kolonne',
-        delRow: 'Slet række',
-        delCol: 'Slet kolonne',
-        delTable: 'Slet tabel'
+        table: 'Tabel'
       },
       hr: {
         insert: 'Indsæt horisontal linje'
       },
       style: {
         style: 'Stil',
-        p: 'p',
+        normal: 'Normal',
         blockquote: 'Citat',
         pre: 'Kode',
         h1: 'Overskrift 1',
@@ -133,51 +102,13 @@ var __webpack_exports__ = {};
         textFormatting: 'Tekstformatering',
         action: 'Handling',
         paragraphFormatting: 'Afsnitsformatering',
-        documentStyle: 'Dokumentstil',
-        extraKeys: 'Extra keys'
-      },
-      help: {
-        'insertParagraph': 'Indsæt paragraf',
-        'undo': 'Undoes the last command',
-        'redo': 'Redoes the last command',
-        'tab': 'Tab',
-        'untab': 'Untab',
-        'bold': 'Set a bold style',
-        'italic': 'Set a italic style',
-        'underline': 'Set a underline style',
-        'strikethrough': 'Set a strikethrough style',
-        'removeFormat': 'Clean a style',
-        'justifyLeft': 'Set left align',
-        'justifyCenter': 'Set center align',
-        'justifyRight': 'Set right align',
-        'justifyFull': 'Set full align',
-        'insertUnorderedList': 'Toggle unordered list',
-        'insertOrderedList': 'Toggle ordered list',
-        'outdent': 'Outdent on current paragraph',
-        'indent': 'Indent on current paragraph',
-        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
-        'formatH1': 'Change current block\'s format as H1',
-        'formatH2': 'Change current block\'s format as H2',
-        'formatH3': 'Change current block\'s format as H3',
-        'formatH4': 'Change current block\'s format as H4',
-        'formatH5': 'Change current block\'s format as H5',
-        'formatH6': 'Change current block\'s format as H6',
-        'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Vis Link Dialog'
+        documentStyle: 'Dokumentstil'
       },
       history: {
         undo: 'Fortryd',
         redo: 'Annuller fortryd'
-      },
-      specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Vælg special karakterer'
       }
+
     }
   });
 })(jQuery);
-/******/ 	return __webpack_exports__;
-/******/ })()
-;
-});
-//# sourceMappingURL=summernote-da-DK.js.map

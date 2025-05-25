@@ -1,28 +1,5 @@
-/*!
- * 
- * Super simple WYSIWYG editor v0.9.1
- * https://summernote.org
- *
- * Copyright 2013~ Hackerwins and contributors
- * Summernote may be freely distributed under the MIT license.
- *
- * Date: 2024-10-09T10:28Z
- *
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
-var __webpack_exports__ = {};
 (function ($) {
-  $.extend(true, $.summernote.lang, {
+  $.extend($.summernote.lang, {
     'tr-TR': {
       font: {
         bold: 'Kalın',
@@ -50,13 +27,9 @@ var __webpack_exports__ = {};
         shapeThumbnail: 'Şekil: K.Resim',
         shapeNone: 'Şekil: Yok',
         dragImageHere: 'Buraya sürükleyin',
-        dropImage: 'Resim veya metni bırakın',
         selectFromFiles: 'Dosya seçin',
-        maximumFileSize: 'Maksimum dosya boyutu',
-        maximumFileSizeError: 'Maksimum dosya boyutu aşıldı.',
         url: 'Resim bağlantısı',
-        remove: 'Resimi Kaldır',
-        original: 'Original'
+        remove: 'Resimi Kaldır'
       },
       video: {
         video: 'Video',
@@ -75,21 +48,14 @@ var __webpack_exports__ = {};
         openInNewWindow: 'Yeni pencerede aç'
       },
       table: {
-        table: 'Tablo',
-        addRowAbove: 'Yukarı satır ekle',
-        addRowBelow: 'Aşağı satır ekle',
-        addColLeft: 'Sola sütun ekle',
-        addColRight: 'Sağa sütun ekle',
-        delRow: 'Satırı sil',
-        delCol: 'Sütunu sil',
-        delTable: 'Tabloyu sil'
+        table: 'Tablo'
       },
       hr: {
         insert: 'Yatay çizgi ekle'
       },
       style: {
         style: 'Biçim',
-        p: 'p',
+        normal: 'Normal',
         blockquote: 'Alıntı',
         pre: 'Önbiçimli',
         h1: 'Başlık 1',
@@ -125,8 +91,7 @@ var __webpack_exports__ = {};
         transparent: 'Seffaflık',
         setTransparent: 'Şeffaflığı ayarla',
         reset: 'Sıfırla',
-        resetToDefault: 'Varsayılanlara sıfırla',
-        cpSelect: 'Seç'
+        resetToDefault: 'Varsayılanlara sıfırla'
       },
       shortcut: {
         shortcuts: 'Kısayollar',
@@ -134,51 +99,13 @@ var __webpack_exports__ = {};
         textFormatting: 'Yazı biçimlendirme',
         action: 'Eylem',
         paragraphFormatting: 'Paragraf biçimlendirme',
-        documentStyle: 'Biçim',
-        extraKeys: 'İlave anahtarlar'
-      },
-      help: {
-        'insertParagraph': 'Paragraf ekler',
-        'undo': 'Son komudu geri alır',
-        'redo': 'Son komudu yineler',
-        'tab': 'Girintiyi artırır',
-        'untab': 'Girintiyi azaltır',
-        'bold': 'Kalın yazma stilini ayarlar',
-        'italic': 'İtalik yazma stilini ayarlar',
-        'underline': 'Altı çizgili yazma stilini ayarlar',
-        'strikethrough': 'Üstü çizgili yazma stilini ayarlar',
-        'removeFormat': 'Biçimlendirmeyi temizler',
-        'justifyLeft': 'Yazıyı sola hizalar',
-        'justifyCenter': 'Yazıyı ortalar',
-        'justifyRight': 'Yazıyı sağa hizalar',
-        'justifyFull': 'Yazıyı her iki tarafa yazlar',
-        'insertUnorderedList': 'Madde işaretli liste ekler',
-        'insertOrderedList': 'Numaralı liste ekler',
-        'outdent': 'Aktif paragrafın girintisini azaltır',
-        'indent': 'Aktif paragrafın girintisini artırır',
-        'formatPara': 'Aktif bloğun biçimini paragraf (p) olarak değiştirir',
-        'formatH1': 'Aktif bloğun biçimini başlık 1 (h1) olarak değiştirir',
-        'formatH2': 'Aktif bloğun biçimini başlık 2 (h2) olarak değiştirir',
-        'formatH3': 'Aktif bloğun biçimini başlık 3 (h3) olarak değiştirir',
-        'formatH4': 'Aktif bloğun biçimini başlık 4 (h4) olarak değiştirir',
-        'formatH5': 'Aktif bloğun biçimini başlık 5 (h5) olarak değiştirir',
-        'formatH6': 'Aktif bloğun biçimini başlık 6 (h6) olarak değiştirir',
-        'insertHorizontalRule': 'Yatay çizgi ekler',
-        'linkDialog.show': 'Bağlantı ayar kutusunu gösterir'
+        documentStyle: 'Biçim'
       },
       history: {
         undo: 'Geri al',
-        redo: 'Yinele'
-      },
-      specialChar: {
-        specialChar: 'ÖZEL KARAKTERLER',
-        select: 'Özel Karakterleri seçin'
+        redo: 'Yeniden yap'
       }
+
     }
   });
 })(jQuery);
-/******/ 	return __webpack_exports__;
-/******/ })()
-;
-});
-//# sourceMappingURL=summernote-tr-TR.js.map
