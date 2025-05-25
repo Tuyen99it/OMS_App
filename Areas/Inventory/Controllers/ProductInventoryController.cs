@@ -15,8 +15,7 @@ namespace OMS_App.Areas.Inventory.Controllers
         private readonly ILogger<ProductInventoryController> _logger;
         private readonly IMapper _mapper;
         private readonly IProductInventoryRepo _productRepository;
-
-        public ProductInventoryController(IProductNameRepo repository, ILogger<ProductInventoryController> logger, IMapper mapper, IProductInventoryRepo productRepository)
+        public List<ProductNameCreateDto> Products { get; set; } = new(); public ProductInventoryController(IProductNameRepo repository, ILogger<ProductInventoryController> logger, IMapper mapper, IProductInventoryRepo productRepository)
         {
             _repository = repository;
             _logger = logger;
@@ -29,7 +28,7 @@ namespace OMS_App.Areas.Inventory.Controllers
             var products = new List<ProductName>();
             string productName = "";
             int itemShowNumber = 10;
-            int existPage = 1;
+            int existPage = 4;
             var productsReadDto = new List<ProductNameReadDto>();
             if (string.IsNullOrEmpty(productName))
             {
@@ -67,62 +66,54 @@ namespace OMS_App.Areas.Inventory.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            return View();
+            var model = new ProductInventoryViewModel();
+
+
+            return View(model);
 
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAsync(ProductNameCreateDto dto)
+        public async Task<IActionResult> CreateAsync(int number, ProductInventoryViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-            var product = _mapper.Map<ProductName>(dto);
-            var existProductName = _repository.GetProductNameByNameAsync(dto.Name);
+            var newModel = new ProductInventoryViewModel();
+
+            Console.WriteLine("-->Start create product");
+            // if (!ModelState.IsValid)
+            // {
+            //     Console.WriteLine("-->Input invalid");
+            //     return View();
+            // }
+            Console.WriteLine(number);
+            var product = _mapper.Map<ProductName>(model.ProductNameCreateDto);
+            var existProductName = await _repository.GetProductNameByNameAsync(model.ProductNameCreateDto.Name);
             if (existProductName == null)
             {
                 Console.WriteLine("-->Item Name is not in the stock, need to add image");
-                var result = await _repository.CreateProductNameAsync(product);
-                if (result = true)
-                {
-                    var newProduct = await _repository.GetProductNameByNameAsync(dto.Name);
-                    // add product to inventory
-                    var productInventory = _mapper.Map<ProductInventory>(dto);
-                    productInventory.ProductNameId = newProduct.Id;
-                    var result_add = await _productRepository.CreateProductInventoryAsync(productInventory);
-                    if (result_add) return RedirectToAction("AddImage", new { newProduct = newProduct });
-                    Console.WriteLine("-->Can not add product");
-                    return View();
 
+                var result = await _repository.CreateProductNameAsync(product);
+                if (result == true)
+                {   // Get product follow number
+                    var productsTemp = await _repository.GetLastProductsByNumberAsync(number + 1);
+
+                    var productNameReadDto = _mapper.Map<List<ProductNameReadDto>>(productsTemp);
+                    newModel.ProductsNameReadDto = productNameReadDto;
+                    newModel.ProductNameCreateDto = null;
+                    newModel.number = number + 1;
+                    return View(newModel);
                 }
                 else
                 {
                     Console.WriteLine("-->Can not add product");
-                    return View();
+                    return View(Products);
                 }
 
             }
 
             else
             {
-
-                var newProduct = await _repository.GetProductNameByNameAsync(dto.Name);
-                // add product to inventory
-                var productInventory = _mapper.Map<ProductInventory>(dto);
-                productInventory.ProductNameId = newProduct.Id;
-                var result_add = await _productRepository.CreateProductInventoryAsync(productInventory);
-                if (result_add)
-                {
-                    return RedirectToAction("Index", new { softbyDate = true });
-
-                }
-                else
-                {
-                    Console.WriteLine("-->Can not add product");
-                    return View();
-                }
-
+                Console.WriteLine("--> Product Name is existing");
+                return View(Products);
             }
 
         }
@@ -184,6 +175,7 @@ namespace OMS_App.Areas.Inventory.Controllers
 
             }
         }
+
 
 
     }

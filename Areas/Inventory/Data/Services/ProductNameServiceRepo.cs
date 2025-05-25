@@ -108,7 +108,6 @@ namespace OMS_App.Areas.Inventory.Data
             }
             var products = await _context.ProductNames.Where(p => p.Name.Contains(productName)).ToListAsync();
             var product = products.FirstOrDefault();
-            product.Quantity = products.Count();
             return product;
 
         }
@@ -129,6 +128,9 @@ namespace OMS_App.Areas.Inventory.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-
+        public async Task<List<ProductName>> GetLastProductsByNumberAsync(int number)
+        {
+            return await _context.ProductNames.OrderByDescending(p => p.Id).Take(number).ToListAsync();
+        }
     }
 }
