@@ -30,17 +30,39 @@ namespace OMS_App.Areas.Inventory.Controllers
             string productName = "";
             int itemShowNumber = 10;
             int existPage = 1;
+            var productsReadDto = new List<ProductNameReadDto>();
             if (string.IsNullOrEmpty(productName))
             {
                 products = await _repository.GetAllProductNameAsync(itemShowNumber, existPage);
+
+                if (products != null)
+                {
+
+                    foreach (var product in products)
+                    {
+                        var productdto = _mapper.Map<ProductNameReadDto>(product);
+                        productdto.Quantity = await _productRepository.GetQuantityByIdAsync(product.Id);
+                        productsReadDto.Add(productdto);
+                    }
+
+                }
             }
             else
             {
-                products = await _repository.GetProductNameByNameAsync(productName, itemShowNumber, existPage);
+                products = await _repository.GetAllProductNameAsync(itemShowNumber, existPage);
+                if (products != null)
+                {
+                    foreach (var product in products)
+                    {
+                        var productdto = _mapper.Map<ProductNameReadDto>(product);
+                        productdto.Quantity = await _productRepository.GetQuantityByIdAsync(product.Id);
+                        productsReadDto.Add(productdto);
+                    }
+                }
             }
 
 
-            return View(_mapper.Map<IEnumerable<ProductNameReadDto>>(products));
+            return View(productsReadDto);
         }
         [HttpGet]
         public async Task<IActionResult> Create()

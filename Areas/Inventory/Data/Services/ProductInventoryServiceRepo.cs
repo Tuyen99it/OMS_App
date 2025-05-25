@@ -74,6 +74,11 @@ namespace OMS_App.Areas.Inventory.Data
             return product;
         }
 
+        public async Task<int> GetQuantityByIdAsync(int productId)
+        {
+            return await _context.ProductInventories.Where(p => p.ProductNameId == productId).CountAsync();
+        }
+
         public async Task<bool> UpdateProductInventoryAsync(ProductInventory product)
         {
             if (product == null)

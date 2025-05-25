@@ -150,8 +150,13 @@ using (var scope = factoryScoped.CreateScope())
     var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
     Console.WriteLine("Start seed data");
 
+    if (app.Environment.IsDevelopment())
+    {
+        if (_context.ProductNames.Count() <= 0) DbProductInventorySeedData.Initialize(_context, _mapper);
+        if (_context.ProductInventories.Count() <= 0) DbProductInventorySeedData.InitializeProductInventory(_context, _mapper);
+    }
 
-    DbProductInventorySeedData.Initialize(_context, _mapper);
+
 
 }
 app.Run();

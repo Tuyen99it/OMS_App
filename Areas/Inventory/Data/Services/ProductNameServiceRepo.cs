@@ -62,9 +62,7 @@ namespace OMS_App.Areas.Inventory.Data
             if (existPage >= totalPage) existPage = totalPage;
             return await _context.ProductNames.Skip((existPage - 1) * itemShowNumber)
                                                 .Take(itemShowNumber)
-                                                .Include(p => p.ProductImages)
-                                               .Include(p => p.CategoriesProduct)
-                                               .ThenInclude(c => c.ProductCategory).ToListAsync();
+                                                .ToListAsync();
 
         }
 
