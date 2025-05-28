@@ -119,34 +119,33 @@ namespace OMS_App.Areas.Inventory.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DetailAsync(string productName)
+        public async Task<IActionResult> DetailAsync(string productId)
         {
-            if (string.IsNullOrEmpty(productName))
+            if (string.IsNullOrEmpty(productId))
             {
-                return NotFound("Name is null");
+                return NotFound("ProductId is null");
             }
-            var product = await _repository.GetProductNameByNameAsync(productName);
-            var productReadDto = new ProductNameReadDto();
-            productReadDto = _mapper.Map<ProductNameReadDto>(product);
-            productReadDto.Quantity = product.ProductInventories.Count();
+            var product = await _repository.GetProductNameByIdAsync(productId);
+            var productReadDto = _mapper.Map<ProductNameReadDto>(product);
+
             return View(productReadDto);
 
 
         }
         // Edit productName
         [HttpGet]
-        public async Task<IActionResult> UpdateAsync(string productNameId)
+        public async Task<IActionResult> UpdateAsync(string productId)
         {
-            if (string.IsNullOrEmpty(productNameId))
+            if (string.IsNullOrEmpty(productId))
             {
                 return NotFound();
             }
-            var product = await _repository.GetProductNameByIdAsync(productNameId);
+            var product = await _repository.GetProductNameByIdAsync(productId);
             var productUpdateDto = _mapper.Map<ProductNameUpdateDto>(product);
             return View(productUpdateDto);
         }
 
-        [HttpPut]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateAsync(ProductNameUpdateDto dto)
         {
@@ -158,7 +157,7 @@ namespace OMS_App.Areas.Inventory.Controllers
             var existProduct = await _repository.GetProductNameByIdAsync(dto.Id.ToString());
             if (existProduct == null)
             {
-                Console.WriteLine("--> Product Nane is not existing");
+                Console.WriteLine("--> Product Id is not existing");
                 return View();
 
             }
@@ -171,6 +170,28 @@ namespace OMS_App.Areas.Inventory.Controllers
             else
             {
                 Console.WriteLine("--> Could not update product Name");
+                return View();
+
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteAsync(string productId)
+        {
+            if (string.IsNullOrEmpty(productId))
+            {
+                return NotFound();
+            }
+            var product = await _repository.GetProductNameByIdAsync(productId);
+
+            var result = await _repository.DeleteProductNameAsync(product);
+            if (result)
+            {
+                return RedirectToAction("Index", new { softbyDate = true });
+            }
+            else
+            {
+                Console.WriteLine("--> Could not delete product Name");
                 return View();
 
             }

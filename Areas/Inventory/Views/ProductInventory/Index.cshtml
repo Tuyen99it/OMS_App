@@ -57,9 +57,9 @@
                 <td>@Html.DisplayFor(modelItem => product.Quantity)</td>
 
                 <td>
-                    <a asp-action="Detail" asp-controller="ProductInventory" asp-route-roleid="@product.Id">Detail</a>
-                    <a asp-action="Update" asp-controller="ProductInventory" asp-route-roleid="@product.Id">Update</a>
-                    <a asp-action="Delete" asp-controller="ProductInventory" asp-route-roleid="@product.Id">Delete</a>
+                    <a asp-action="Detail" asp-controller="ProductInventory" asp-route-productId="@product.Id">Detail</a>
+                    <a asp-action="Update" asp-controller="ProductInventory" asp-route-productId="@product.Id">Update</a>
+                    <a asp-action="Delete" asp-controller="ProductInventory" asp-route-productId="@product.Id">Delete</a>
                 </td>
             </tr>
         }
