@@ -1,7 +1,9 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
 using OMS_App.Areas.Inventory.Data;
 using OMS_App.Areas.Inventory.Dtos;
 using OMS_App.Areas.Inventory.Models;
@@ -11,27 +13,61 @@ namespace OMS_App.Areas.Inventory.Controllers
     public class ProductInventoryController : Controller
     {
         private readonly IProductNameRepo _repository;
-
         private readonly ILogger<ProductInventoryController> _logger;
         private readonly IMapper _mapper;
         private readonly IProductInventoryRepo _productRepository;
-        public List<ProductNameCreateDto> Products { get; set; } = new(); public ProductInventoryController(IProductNameRepo repository, ILogger<ProductInventoryController> logger, IMapper mapper, IProductInventoryRepo productRepository)
+        public List<ProductNameCreateDto> Products { get; set; } = new();
+        public ProductInventoryController(IProductNameRepo repository, ILogger<ProductInventoryController> logger, IMapper mapper, IProductInventoryRepo productRepository)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
             _productRepository = productRepository;
         }
-        [HttpGet]
+ 
         public async Task<IActionResult> Index()
         {
-            var products = new List<ProductName>();
-            string productName = "";
+             Console.WriteLine("--> Come to Index get");
+            ProductNameIndexViewModel model = new();
+          
             int itemShowNumber = 10;
-            int existPage = 4;
+            int existPage = 1;
             var productsReadDto = new List<ProductNameReadDto>();
-            if (string.IsNullOrEmpty(productName))
+
+            var products = await _repository.GetAllProductNameAsync(itemShowNumber, existPage);
+
+            if (products != null)
             {
+
+                foreach (var product in products)
+                {
+                    var productdto = _mapper.Map<ProductNameReadDto>(product);
+                    productdto.Quantity = await _productRepository.GetQuantityByIdAsync(product.Id);
+                    productsReadDto.Add(productdto);
+                }
+                model.ProductsNameReadDto = productsReadDto;
+                return View(model);
+
+            }
+      
+            return View();
+            
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(ProductNameIndexViewModel? model)
+        {
+            Console.WriteLine("--> Come to Index post");
+            var newModel = new ProductNameIndexViewModel();
+            var products = new List<ProductName>();
+
+            int itemShowNumber = 10;
+            int existPage = 1;
+            var productsReadDto = new List<ProductNameReadDto>();
+            if (string.IsNullOrEmpty(model.SearchName))
+            {
+                Console.WriteLine("--> No search name");
                 products = await _repository.GetAllProductNameAsync(itemShowNumber, existPage);
 
                 if (products != null)
@@ -48,7 +84,8 @@ namespace OMS_App.Areas.Inventory.Controllers
             }
             else
             {
-                products = await _repository.GetAllProductNameAsync(itemShowNumber, existPage);
+                Console.WriteLine("--> Enter Search Name controller");
+                products = await _repository.GetProductNameByNameAsync(model.SearchName, itemShowNumber, existPage);
                 if (products != null)
                 {
                     foreach (var product in products)
@@ -59,10 +96,11 @@ namespace OMS_App.Areas.Inventory.Controllers
                     }
                 }
             }
+            newModel.ProductsNameReadDto = productsReadDto;
 
-
-            return View(productsReadDto);
+            return View(newModel);
         }
+
         [HttpGet]
         public async Task<IActionResult> Create()
         {

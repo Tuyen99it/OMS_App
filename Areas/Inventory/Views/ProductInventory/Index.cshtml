@@ -1,16 +1,18 @@
-@using OMS_App.Areas.Inventory.Dtos
-@model IEnumerable<ProductNameReadDto>
+@using Newtonsoft.Json
+@using OMS_App.Areas.Inventory.Models
+@model ProductNameIndexViewModel
 @{
     @* ViewData["Title"] = "Product Inventory"; *@
     ViewData["Title"] = "Các chuyên mục";
-    string productName = "";
+  
+
 }
 @* <h1>@ViewData["Title"]</h1> *@
 <section>
-    <form method=" post" class="row g-2">
+    <form method="post" class="row g-2" asp-action="Index">
         <div class="col-auto">
-            <input class="form-control" asp-for="@productName" placeholder="Enter product name...">
-            <span asp-validation-for="@productName" class="text-danger"></span>
+            <input class="form-control" asp-for="@Model.SearchName" placeholder="Enter product name...">
+            <span asp-validation-for="@Model.SearchName" class="text-danger"></span>
         </div>
         <div class="col-2">
             <button id="login-submit" type="submit" class=" btn mb-3 btn-primary">Search</button>
@@ -18,13 +20,14 @@
     </form>
 </section>
 <section>
-    <div>
-        <h2><a asp-action="Create" asp-controller="ProductInventory" class="text-link text-primary">Thêm product</a>
+  
+    <h2><a asp-action="Create" asp-controller="ProductInventory" class="text-link text-primary">Thêm product</a>
         </h2>
     </div>
 </section>
 <hr>
-<table class="table">
+@if(Model.ProductsNameReadDto!=null){
+    <table class="table">
     <thead>
         <tr>
             <th>
@@ -47,7 +50,7 @@
         @{
             int i = 1;
         }
-        @foreach (var product in Model)
+        @foreach (var product in Model.ProductsNameReadDto)
         {
             <tr>
                 <td>@(i++)</td>
@@ -65,3 +68,5 @@
         }
     </tbody>
 </table>
+
+}
