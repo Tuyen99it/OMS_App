@@ -62,7 +62,33 @@ namespace OMS_App.Areas.Inventory.Data
             return categories;
         }
 
-        public async Task<ProductCategory> GetProductCategoryByIdAsync(string categoryId)
+        public async Task<List<ProductCategory>> GetCategoriesProductByNameAsync(string searchCategory)
+        {
+            var categories = await _context.ProductCategories.Where(p => p.Name.Contains(searchCategory))
+                                          .Where(c => c.ParentCategoryId == null)
+                                           .Include(c => c.ChildrenCategory)
+                                           .Include(c => c.CategoryImages)
+                                          .ToListAsync();
+            return categories;
+        }
+
+
+        public async Task<ProductCategory> GetCategoryProductByNameAsync(string categoryName)
+        {
+            if (string.IsNullOrEmpty(categoryName))
+            {
+                _logger.LogError("Category is Empty");
+                return null;
+            }
+            var category = _context.ProductCategories
+                                   .Where(c => c.Name == categoryName)
+                                   .Include(c => c.ChildrenCategory)
+                                   .Include(c => c.CategoryImages)
+                                   .FirstOrDefault();
+            return category;
+        }
+
+        public async Task<ProductCategory> GetCategoryProductByIdAsync(string categoryId)
         {
             if (string.IsNullOrEmpty(categoryId))
             {
