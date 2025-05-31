@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OMS_App.Areas.Inventory.Models
 {
- 
+
     public class InventoryImage
     {
         [Key]
@@ -16,10 +16,11 @@ namespace OMS_App.Areas.Inventory.Models
         [ForeignKey("ProductNameId")]
         public ProductName ProductName { get; set; }
         public DateTime CreateDate { get; set; }
-        public string ImageUrlPath { get; set; }
+        public string RelativeImageUrlPath { get; set; }
+        public string AbsoluteImageUrlPath { get; set; }
 
 
     }
     public enum ImageType { ProductInventory, ProductCategory }
-    
+
 }
