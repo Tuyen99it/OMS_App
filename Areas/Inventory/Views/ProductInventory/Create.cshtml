@@ -1,0 +1,72 @@
+@using OMS_App.Areas.Inventory.Models
+@model ProductInventoryViewModel
+@{
+    ViewData["Title"] = "Create new product";
+    var number = Model.number;
+}
+
+<h1>Create new product</h1>
+
+<form method="post">
+    <div class="row gx-2 d-flex align-items-center">
+        <div class="col-2">
+            <input asp-for="ProductNameCreateDto.Name" class="form-control" placeholder="Product Name">
+            <span asp-validation-for="ProductNameCreateDto.Name" class="text-danger ms-2"></span>
+        </div>
+        <div class="col-6">
+
+            <input asp-for="ProductNameCreateDto.Description" class="form-control" placeholder="Description">
+            <span asp-validation-for="ProductNameCreateDto.Description" class="text-danger ms-2"></span>
+        </div>
+        <div class="col-2">
+            <input asp-for="ProductNameCreateDto.Price" class="form-control" placeholder="Price">
+            <span asp-validation-for="ProductNameCreateDto.Price" class="text-danger ms-2"></span>
+        </div>
+        <div class="col-1">
+            <button type="submit" class="w-100 btn btn-md btn-primary" asp-action="Create"
+                asp-controller="ProductInventory" asp-area="Inventory" asp-route-number="@number">Create</button>
+        </div>
+    </div>
+
+
+</form>
+@if (Model.ProductsNameReadDto != null)
+{
+    int i = 1;
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    No
+                </th>
+                <th>
+                    ProductName
+                </th>
+                <th>Description</th>
+                <th>Price</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var product1 in Model.ProductsNameReadDto)
+            {
+                <tr>
+                    <td>@(i++)</td>
+                    <td>@Html.DisplayFor(modelItem => product1.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => product1.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => product1.Price)</td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"></partial>
+}

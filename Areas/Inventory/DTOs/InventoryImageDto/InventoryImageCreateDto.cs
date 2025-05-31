@@ -1,0 +1,12 @@
+using OMS_App.Areas.Inventory.Models;
+namespace OMS_App.Areas.Inventory.Dtos
+{
+    public class InventoryImageCreateDto
+    {
+        public ImageType Type { get; set; }
+        public int ProductCategoryId { get; set; }
+        public int ProductInventoryId { get; set; }
+        public string InventoryImageUrl { get; set; }
+    }
+
+}

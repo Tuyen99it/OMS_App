@@ -1,28 +1,5 @@
-/*!
- * 
- * Super simple WYSIWYG editor v0.9.1
- * https://summernote.org
- *
- * Copyright 2013~ Hackerwins and contributors
- * Summernote may be freely distributed under the MIT license.
- *
- * Date: 2024-10-09T10:28Z
- *
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
-var __webpack_exports__ = {};
 (function ($) {
-  $.extend(true, $.summernote.lang, {
+  $.extend($.summernote.lang, {
     'sr-RS': {
       font: {
         bold: 'Podebljano',
@@ -30,10 +7,7 @@ var __webpack_exports__ = {};
         underline: 'Podvučeno',
         clear: 'Ukloni stilove fonta',
         height: 'Visina linije',
-        name: 'Font Family',
         strikethrough: 'Precrtano',
-        subscript: 'Subscript',
-        superscript: 'Superscript',
         size: 'Veličina fonta'
       },
       image: {
@@ -45,18 +19,10 @@ var __webpack_exports__ = {};
         floatLeft: 'Uz levu ivicu',
         floatRight: 'Uz desnu ivicu',
         floatNone: 'Bez ravnanja',
-        shapeRounded: 'Shape: Rounded',
-        shapeCircle: 'Shape: Circle',
-        shapeThumbnail: 'Shape: Thumbnail',
-        shapeNone: 'Shape: None',
         dragImageHere: 'Prevuci sliku ovde',
-        dropImage: 'Drop image or Text',
         selectFromFiles: 'Izaberi iz datoteke',
-        maximumFileSize: 'Maximum file size',
-        maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'Adresa slike',
-        remove: 'Ukloni sliku',
-        original: 'Original'
+        remove: 'Ukloni sliku'
       },
       video: {
         video: 'Video',
@@ -75,21 +41,14 @@ var __webpack_exports__ = {};
         openInNewWindow: 'Otvori u novom prozoru'
       },
       table: {
-        table: 'Tabela',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        table: 'Tabela'
       },
       hr: {
         insert: 'Umetni horizontalnu liniju'
       },
       style: {
         style: 'Stil',
-        p: 'pni',
+        normal: 'Normalni',
         blockquote: 'Citat',
         pre: 'Kod',
         h1: 'Zaglavlje 1',
@@ -136,48 +95,10 @@ var __webpack_exports__ = {};
         documentStyle: 'Stil dokumenta',
         extraKeys: 'Dodatne kombinacije'
       },
-      help: {
-        'insertParagraph': 'Insert Paragraph',
-        'undo': 'Undoes the last command',
-        'redo': 'Redoes the last command',
-        'tab': 'Tab',
-        'untab': 'Untab',
-        'bold': 'Set a bold style',
-        'italic': 'Set a italic style',
-        'underline': 'Set a underline style',
-        'strikethrough': 'Set a strikethrough style',
-        'removeFormat': 'Clean a style',
-        'justifyLeft': 'Set left align',
-        'justifyCenter': 'Set center align',
-        'justifyRight': 'Set right align',
-        'justifyFull': 'Set full align',
-        'insertUnorderedList': 'Toggle unordered list',
-        'insertOrderedList': 'Toggle ordered list',
-        'outdent': 'Outdent on current paragraph',
-        'indent': 'Indent on current paragraph',
-        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
-        'formatH1': 'Change current block\'s format as H1',
-        'formatH2': 'Change current block\'s format as H2',
-        'formatH3': 'Change current block\'s format as H3',
-        'formatH4': 'Change current block\'s format as H4',
-        'formatH5': 'Change current block\'s format as H5',
-        'formatH6': 'Change current block\'s format as H6',
-        'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
-      },
       history: {
         undo: 'Poništi',
         redo: 'Ponovi'
-      },
-      specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
       }
     }
   });
 })(jQuery);
-/******/ 	return __webpack_exports__;
-/******/ })()
-;
-});
-//# sourceMappingURL=summernote-sr-RS-Latin.js.map

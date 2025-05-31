@@ -1,0 +1,72 @@
+@using Newtonsoft.Json
+@using OMS_App.Areas.Inventory.Models
+@model ProductNameIndexViewModel
+@{
+    @* ViewData["Title"] = "Product Inventory"; *@
+    ViewData["Title"] = "Các chuyên mục";
+  
+
+}
+@* <h1>@ViewData["Title"]</h1> *@
+<section>
+    <form method="post" class="row g-2" asp-action="Index">
+        <div class="col-auto">
+            <input class="form-control" asp-for="@Model.SearchName" placeholder="Enter product name...">
+            <span asp-validation-for="@Model.SearchName" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <button id="login-submit" type="submit" class=" btn mb-3 btn-primary">Search</button>
+        </div>
+    </form>
+</section>
+<section>
+  
+    <h2><a asp-action="Create" asp-controller="ProductInventory" class="text-link text-primary">Thêm product</a>
+        </h2>
+    </div>
+</section>
+<hr>
+@if(Model.ProductsNameReadDto!=null){
+    <table class="table">
+    <thead>
+        <tr>
+            <th>
+                No
+            </th>
+            <th>
+                ProductName
+            </th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Quantity</th>
+
+            <th>
+                Action
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+        }
+        @foreach (var product in Model.ProductsNameReadDto)
+        {
+            <tr>
+                <td>@(i++)</td>
+                <td>@Html.DisplayFor(modelItem => product.Name)</td>
+                <td>@Html.DisplayFor(modelItem => product.Description)</td>
+                <td>@Html.DisplayFor(modelItem => product.Price)</td>
+                <td>@Html.DisplayFor(modelItem => product.Quantity)</td>
+
+                <td>
+                    <a asp-action="Detail" asp-controller="ProductInventory" asp-route-productId="@product.Id">Detail</a>
+                    <a asp-action="Update" asp-controller="ProductInventory" asp-route-productId="@product.Id">Update</a>
+                    <a asp-action="Delete" asp-controller="ProductInventory" asp-route-productId="@product.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+}

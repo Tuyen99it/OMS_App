@@ -1,28 +1,5 @@
-/*!
- * 
- * Super simple WYSIWYG editor v0.9.1
- * https://summernote.org
- *
- * Copyright 2013~ Hackerwins and contributors
- * Summernote may be freely distributed under the MIT license.
- *
- * Date: 2024-10-09T10:28Z
- *
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
-var __webpack_exports__ = {};
 (function ($) {
-  $.extend(true, $.summernote.lang, {
+  $.extend($.summernote.lang, {
     'ca-ES': {
       font: {
         bold: 'Negreta',
@@ -55,15 +32,14 @@ var __webpack_exports__ = {};
         maximumFileSize: 'Mida màxima de l\'arxiu',
         maximumFileSizeError: 'La mida màxima de l\'arxiu s\'ha superat.',
         url: 'URL de la imatge',
-        remove: 'Eliminar imatge',
-        original: 'Original'
+        remove: 'Eliminar imatge'
       },
       video: {
         video: 'Vídeo',
         videoLink: 'Enllaç del vídeo',
         insert: 'Inserir vídeo',
         url: 'URL del vídeo?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion o Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, o Youku)'
       },
       link: {
         link: 'Enllaç',
@@ -75,21 +51,14 @@ var __webpack_exports__ = {};
         openInNewWindow: 'Obrir en una finestra nova'
       },
       table: {
-        table: 'Taula',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        table: 'Taula'
       },
       hr: {
         insert: 'Inserir línia horitzontal'
       },
       style: {
         style: 'Estil',
-        p: 'p',
+        normal: 'Normal',
         blockquote: 'Cita',
         pre: 'Codi',
         h1: 'Títol 1',
@@ -136,7 +105,7 @@ var __webpack_exports__ = {};
         documentStyle: 'Estil del document',
         extraKeys: 'Tecles adicionals'
       },
-      help: {
+      help : {
         'insertParagraph': 'Inserir paràgraf',
         'undo': 'Desfer l\'última acció',
         'redo': 'Refer l\'última acció',
@@ -176,8 +145,3 @@ var __webpack_exports__ = {};
     }
   });
 })(jQuery);
-/******/ 	return __webpack_exports__;
-/******/ })()
-;
-});
-//# sourceMappingURL=summernote-ca-ES.js.map
