@@ -8984,19 +8984,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\F&B\\.nuget\\packages\\": {}
+    "C:\\Users\\Nguyen Tuyen\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
+      "projectUniqueName": "C:\\Webapp\\OMS_App\\OMS_App.csproj",
       "projectName": "OMS_App",
-      "projectPath": "C:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
-      "packagesPath": "C:\\Users\\F&B\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\F&B\\Cshap\\OMS_App\\obj\\",
+      "projectPath": "C:\\Webapp\\OMS_App\\OMS_App.csproj",
+      "packagesPath": "C:\\Users\\Nguyen Tuyen\\.nuget\\packages\\",
+      "outputPath": "C:\\Webapp\\OMS_App\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\F&B\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Nguyen Tuyen\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
