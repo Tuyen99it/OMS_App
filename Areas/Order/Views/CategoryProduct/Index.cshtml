@@ -1,0 +1,65 @@
+@using Newtonsoft.Json
+@using OMS_App.Areas.Inventory.Models
+@model CategoryProductIndexViewModel
+@{
+    @* ViewData["Title"] = "Product Inventory"; *@
+    ViewData["Title"] = "Các chuyên mục";
+
+
+}
+@* <h1>@ViewData["Title"]</h1> *@
+<section>
+    <form method="post" class="row g-2" asp-action="Index">
+        <div class="col-auto">
+            <input class="form-control" asp-for="@Model.SearchName" placeholder="Enter product name...">
+            <span asp-validation-for="@Model.SearchName" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <button id="login-submit" type="submit" class=" btn mb-3 btn-primary">Search</button>
+        </div>
+    </form>
+</section>
+<section>
+
+    <h2><a asp-action="Create" asp-controller="ProductInventory" class="text-link text-primary">Thêm product</a>
+    </h2>
+    </div>
+</section>
+<hr>
+@if (Model.CategoriesProductReadDto != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    No
+                </th>
+                <th>
+                    CategoryName
+                </th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+            }
+            @foreach (var category in Model.CategoriesProductReadDto)
+            {
+                <tr>
+                    <td>@(i++)</td>
+                    <td>@Html.DisplayFor(modelItem => category.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => category.Description)</td>
+
+
+                    <td>
+                        <a asp-action="Detail" asp-controller="ProductInventory" asp-route-productId="@category.Id">Detail</a>
+                        <a asp-action="Update" asp-controller="ProductInventory" asp-route-productId="@category.Id">Update</a>
+                        <a asp-action="Delete" asp-controller="ProductInventory" asp-route-productId="@category.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}

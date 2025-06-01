@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using OMS_App.Areas.Post.Models;
 using OMS_App.Areas.Inventory.Models;
+using OMS_App.Areas.Orders.Models;
 namespace OMS_App.Data
 {
     public class OMSDBContext : IdentityDbContext<AppUser>
@@ -23,6 +24,10 @@ namespace OMS_App.Data
         public DbSet<CategoryProduct> CategoryProducts { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<InventoryImage> InventoryImages { get; set; }
+        // Register Orders tables
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderedProduct> OrderedProducts { get; set; }
+        public DbSet<OrderAddress> OrderAddresses { get; set; }
         public OMSDBContext(DbContextOptions<OMSDBContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
