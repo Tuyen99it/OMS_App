@@ -64,7 +64,9 @@ namespace OMS_App.Data
                 .HasOne(u => u.AppUser)
                 .WithMany(a => a.UserImages)
                 .HasForeignKey(a => a.AppUserId);
-            /// Thực hiện trèn 4 sản phẩm vào bảng khi bảng Product được tạo
+            // Configure enum OrderStatus type in EF
+            modelBuilder.Entity<Order>().Property(o => o.OrderStatus).HasConversion<string>();
+            
 
         }
     }
