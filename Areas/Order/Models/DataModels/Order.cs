@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices;
 using OMS_App.Models;
 namespace OMS_App.Areas.Orders.Models
 {
@@ -7,17 +8,19 @@ namespace OMS_App.Areas.Orders.Models
     {
         [Key]
         public int Id { get; set; }
-        public int OrderedProductId { get; set; }
-        [ForeignKey("OrderedProductId")]
+       
         public ICollection<OrderedProduct> OrderedProducts { get; set; }
-        public Dictionary<OrderStatus, DateTime> UpdateStatus { get; set; }
-        public List<Dictionary<OrderStatus, DateTime>> UpdateStatuses { get; set; }
-        public int OrderStatus { get; set; }
+
+        public ICollection<OrderStatusUpdate> OrderStatusUpdates { get; set; }
+        public string UserId { get; set; }
 
         [ForeignKey("UserId")]
         public AppUser User { get; set; }
         public double OrderedPriceTotal { get; set; }
+        
+
         public OrderAddress Address { get; set; }
+     
 
     }
     public enum OrderStatus
@@ -28,4 +31,16 @@ namespace OMS_App.Areas.Orders.Models
         Paid,
         Finish
     }
+    public class OrderStatusUpdate
+    {
+        [Key]
+        public int Id { get; set; }
+        public OrderStatus Status { get; set; }
+        public DateTime UpdateTime { get; set; }
+        public string Note { get; set; }
+        public int OrderId { get; set; }
+        [ForeignKey("OrderId")]
+        public Order Order { get; set; }
+    }
+
 }

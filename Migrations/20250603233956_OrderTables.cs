@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OMS_App.Migrations
 {
     /// <inheritdoc />
-    public partial class AddProductname : Migration
+    public partial class OrderTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,26 +75,6 @@ namespace OMS_App.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Phan lop san pham",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ParentCategoryId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Phan lop san pham", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Phan lop san pham_Phan lop san pham_ParentCategoryId",
-                        column: x => x.ParentCategoryId,
-                        principalTable: "Phan lop san pham",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Product",
                 columns: table => new
                 {
@@ -107,6 +87,26 @@ namespace OMS_App.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Product", x => x.ProductId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParentCategoryId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductCategories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductCategories_ProductCategories_ParentCategoryId",
+                        column: x => x.ParentCategoryId,
+                        principalTable: "ProductCategories",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -232,6 +232,31 @@ namespace OMS_App.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrderAddresses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Locality = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderAddresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderAddresses_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Post",
                 columns: table => new
                 {
@@ -278,7 +303,61 @@ namespace OMS_App.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "San pham trong kho",
+                name: "CategoryProducts",
+                columns: table => new
+                {
+                    ProductNameId = table.Column<int>(type: "int", nullable: false),
+                    ProductCategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryProducts", x => new { x.ProductNameId, x.ProductCategoryId });
+                    table.ForeignKey(
+                        name: "FK_CategoryProducts_ProductCategories_ProductCategoryId",
+                        column: x => x.ProductCategoryId,
+                        principalTable: "ProductCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryProducts_ProductNames_ProductNameId",
+                        column: x => x.ProductNameId,
+                        principalTable: "ProductNames",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InventoryImages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    ProductCategoryId = table.Column<int>(type: "int", nullable: false),
+                    ProductNameId = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RelativeImageUrlPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AbsoluteImageUrlPath = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InventoryImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InventoryImages_ProductCategories_ProductCategoryId",
+                        column: x => x.ProductCategoryId,
+                        principalTable: "ProductCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InventoryImages_ProductNames_ProductNameId",
+                        column: x => x.ProductNameId,
+                        principalTable: "ProductNames",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductInventories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -289,13 +368,40 @@ namespace OMS_App.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_San pham trong kho", x => x.Id);
+                    table.PrimaryKey("PK_ProductInventories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_San pham trong kho_ProductNames_ProductNameId",
+                        name: "FK_ProductInventories_ProductNames_ProductNameId",
                         column: x => x.ProductNameId,
                         principalTable: "ProductNames",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderedProductId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrderedPriceTotal = table.Column<double>(type: "float", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_OrderAddresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "OrderAddresses",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -323,84 +429,55 @@ namespace OMS_App.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Anh san pham",
+                name: "OrderedProducts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    ProductCategoryId = table.Column<int>(type: "int", nullable: false),
-                    ProductInventoryId = table.Column<int>(type: "int", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ImageUrlPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductNameId = table.Column<int>(type: "int", nullable: true)
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalProduct = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    TotalPrices = table.Column<double>(type: "float", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    OrderedProductId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Anh san pham", x => x.Id);
+                    table.PrimaryKey("PK_OrderedProducts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Anh san pham_Phan lop san pham_ProductCategoryId",
-                        column: x => x.ProductCategoryId,
-                        principalTable: "Phan lop san pham",
+                        name: "FK_OrderedProducts_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Anh san pham_ProductNames_ProductNameId",
-                        column: x => x.ProductNameId,
-                        principalTable: "ProductNames",
+                        name: "FK_OrderedProducts_Orders_OrderedProductId",
+                        column: x => x.OrderedProductId,
+                        principalTable: "Orders",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Anh san pham_San pham trong kho_ProductInventoryId",
-                        column: x => x.ProductInventoryId,
-                        principalTable: "San pham trong kho",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoryProducts",
+                name: "OrderStatusUpdate",
                 columns: table => new
                 {
-                    ProductInventoryId = table.Column<int>(type: "int", nullable: false),
-                    ProductCategoryId = table.Column<int>(type: "int", nullable: false),
-                    ProductNameId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryProducts", x => new { x.ProductInventoryId, x.ProductCategoryId });
+                    table.PrimaryKey("PK_OrderStatusUpdate", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CategoryProducts_Phan lop san pham_ProductCategoryId",
-                        column: x => x.ProductCategoryId,
-                        principalTable: "Phan lop san pham",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CategoryProducts_ProductNames_ProductNameId",
-                        column: x => x.ProductNameId,
-                        principalTable: "ProductNames",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_CategoryProducts_San pham trong kho_ProductInventoryId",
-                        column: x => x.ProductInventoryId,
-                        principalTable: "San pham trong kho",
+                        name: "FK_OrderStatusUpdate_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Anh san pham_ProductCategoryId",
-                table: "Anh san pham",
-                column: "ProductCategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Anh san pham_ProductInventoryId",
-                table: "Anh san pham",
-                column: "ProductInventoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Anh san pham_ProductNameId",
-                table: "Anh san pham",
-                column: "ProductNameId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -457,14 +534,44 @@ namespace OMS_App.Migrations
                 column: "ProductCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryProducts_ProductNameId",
-                table: "CategoryProducts",
+                name: "IX_InventoryImages_ProductCategoryId",
+                table: "InventoryImages",
+                column: "ProductCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InventoryImages_ProductNameId",
+                table: "InventoryImages",
                 column: "ProductNameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Phan lop san pham_ParentCategoryId",
-                table: "Phan lop san pham",
-                column: "ParentCategoryId");
+                name: "IX_OrderAddresses_UserId",
+                table: "OrderAddresses",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderedProducts_OrderedProductId",
+                table: "OrderedProducts",
+                column: "OrderedProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderedProducts_OrderId",
+                table: "OrderedProducts",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_AddressId",
+                table: "Orders",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId",
+                table: "Orders",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderStatusUpdate_OrderId",
+                table: "OrderStatusUpdate",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Post_AuthorId",
@@ -477,8 +584,13 @@ namespace OMS_App.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_San pham trong kho_ProductNameId",
-                table: "San pham trong kho",
+                name: "IX_ProductCategories_ParentCategoryId",
+                table: "ProductCategories",
+                column: "ParentCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductInventories_ProductNameId",
+                table: "ProductInventories",
                 column: "ProductNameId");
 
             migrationBuilder.CreateIndex(
@@ -490,9 +602,6 @@ namespace OMS_App.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Anh san pham");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -512,10 +621,22 @@ namespace OMS_App.Migrations
                 name: "CategoryProducts");
 
             migrationBuilder.DropTable(
+                name: "InventoryImages");
+
+            migrationBuilder.DropTable(
+                name: "OrderedProducts");
+
+            migrationBuilder.DropTable(
+                name: "OrderStatusUpdate");
+
+            migrationBuilder.DropTable(
                 name: "PostCategories");
 
             migrationBuilder.DropTable(
                 name: "Product");
+
+            migrationBuilder.DropTable(
+                name: "ProductInventories");
 
             migrationBuilder.DropTable(
                 name: "User Image");
@@ -524,10 +645,10 @@ namespace OMS_App.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Phan lop san pham");
+                name: "ProductCategories");
 
             migrationBuilder.DropTable(
-                name: "San pham trong kho");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Category");
@@ -537,6 +658,9 @@ namespace OMS_App.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductNames");
+
+            migrationBuilder.DropTable(
+                name: "OrderAddresses");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

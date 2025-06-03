@@ -63,9 +63,9 @@ namespace OMS_App.Areas.Orders.Data
             return await _context.Orders.Where(o => o.User.Id == userId).ToListAsync();
         }
 
-        public async Task<List<OMS_App.Areas.Orders.Models.Order>> GetAllOrdersByUserIdAsync(string userId)
+        public async Task<List<Order>> GetAllOrdersByUserIdAsync(string userId)
         {
-            var orders = await _context.Orders.Where(o => o.User.Id == userId).Include(o => o.OrderedProducts).Include(o => o.UpdateStatuses).ToListAsync();
+            var orders = await _context.Orders.Where(o => o.User.Id == userId).Include(o => o.OrderStatusUpdates).Include(o=>o.OrderedProducts).ToListAsync();
 
             return orders;
         }
@@ -79,7 +79,7 @@ namespace OMS_App.Areas.Orders.Data
             }
             var order = _context.Orders
                                    .Where(o => o.Id == Convert.ToInt16(orderId))
-                                   .Include(o => o.OrderedProducts).Include(o => o.UpdateStatuses)
+                                   .Include(o => o.OrderedProducts).Include(o => o.OrderStatusUpdates)
                                    .FirstOrDefault();
             return order;
         }

@@ -65,7 +65,7 @@ namespace OMS_App.Data
                 .WithMany(a => a.UserImages)
                 .HasForeignKey(a => a.AppUserId);
             // Configure enum OrderStatus type in EF
-            modelBuilder.Entity<Order>().Property(o => o.OrderStatus).HasConversion<string>();
+            modelBuilder.Entity<OrderStatusUpdate>().Property(o => o.Status).HasConversion<string>();
             
 
         }

@@ -288,6 +288,138 @@ namespace OMS_App.Migrations
                     b.ToTable("ProductNames");
                 });
 
+            modelBuilder.Entity("OMS_App.Areas.Orders.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("OrderedPriceTotal")
+                        .HasColumnType("float");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Orders.Models.OrderAddress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AddressDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Locality")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique()
+                        .HasFilter("[OrderId] IS NOT NULL");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OrderAddresses");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Orders.Models.OrderStatusUpdate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderStatusUpdate");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Orders.Models.OrderedProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("TotalPrices")
+                        .HasColumnType("float");
+
+                    b.Property<int>("TotalProduct")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderedProducts");
+                });
+
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
                 {
                     b.Property<int>("PostId")
@@ -610,6 +742,56 @@ namespace OMS_App.Migrations
                     b.Navigation("ProductName");
                 });
 
+            modelBuilder.Entity("OMS_App.Areas.Orders.Models.Order", b =>
+                {
+                    b.HasOne("OMS_App.Models.AppUser", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Orders.Models.OrderAddress", b =>
+                {
+                    b.HasOne("OMS_App.Areas.Orders.Models.Order", "Order")
+                        .WithOne("Address")
+                        .HasForeignKey("OMS_App.Areas.Orders.Models.OrderAddress", "OrderId");
+
+                    b.HasOne("OMS_App.Models.AppUser", "User")
+                        .WithMany("OrderAddressed")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Orders.Models.OrderStatusUpdate", b =>
+                {
+                    b.HasOne("OMS_App.Areas.Orders.Models.Order", "Order")
+                        .WithMany("OrderStatusUpdates")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("OMS_App.Areas.Orders.Models.OrderedProduct", b =>
+                {
+                    b.HasOne("OMS_App.Areas.Orders.Models.Order", "Order")
+                        .WithMany("OrderedProducts")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
                 {
                     b.HasOne("OMS_App.Models.AppUser", "Author")
@@ -676,6 +858,16 @@ namespace OMS_App.Migrations
                     b.Navigation("ProductInventories");
                 });
 
+            modelBuilder.Entity("OMS_App.Areas.Orders.Models.Order", b =>
+                {
+                    b.Navigation("Address")
+                        .IsRequired();
+
+                    b.Navigation("OrderStatusUpdates");
+
+                    b.Navigation("OrderedProducts");
+                });
+
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
                 {
                     b.Navigation("PostCategories");
@@ -683,6 +875,10 @@ namespace OMS_App.Migrations
 
             modelBuilder.Entity("OMS_App.Models.AppUser", b =>
                 {
+                    b.Navigation("OrderAddressed");
+
+                    b.Navigation("Orders");
+
                     b.Navigation("UserImages");
                 });
 
