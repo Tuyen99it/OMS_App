@@ -5,7 +5,8 @@ namespace OMS_App.Areas.Orders.Data
     public interface IOrderedProductRepo
     {
         Task<List<OrderedProduct>> GetAllOrderedProductByOrderIdAsync(string orderId);
-        Task<Order> GetOrderedProductByIdAsync(string orderedProductId);
+        Task<OrderedProduct> GetOrderedProductByIdAsync(string orderedProductId);
+         Task<OrderedProduct> GetOrderedProductByNameAsync(string orderedProductName);
         Task<bool> CreateAsync(OrderedProduct orderedProduct);
         Task<bool> UpdateAsync(OrderedProduct orderedProduct);
         Task<bool> DeleteAsync(OrderedProduct orderedProduct);

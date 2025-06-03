@@ -4,7 +4,7 @@ using OMS_App.Areas.Orders.Data;
 using OMS_App.Areas.Orders.Models;
 using OMS_App.Data;
 
-namespace OMS_App.Areas.Inventory.Data
+namespace OMS_App.Areas.Orders.Data
 {
     public class OrdereServiceRepo : IOrderRepo
     {
@@ -18,7 +18,7 @@ namespace OMS_App.Areas.Inventory.Data
 
         }
 
-        public async Task<bool> CreateAsync(Order order)
+        public async Task<bool> CreateAsync(OMS_App.Areas.Orders.Models.Order order)
         {
             if (order == null)
             {
@@ -36,7 +36,7 @@ namespace OMS_App.Areas.Inventory.Data
 
         }
 
-        public async Task<bool> DeleteAsync(Order order)
+        public async Task<bool> DeleteAsync(OMS_App.Areas.Orders.Models.Order order)
         {
             if (order == null)
             {
@@ -53,16 +53,24 @@ namespace OMS_App.Areas.Inventory.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async  Task<List<Order>> GetAllOrdersByUserId(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                Console.WriteLine("-->UserId is null");
+                return null;
+            }
+            return await _context.Orders.Where(o => o.User.Id == userId).ToListAsync();
+        }
 
-
-        public async Task<List<Order>> GetAllOrdersByUserIdAsync(string userId)
+        public async Task<List<OMS_App.Areas.Orders.Models.Order>> GetAllOrdersByUserIdAsync(string userId)
         {
             var orders = await _context.Orders.Where(o => o.User.Id == userId).Include(o => o.OrderedProducts).Include(o => o.UpdateStatuses).ToListAsync();
 
             return orders;
         }
 
-        public async Task<Order> GetOrderByIdAsync(string orderId)
+        public async Task<OMS_App.Areas.Orders.Models.Order> GetOrderByIdAsync(string orderId)
         {
             if (string.IsNullOrEmpty(orderId))
             {
@@ -76,7 +84,7 @@ namespace OMS_App.Areas.Inventory.Data
             return order;
         }
 
-        public async Task<bool> UpdateAsync(Order order)
+        public async Task<bool> UpdateAsync(OMS_App.Areas.Orders.Models.Order order)
         {
             if (order == null)
             {

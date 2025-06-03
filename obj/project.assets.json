@@ -9121,19 +9121,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Nguyen Tuyen\\.nuget\\packages\\": {}
+    "C:\\Users\\F&B\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Webapp\\OMS_App\\OMS_App.csproj",
+      "projectUniqueName": "C:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
       "projectName": "OMS_App",
-      "projectPath": "C:\\Webapp\\OMS_App\\OMS_App.csproj",
-      "packagesPath": "C:\\Users\\Nguyen Tuyen\\.nuget\\packages\\",
-      "outputPath": "C:\\Webapp\\OMS_App\\obj\\",
+      "projectPath": "C:\\Users\\F&B\\Cshap\\OMS_App\\OMS_App.csproj",
+      "packagesPath": "C:\\Users\\F&B\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\F&B\\Cshap\\OMS_App\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Nguyen Tuyen\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\F&B\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -9286,13 +9286,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file C:\\Webapp\\OMS_App\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0."
-    }
-  ]
+  }
 }

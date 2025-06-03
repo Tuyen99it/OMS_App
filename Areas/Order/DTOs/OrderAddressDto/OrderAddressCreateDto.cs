@@ -4,7 +4,7 @@ using OMS_App.Areas.Inventory.Models;
 using OMS_App.Models;
 namespace OMS_App.Areas.Orders.Dtos
 {
-    public class OrderAddress
+    public class OrderAddressCreateDto
     {
         public string Country { get; set; }
         public string Province { get; set; }

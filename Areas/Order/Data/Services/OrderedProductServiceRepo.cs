@@ -14,24 +14,24 @@ namespace OMS_App.Areas.Orders.Data
             _context = context;
             _logger = logger;
         }
-        public async Task<bool> CreateOrderedProductAsync(OrderedProduct product)
+        public async Task<bool> CreateAsync(OrderedProduct product)
         {
             if (product == null)
             {
                 throw new NullReferenceException("Product is null");
             }
-            var existProduct = await _context.ProductInventories.AnyAsync(p => p.Id == product.Id);
+            var existProduct = await _context.OrderedProducts.AnyAsync(p => p.Id == product.Id);
             if (existProduct)
             {
                 _logger.LogInformation("Product is existing");
                 return false;
             }
-            await _context.ProductInventories.AddAsync(product);
+            await _context.OrderedProducts.AddAsync(product);
             _logger.LogInformation("Product is created ");
             return _context.SaveChanges() > 0;
         }
 
-        public async Task<bool> DeleteOrderedProductAsync(OrderedProduct product)
+        public async Task<bool> DeleteAsync(OrderedProduct product)
         {
 
             if (product == null)
@@ -44,25 +44,16 @@ namespace OMS_App.Areas.Orders.Data
                 _logger.LogInformation("Product is not existing");
                 return false;
             }
-            _context.ProductInventories.Remove(product);
+            _context.OrderedProducts.Remove(product);
             _logger.LogInformation("Product is deleted ");
             return _context.SaveChanges() > 0;
         }
-
-        public async Task<List<OrderedProduct>> GetAllOrderedProductAsync(int itemShowNumber, int existPage)
+         public async Task<List<OrderedProduct>> GetAllOrderedProductByOrderIdAsync(string orderId)
         {
-
-            itemShowNumber = (itemShowNumber <= 0) ? 1 : itemShowNumber;
-            var totalItem = _context.ProductInventories.Count();
-            var totalPage = (int)Math.Ceiling((double)totalItem / itemShowNumber);
-            if (existPage <= 0) existPage = 1;
-            if (existPage >= totalPage) existPage = totalPage;
-            return await _context.ProductInventories.Skip((existPage - 1) * itemShowNumber)
-                                                    .Take(itemShowNumber)
-                                                    .ToListAsync();
-
+            return await _context.OrderedProducts.Where(p => p.Order.Id == Convert.ToInt32(orderId)).ToListAsync();
         }
 
+       
 
         public async Task<OrderedProduct> GetOrderedProductByIdAsync(string productId)
         {
@@ -70,17 +61,22 @@ namespace OMS_App.Areas.Orders.Data
             {
                 throw new NullReferenceException("Product is null");
             }
-            var product = await _context.ProductInventories.Where(p => p.Id == Convert.ToInt32(productId)).FirstOrDefaultAsync();
+            var product = await _context.OrderedProducts.Where(p => p.Id == Convert.ToInt32(productId)).FirstOrDefaultAsync();
 
             return product;
         }
 
-        public async Task<int> GetQuantityByIdAsync(int productId)
+        public async Task<OrderedProduct> GetOrderedProductByNameAsync(string orderedProductName)
         {
-            return await _context.ProductInventories.Where(p => p.ProductNameId == productId).CountAsync();
+            if (String.IsNullOrEmpty(orderedProductName))
+            {
+                throw new NullReferenceException("Product is null");
+            }
+            var product = await _context.OrderedProducts.Where(p => p.ProductName.Contains(orderedProductName)).FirstOrDefaultAsync();
+            return product;
         }
 
-        public async Task<bool> UpdateOrderedProductAsync(OrderedProduct product)
+        public async Task<bool> UpdateAsync(OrderedProduct product)
         {
             if (product == null)
             {

@@ -5,12 +5,12 @@ namespace OMS_App.Areas.Orders.Data
 {
     public static class Program
     {
-        public static void AddInventoryServices(this IServiceCollection services)
+        public static void AddOrdersServices(this IServiceCollection services)
         {
-            services.AddScoped<IProductNameRepo, ProductNameServiceRepo>();
-            services.AddScoped<IProductCategoryRepo, ProductCategoryServiceRepo>();
-            services.AddScoped<IInventoryImageRepo, InventoryImageServiceRepo>();
-            services.AddScoped<IProductInventoryRepo, ProductInventoryServiceRepo>();
+            services.AddScoped<IOrderRepo, OrdereServiceRepo>();
+            services.AddScoped<IOrderAddressRepo, OrderAddressServiceRepo>();
+            services.AddScoped<IOrderedProductRepo, OrderedProductServiceRepo>();
+
         }
     }
 }

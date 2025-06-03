@@ -7,7 +7,6 @@ namespace OMS_App.Areas.Orders.Models
     public class OrderCreateDto
     {
 
-        public int OrderedProductId { get; set; }
         public ICollection<OrderedProduct> OrderedProducts { get; set; }
         public AppUser User { get; set; }
         public double OrderedPriceTotal { get; set; }

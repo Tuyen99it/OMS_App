@@ -1,62 +1,73 @@
 using AutoMapper;
+using Azure.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using OMS_App.Areas.Inventory.Dtos;
 using OMS_App.Areas.Inventory.Models;
+using OMS_App.Areas.Orders.Models;
 using OMS_App.Data;
+using System;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+using OMS_App.Areas.Orders.Models;
+using OMS_App.Models;
 
-public static class DbProductInventorySeedData
+
+public static class DbOrdersSeedData
 {
     public static void Initialize(OMSDBContext _context, IMapper mapper)
     {
-        Console.WriteLine("--> Starting seed data for ProductInventory...");
+        Console.WriteLine("--> Starting seed data for Oorder...");
 
 
-        var productInventories = new List<ProductNameCreateDto>();
+        var ordersDto = new List<OrderCreateDto>();
 
         for (int i = 0; i <= 100; i++)
         {
-            productInventories.Add(new ProductNameCreateDto()
+            ordersDto.Add(new OrderCreateDto()
             {
-                Name = "Sample: " + i.ToString(),
-                Description = "Mieu ta: " + i.ToString(),
-                CreateDate = DateTime.Now,
-                ExpireDate = DateTime.Now.AddDays(1000),
-                Price = (1000 + i)
+               
+                User = new AppUser
+                {
+                    FullName = "User" + i
+                }
+                
             });
 
         }
-        var products = mapper.Map<List<ProductName>>(productInventories);
-        _context.ProductNames.AddRange(products);
+        var orders = mapper.Map<List<Order>>(ordersDto);
+        _context.Orders.AddRange(orders);
         _context.SaveChanges();
-        Console.WriteLine("--> Seed data for ProductInventory successfully...");
+        Console.WriteLine("--> Seed data for Orders successfully...");
 
     }
-    public static void InitializeProductInventory(OMSDBContext _context, IMapper mapper)
+    public static void InitializeOrderAddressInventory(OMSDBContext _context, IMapper mapper)
     {
-        var productsName = _context.ProductNames.ToList();
-        if (productsName != null)
+        var users = _context.AppUsers.ToList();
+        if (users != null)
         {
-            foreach (var productName in productsName)
+            foreach (var user in users)
             {
-                Console.WriteLine("--> Starting seed goods for ProductInventory...");
+                Console.WriteLine("--> Starting seed goods for orderAddress...");
 
 
-                var goods = new List<ProductInventory>();
+                var addresses = new List<OrderAddress>();
 
                 for (int i = 0; i <= 10; i++)
                 {
-                    goods.Add(new ProductInventory()
+                    addresses.Add(new OrderAddress()
                     {
-                        ProductNameId = productName.Id,
-                        DateCreate = DateTime.Now,
-                        ExpireDate = DateTime.Now.AddDays(1000),
+                        Country = "Nước " + i,
+                        Province = "Tỉnh" + i,
+                        District = "Huyen" + i,
+                       PhoneNumber="012345"+i
 
                     });
 
                 }
 
-                _context.ProductInventories.AddRange(goods);
+                _context.OrderAddresses.AddRange(addresses);
                 _context.SaveChanges();
-                Console.WriteLine("--> Seed goods for ProductInventory successfully...");
+                Console.WriteLine("--> Seed goods for OrderAddresses successfully...");
 
             }
 
