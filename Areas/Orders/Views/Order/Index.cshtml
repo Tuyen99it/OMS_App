@@ -1,0 +1,72 @@
+@using Newtonsoft.Json
+@using OMS_App.Areas.Orders.Models
+@model OrderIndexViewModel
+@{
+
+    ViewData["Title"] = "Order Management";
+
+
+}
+@* <h1>@ViewData["Title"]</h1> *@
+<section>
+    <form method="post" class="row g-2" asp-action="Index">
+        <div class="col-3">
+            <select class="form-select form-select-md">
+                <option selected>Select Order Status</option>
+                <option value="Create">Create</option>
+                <option value="Create">Send</option>
+                <option value="Paid">Paid</option>
+                <option value="Delivery">Delivery</option>
+                <option value="Finish">Finish</option>
+                <option value="Cancel">Cancel</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <input class="form-control" asp-for="@Model.SearchName" placeholder="Enter product name...">
+            <span asp-validation-for="@Model.SearchName" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <button id="login-submit" type="submit" class=" btn mb-3 btn-primary">Search</button>
+        </div>
+    </form>
+</section>
+<hr>
+@if (Model.OrdersReadDto != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    No
+                </th>
+                <th>
+                    OrderId
+                </th>
+                <th>Status</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+            }
+            @foreach (var order in Model.OrdersReadDto)
+            {
+                <tr>
+                    <td>@(i++)</td>
+                    <td>@Html.DisplayFor(modelItem => order.Id)</td>
+                    <td>@Html.DisplayFor(modelItem => order.UpdateStatuses.LastOrDefault())</td>
+                    <td>@Html.DisplayFor(modelItem => order.OrderedPriceTotal)</td>
+
+
+                    <td>
+                        <a asp-action="Detail" asp-controller="Order" asp-route-productId="@order.Id">Detail</a>
+                        <a asp-action="Update" asp-controller="Order" asp-route-productId="@order.Id">Update</a>
+                        <a asp-action="Delete" asp-controller="Order" asp-route-productId="@order.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}

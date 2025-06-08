@@ -17,10 +17,10 @@ namespace OMS_App.Areas.Orders.Controllers
         private readonly IOrderRepo _repository;
         private readonly ILogger<OrderController> _logger;
         private readonly IMapper _mapper;
-        private readonly SignInManager <AppUser>_signInManager;
-        private readonly UserManager <AppUser>_userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
 
- 
+
         public OrderController(IOrderRepo repository, ILogger<OrderController> logger, IMapper mapper, SignInManager<AppUser> signInManager)
         {
             _repository = repository;
@@ -29,26 +29,27 @@ namespace OMS_App.Areas.Orders.Controllers
             _mapper = mapper;
 
         }
+        [HttpGet]
 
-        public async Task<IActionResult> Index(string userId)
+        public async Task<IActionResult> Index(string? orderStatus = "Create")
         {
+            var model = new OrderIndexViewModel();
             Console.WriteLine("--> Come to Index get");
-           
-            var currentUserId = _userManager.GetUserId(User);
-            var orders = await _repository.GetAllOrdersByUserId(currentUserId);
+            var orders = await _repository.GetOrdersByStatusAsync(orderStatus);
 
             if (orders != null)
             {
                 var ordersDto = _mapper.Map<List<OrderReadDto>>(orders);
-                return View(ordersDto);
+                model.OrdersReadDto = ordersDto;
+                return View(model);
 
             }
 
             return View();
 
         }
-        [HttpGet]
-       
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAsync(OrderCreateDto dto)
@@ -62,22 +63,22 @@ namespace OMS_App.Areas.Orders.Controllers
             // }
 
             var order = _mapper.Map<Order>(dto);
-          
 
-                var result = await _repository.CreateAsync(order);
-                if (result == true)
-                {
-                    return View("Index", new { sortUpdate = "desceding" });
-                }
-                else
-                {
-                    Console.WriteLine("-->Can not add orders");
-                    return View(order);
-                }
 
+            var result = await _repository.CreateAsync(order);
+            if (result == true)
+            {
+                return View("Index", new { sortUpdate = "desceding" });
+            }
+            else
+            {
+                Console.WriteLine("-->Can not add orders");
+                return View(order);
             }
 
-        
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> DetailAsync(string orderId)
@@ -97,9 +98,9 @@ namespace OMS_App.Areas.Orders.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateAsync(OrderUpdateDto dto,string orderId)
+        public async Task<IActionResult> UpdateAsync(OrderUpdateDto dto, string orderId)
         {
-            
+
             var existOrder = await _repository.GetOrderByIdAsync(orderId);
             if (existOrder == null)
             {
