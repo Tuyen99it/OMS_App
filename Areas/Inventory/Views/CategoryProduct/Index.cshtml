@@ -21,7 +21,7 @@
 </section>
 <section>
 
-    <h2><a asp-action="Create" asp-controller="ProductInventory" class="text-link text-primary">Thêm product</a>
+    <h2><a asp-action="Create" asp-controller="ProductInventory" class="text-link text-primary">Thêm Category</a>
     </h2>
     </div>
 </section>
@@ -37,7 +37,7 @@
                 <th>
                     CategoryName
                 </th>
-                <th>Description</th>
+                <th>ParentCategory</th>
             </tr>
         </thead>
         <tbody>
@@ -50,6 +50,7 @@
                     <td>@(i++)</td>
                     <td>@Html.DisplayFor(modelItem => category.Name)</td>
                     <td>@Html.DisplayFor(modelItem => category.Description)</td>
+                    <td></td>
 
 
                     <td>
@@ -63,3 +64,4 @@
     </table>
 
 }
+
