@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.Features;
 using OMS_App.Areas.Inventory.Data;
+using OMS_App.Areas.Orders.Data;
 using OMS_App.Data;
 using OMS_App.Models;
 using Microsoft.CodeAnalysis.FlowAnalysis;
@@ -27,6 +28,7 @@ builder.Services.AddDbContext<OMSDBContext>(options =>
 // builder.Services.AddScoped<IInventoryImageRepo, InventoryImageServiceRepo>();
 // builder.Services.AddScoped<IProductInventoryRepo, ProductInventoryServiceRepo>();
 builder.Services.AddInventoryServices();
+builder.Services.AddOrdersServices();
 //Add Identity Services to container
 builder.Services.AddDefaultIdentity<AppUser>(options =>
                 {

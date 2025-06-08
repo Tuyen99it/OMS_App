@@ -8,7 +8,7 @@ namespace OMS_App.Areas.Orders.Models
     {
         [Key]
         public int Id { get; set; }
-       
+
         public ICollection<OrderedProduct> OrderedProducts { get; set; }
 
         public ICollection<OrderStatusUpdate> OrderStatusUpdates { get; set; }
@@ -17,10 +17,10 @@ namespace OMS_App.Areas.Orders.Models
         [ForeignKey("UserId")]
         public AppUser User { get; set; }
         public double OrderedPriceTotal { get; set; }
-        
+
 
         public OrderAddress Address { get; set; }
-     
+
 
     }
     public enum OrderStatus
@@ -29,13 +29,16 @@ namespace OMS_App.Areas.Orders.Models
         Send,
         Delivery,
         Paid,
-        Finish
+        Finish,
+        Cancel
     }
     public class OrderStatusUpdate
     {
         [Key]
         public int Id { get; set; }
         public OrderStatus Status { get; set; }
+        public bool StatusUpdate { get; set; } = false;
+
         public DateTime UpdateTime { get; set; }
         public string Note { get; set; }
         public int OrderId { get; set; }
