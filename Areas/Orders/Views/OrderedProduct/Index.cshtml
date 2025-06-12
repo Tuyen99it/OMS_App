@@ -1,6 +1,7 @@
 @using Newtonsoft.Json
-@using OMS_App.Areas.Inventory.Models
-@model ProductNameIndexViewModel
+@using OMS_App.Areas.Orders.Models
+@using  OMS_App.Areas.Orders.Dtos
+@model OrderedProductIndexViewModel
 @{
     @* ViewData["Title"] = "Product Inventory"; *@
     ViewData["Title"] = "Các chuyên mục";
@@ -26,7 +27,7 @@
     </div>
 </section>
 <hr>
-@if(Model.ProductsNameReadDto!=null){
+@if(Model.OrderedProductsReadDto!=null){
     <table class="table">
     <thead>
         <tr>
@@ -36,9 +37,9 @@
             <th>
                 ProductName
             </th>
-            <th>Description</th>
+            <th>TotalProduct</th>
             <th>Price</th>
-            <th>Quantity</th>
+            <th>TotalPrices</th>
 
             <th>
                 Action
@@ -50,19 +51,19 @@
         @{
             int i = 1;
         }
-        @foreach (var product in Model.ProductsNameReadDto)
+        @foreach (var product in Model.OrderedProductsReadDto)
         {
             <tr>
                 <td>@(i++)</td>
-                <td>@Html.DisplayFor(modelItem => product.Name)</td>
-                <td>@Html.DisplayFor(modelItem => product.Description)</td>
+                <td>@Html.DisplayFor(modelItem => product.ProductName)</td>
+                <td>@Html.DisplayFor(modelItem => product.TotalProduct)</td>
                 <td>@Html.DisplayFor(modelItem => product.Price)</td>
-                <td>@Html.DisplayFor(modelItem => product.Quantity)</td>
+                <td>@Html.DisplayFor(modelItem => product.TotalPrices)</td>
 
                 <td>
-                    <a asp-action="Detail" asp-controller="ProductInventory" asp-route-productId="@product.Id">Detail</a>
-                    <a asp-action="Update" asp-controller="ProductInventory" asp-route-productId="@product.Id">Update</a>
-                    <a asp-action="Delete" asp-controller="ProductInventory" asp-route-productId="@product.Id">Delete</a>
+                    <a asp-action="Create" asp-controller="Order"  asp-area="Orders" asp-route-productId="@product.Id">Order</a>
+                    <a asp-action="Update" asp-controller="OrderedProduct" asp-route-productId="@product.Id">Update</a>
+                    <a asp-action="Delete" asp-controller="OrderedProduct" asp-route-productId="@product.Id">Delete</a>
                 </td>
             </tr>
         }

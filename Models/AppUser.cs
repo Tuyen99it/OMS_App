@@ -15,6 +15,7 @@ namespace OMS_App.Models
         public ICollection<UserImage> UserImages { get; set; }
         public ICollection<OrderAddress> OrderAddressed { get; set; }
         public ICollection<Order> Orders { get; set; }
+        public ICollection<OrderedProduct> OrderedProducts { get; set; }
 
     }
 }

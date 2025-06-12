@@ -12,9 +12,14 @@ namespace OMS_App.Areas.Orders.Models
         public int TotalProduct { get; set; }
         public double Price { get; set; }
         public double TotalPrices { get; set; }
-        public int OrderId { get; set; }
+        public bool IsOrder { get; set; }
+        public int? OrderId { get; set; }
         [ForeignKey("OrderId")]
         public Order Order { get; set; }
+        public string UserId { get; set; }
+        [ForeignKey("UserId")]
+
+        public AppUser User { get; set; }
 
 
     }

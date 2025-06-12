@@ -1,31 +1,40 @@
-@using OMS_App.Areas.Inventory.Dtos
-@model ProductNameUpdateDto
+@using OMS_App.Areas.Orders.Models
+@model UpdateOrderViewModel
 @{
-    ViewData["Title"] = "Update product";
+    ViewData["Title"] = "Update Order status";
+
 }
 
-<h1>Update Category</h1>
+<h1>Update Order Status</h1>
 
 <form method="post">
     <div class="row gx-2 d-flex align-items-center">
 
-        <input asp-for="Id" type="hidden">
+        <input asp-for="OrderStatusUpdate.OrderId" type="hidden">
 
         <div class="col-2">
-            <input asp-for="Name" class="form-control" placeholder="Product Name">
-            <span asp-validation-for="Name" class="text-danger ms-2"></span>
+            <select asp-for="OrderStatusUpdate.Status" class="form-control">
+                 <option selected>Status</option>
+               <option value="@OrderStatus.Create">Create</option>
+                <option value="@OrderStatus.Send">Send</option>
+                <option value="@OrderStatus.Paid">Paid</option>
+               <option value="@OrderStatus.Delivery">Delivery</option>
+               <option value="@OrderStatus.Finish">Finish</option>
+                <option value="@OrderStatus.Cancel">Cancel</option>
+                
+            </select>
         </div>
         <div class="col-6">
 
-            <input asp-for="Description" class="form-control" placeholder="Description">
-            <span asp-validation-for="Description" class="text-danger ms-2"></span>
+            <input asp-for="OrderStatusUpdate.Note" class="form-control" placeholder="Note">
+            <span asp-validation-for="OrderStatusUpdate.Note" class="text-danger ms-2"></span>
         </div>
 
         <div class="col-1">
             <button type="submit" class="w-100 btn btn-md btn-primary" asp-action="Update"
-                asp-controller="ProductInventory" asp-area="Inventory">Update</button>
-        </div>
-    </div>
+                asp-controller="Order" asp-area="Orders">Update</button>
+
+</div>
 
 
 </form>

@@ -52,16 +52,21 @@ namespace OMS_App.Areas.Orders.Data
         {
             return await _context.OrderedProducts.Where(p => p.Order.Id == Convert.ToInt32(orderId)).ToListAsync();
         }
+        public async Task<List<OrderedProduct>> GetOrderedProductsByUserIdAsync(string userId)
+        {
+            return await _context.OrderedProducts.Where(p=>p.UserId==userId&&p.IsOrder==false).ToListAsync();
+        }
 
        
 
-        public async Task<OrderedProduct> GetOrderedProductByIdAsync(string productId)
+        public async Task<OrderedProduct> GetOrderedProductByIdAsync(string orderedProductId)
         {
-            if (String.IsNullOrEmpty(productId))
+            if (String.IsNullOrEmpty(orderedProductId))
             {
-                throw new NullReferenceException("Product is null");
+                Console.WriteLine("product id is null");
+                return null;
             }
-            var product = await _context.OrderedProducts.Where(p => p.Id == Convert.ToInt32(productId)).FirstOrDefaultAsync();
+            var product = await _context.OrderedProducts.Where(p => p.Id == Convert.ToInt32(orderedProductId)).FirstOrDefaultAsync();
 
             return product;
         }
@@ -76,23 +81,16 @@ namespace OMS_App.Areas.Orders.Data
             return product;
         }
 
+        
+
         public async Task<bool> UpdateAsync(OrderedProduct product)
         {
-            if (product == null)
-            {
-                throw new NullReferenceException("Product is null");
-            }
-            var existProduct = await _context.ProductInventories.FirstOrDefaultAsync(p => p.Id == product.Id);
-            if (existProduct == null)
-            {
-                _logger.LogInformation("Product not found for update");
-                return false;
-            }
-            _context.Entry(existProduct).CurrentValues.SetValues(product);
+
+            _context.OrderedProducts.Update(product);
             _logger.LogInformation("Product is updated");
             return await _context.SaveChangesAsync() > 0;
         }
 
-
+       
     }
 }

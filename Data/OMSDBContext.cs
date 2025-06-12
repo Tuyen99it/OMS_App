@@ -28,6 +28,7 @@ namespace OMS_App.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderedProduct> OrderedProducts { get; set; }
         public DbSet<OrderAddress> OrderAddresses { get; set; }
+           public DbSet<OrderStatusUpdate> OrderStatusUpdates { get; set; }
         public OMSDBContext(DbContextOptions<OMSDBContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

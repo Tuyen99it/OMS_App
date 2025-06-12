@@ -13,7 +13,7 @@ namespace OMS_App.Areas.Orders.Models
         public string Locality { get; set; }
         public string PhoneNumber { get; set; }
         public string AddressDescription { get; set; }
-
+        public bool isDefault { get; set; } = false;
 
 
         public string UserId { get; set; }

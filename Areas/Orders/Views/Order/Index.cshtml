@@ -9,9 +9,9 @@
 }
 @* <h1>@ViewData["Title"]</h1> *@
 <section>
-    <form method="post" class="row g-2" asp-action="Index">
+    <form method="post" class="row g-2 " asp-action="Index">
         <div class="col-3">
-            <select class="form-select form-select-md">
+            <select class="form-select form-select-md form-control" >
                 <option selected>Select Order Status</option>
                 <option value="Create">Create</option>
                 <option value="Create">Send</option>
@@ -31,6 +31,7 @@
     </form>
 </section>
 <hr>
+<h2> Hello</h2>
 @if (Model.OrdersReadDto != null)
 {
     <table class="table">
@@ -44,6 +45,7 @@
                 </th>
                 <th>Status</th>
                 <th>Price</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -52,10 +54,12 @@
             }
             @foreach (var order in Model.OrdersReadDto)
             {
+                
+                
                 <tr>
                     <td>@(i++)</td>
                     <td>@Html.DisplayFor(modelItem => order.Id)</td>
-                    <td>@Html.DisplayFor(modelItem => order.UpdateStatuses.LastOrDefault())</td>
+                    <td>@Html.DisplayFor(modelItem => order.OrderStatusUpdates.LastOrDefault().Status)</td>
                     <td>@Html.DisplayFor(modelItem => order.OrderedPriceTotal)</td>
 
 
@@ -63,7 +67,7 @@
                         <a asp-action="Detail" asp-controller="Order" asp-route-productId="@order.Id">Detail</a>
                         <a asp-action="Update" asp-controller="Order" asp-route-productId="@order.Id">Update</a>
                         <a asp-action="Delete" asp-controller="Order" asp-route-productId="@order.Id">Delete</a>
-                    </td>
+                    </td> 
                 </tr>
             }
         </tbody>

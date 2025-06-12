@@ -8,6 +8,7 @@ namespace OMS_App.Areas.Orders.Data
         Task<bool> CreateAsync(OrderAddress product);
         Task<bool> UpdateAsync(OrderAddress product);
         Task<bool> DeleteAsync(OrderAddress product);
+        Task<bool> SetOrderAddressToDefaultAsync(int addressId);
 
     }
 }
