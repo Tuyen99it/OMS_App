@@ -132,5 +132,14 @@ namespace OMS_App.Areas.Inventory.Data
         {
             return await _context.ProductNames.OrderByDescending(p => p.Id).Take(number).ToListAsync();
         }
+
+        public async Task<List<ProductName>> GetNumbersProductAsync(int numberProduct)
+        {
+
+            return await _context.ProductNames.Skip(0)
+                                                .Take(numberProduct)
+                                                .ToListAsync();
+
+        }
     }
 }

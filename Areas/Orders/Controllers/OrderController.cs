@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using OMS_App.Areas.Orders.Data;
+using OMS_App.Areas.Inventory.Data;
 using OMS_App.Areas.Orders.Dtos;
 using OMS_App.Areas.Orders.Models;
 using OMS_App.Models;
@@ -15,18 +16,21 @@ namespace OMS_App.Areas.Orders.Controllers
     public class OrderController : Controller
     {
         private readonly IOrderRepo _repository;
+
         private readonly ILogger<OrderController> _logger;
         private readonly IMapper _mapper;
+        private readonly IProductNameRepo _productRepository;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
 
 
-        public OrderController(IOrderRepo repository, ILogger<OrderController> logger, IMapper mapper, SignInManager<AppUser> signInManager)
+        public OrderController(IOrderRepo repository, ILogger<OrderController> logger, IMapper mapper, SignInManager<AppUser> signInManager, IProductNameRepo productRepository)
         {
             _repository = repository;
             _signInManager = signInManager;
             _logger = logger;
             _mapper = mapper;
+            _productRepository = productRepository;
 
         }
         [HttpGet]
@@ -48,7 +52,23 @@ namespace OMS_App.Areas.Orders.Controllers
             return View();
 
         }
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var model = new OrderCreateViewModel();
+            var products = await _productRepository.GetLastProductsByNumberAsync(10);
 
+            if (products == null)
+            {
+                Console.WriteLine("--> There is no product");
+            }
+
+
+            model.OrdersReadDto = _mapper.Map<List<OrderReadDto>>(products);
+            return View(model);
+
+
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -142,6 +162,19 @@ namespace OMS_App.Areas.Orders.Controllers
                 return View();
 
             }
+        }
+        private async Task<OrderCreateViewModel> GenerateOrderCreateViewModel(int number)
+        {
+            var model = new OrderCreateViewModel();
+            var products = await _productRepository.GetLastProductsByNumberAsync(number);
+            if (products == null)
+            {
+                Console.WriteLine("--> There is no product");
+                return null;
+            }
+
+
+            return new OrderCreateViewModel();
         }
 
 

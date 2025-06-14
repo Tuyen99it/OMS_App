@@ -11,7 +11,7 @@
 <section>
     <form method="post" class="row g-2" asp-action="Index">
         <div class="col-3">
-            <select class="form-select form-select-md">
+            <select class="form-select form-select-sm form-control">
                 <option selected>Select Order Status</option>
                 <option value="Create">Create</option>
                 <option value="Create">Send</option>
@@ -29,6 +29,11 @@
             <button id="login-submit" type="submit" class=" btn mb-3 btn-primary">Search</button>
         </div>
     </form>
+</section>
+<section>
+    <h2>
+        <a asp-action="Create" asp-controller="Order" asp-area="Orders">Create new order</a>
+    </h2>
 </section>
 <hr>
 @if (Model.OrdersReadDto != null)
