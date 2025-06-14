@@ -55,8 +55,7 @@ namespace OMS_App.Areas.Orders.Data
                     break;
 
             }
-            var orders = await _context.Orders
-                .Where(o => o.OrderStatusUpdates.Any(u => u.Status == status && u.StatusUpdate == false))
+            var orders = await _context.Orders.Where(o => o.OrderStatusUpdates.Any(u => u.Status == status && u.IsStatusUpdate == true))
                 .Include(o => o.OrderStatusUpdates)
                 .Include(o => o.OrderedProducts)
                 .ToListAsync();
@@ -150,5 +149,40 @@ namespace OMS_App.Areas.Orders.Data
         }
 
 
+
+        public async Task<bool> CreateOrderStatusAsync(OrderStatusUpdate status)
+        {
+            if (status == null)
+            {
+                Console.WriteLine("-->Status  is null");
+                return false;
+
+            }
+            _context.OrderStatusUpdates.Add(status);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public async Task<Order> GetNewestOrderAsync()
+        {
+            // Get all newOrder
+            var newOrder = await _context.Orders.Where(o => o.IsNewCreate == true).FirstOrDefaultAsync();
+            // reset isNewestOrder
+            if (newOrder == null)
+            {
+                return null;
+            }
+            newOrder.IsNewCreate = false;
+            _context.Orders.Update(newOrder);
+            _context.SaveChanges();
+            return newOrder;
+        }
+        public async Task<List<OrderStatusUpdate>> GetOrderStatusByOrderIdAsync(string orderId)
+        {
+            return  await _context.OrderStatusUpdates.Where(u => u.OrderId == Convert.ToInt32(orderId)).ToListAsync();
+            
+        }
+
+       
     }
 }

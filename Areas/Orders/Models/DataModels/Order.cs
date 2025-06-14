@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+   using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices;
 using OMS_App.Models;
@@ -8,6 +8,7 @@ namespace OMS_App.Areas.Orders.Models
     {
         [Key]
         public int Id { get; set; }
+        public bool IsNewCreate { get; set; } = true;
 
         public ICollection<OrderedProduct> OrderedProducts { get; set; }
 
@@ -37,9 +38,9 @@ namespace OMS_App.Areas.Orders.Models
         [Key]
         public int Id { get; set; }
         public OrderStatus Status { get; set; }
-        public bool StatusUpdate { get; set; } = false;
+        public bool? IsStatusUpdate { get; set; } = false;
 
-        public DateTime UpdateTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
         public string Note { get; set; }
         public int OrderId { get; set; }
         [ForeignKey("OrderId")]

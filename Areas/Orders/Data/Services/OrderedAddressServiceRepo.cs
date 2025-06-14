@@ -14,7 +14,7 @@ namespace OMS_App.Areas.Orders.Data
             _context = context;
             _logger = logger;
         }
-         public async Task<List<OrderAddress>> GetAllOrderAddressesByUserIdAsync(string userId)
+        public async Task<List<OrderAddress>> GetAllOrderAddressesByUserIdAsync(string userId)
         {
 
             if (string.IsNullOrEmpty(userId))
@@ -33,7 +33,7 @@ namespace OMS_App.Areas.Orders.Data
             {
                 throw new NullReferenceException("address is null");
             }
-            var address = await _context.OrderAddresses.Where(p => p.Id == Convert.ToInt32(addressId)).FirstOrDefaultAsync();                                                      
+            var address = await _context.OrderAddresses.Where(p => p.Id == Convert.ToInt32(addressId)).FirstOrDefaultAsync();
             return address;
         }
         public async Task<bool> CreateAsync(OrderAddress address)
@@ -71,7 +71,7 @@ namespace OMS_App.Areas.Orders.Data
             return _context.SaveChanges() > 0;
         }
 
-       
+
         public async Task<bool> UpdateAsync(OrderAddress address)
         {
             if (address == null)
@@ -89,6 +89,22 @@ namespace OMS_App.Areas.Orders.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-       
+        public async Task<bool> SetOrderAddressToDefaultAsync(int addressId)
+        {
+            // get existing default 
+            var existingDefault = _context.OrderAddresses.Where(a => a.isDefault == true).FirstOrDefault();
+            existingDefault.isDefault = false;
+            // get address
+            var setDefautAddress = _context.OrderAddresses.Where(a => a.Id == addressId).FirstOrDefault();
+            setDefautAddress.isDefault = true;
+
+            // reset existing default
+            _context.OrderAddresses.Update(existingDefault);
+            _context.OrderAddresses.Update(setDefautAddress);
+            return await _context.SaveChangesAsync() > 0;
+
+        }
+
+      
     }
 }

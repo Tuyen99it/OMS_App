@@ -12,8 +12,8 @@ using OMS_App.Data;
 namespace OMS_App.Migrations
 {
     [DbContext(typeof(OMSDBContext))]
-    [Migration("20250603233956_OrderTables")]
-    partial class OrderTables
+    [Migration("20250611154930_m2")]
+    partial class m2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -299,22 +299,17 @@ namespace OMS_App.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsNewCreate")
+                        .HasColumnType("bit");
 
                     b.Property<double>("OrderedPriceTotal")
                         .HasColumnType("float");
-
-                    b.Property<int>("OrderedProductId")
-                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("UserId");
 
@@ -345,6 +340,9 @@ namespace OMS_App.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -357,7 +355,14 @@ namespace OMS_App.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("isDefault")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique()
+                        .HasFilter("[OrderId] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -371,6 +376,9 @@ namespace OMS_App.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsStatusUpdate")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Note")
                         .IsRequired()
@@ -390,7 +398,7 @@ namespace OMS_App.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderStatusUpdate");
+                    b.ToTable("OrderStatusUpdates");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Orders.Models.OrderedProduct", b =>
@@ -401,10 +409,10 @@ namespace OMS_App.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsOrder")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("OrderedProductId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<double>("Price")
@@ -420,11 +428,15 @@ namespace OMS_App.Migrations
                     b.Property<int>("TotalProduct")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("OrderedProductId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("OrderedProducts");
                 });
@@ -753,28 +765,28 @@ namespace OMS_App.Migrations
 
             modelBuilder.Entity("OMS_App.Areas.Orders.Models.Order", b =>
                 {
-                    b.HasOne("OMS_App.Areas.Orders.Models.OrderAddress", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
-
                     b.HasOne("OMS_App.Models.AppUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Address");
-
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Orders.Models.OrderAddress", b =>
                 {
+                    b.HasOne("OMS_App.Areas.Orders.Models.Order", "Order")
+                        .WithOne("Address")
+                        .HasForeignKey("OMS_App.Areas.Orders.Models.OrderAddress", "OrderId");
+
                     b.HasOne("OMS_App.Models.AppUser", "User")
                         .WithMany("OrderAddressed")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Order");
 
                     b.Navigation("User");
                 });
@@ -793,16 +805,18 @@ namespace OMS_App.Migrations
             modelBuilder.Entity("OMS_App.Areas.Orders.Models.OrderedProduct", b =>
                 {
                     b.HasOne("OMS_App.Areas.Orders.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
+                        .WithMany("OrderedProducts")
+                        .HasForeignKey("OrderId");
+
+                    b.HasOne("OMS_App.Models.AppUser", "User")
+                        .WithMany("OrderedProducts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OMS_App.Areas.Orders.Models.Order", null)
-                        .WithMany("OrderedProducts")
-                        .HasForeignKey("OrderedProductId");
-
                     b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
@@ -873,6 +887,9 @@ namespace OMS_App.Migrations
 
             modelBuilder.Entity("OMS_App.Areas.Orders.Models.Order", b =>
                 {
+                    b.Navigation("Address")
+                        .IsRequired();
+
                     b.Navigation("OrderStatusUpdates");
 
                     b.Navigation("OrderedProducts");
@@ -886,6 +903,8 @@ namespace OMS_App.Migrations
             modelBuilder.Entity("OMS_App.Models.AppUser", b =>
                 {
                     b.Navigation("OrderAddressed");
+
+                    b.Navigation("OrderedProducts");
 
                     b.Navigation("Orders");
 

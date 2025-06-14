@@ -3,9 +3,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Newtonsoft.Json;
 using OMS_App.Areas.Orders.Data;
 using OMS_App.Areas.Orders.Dtos;
 using OMS_App.Areas.Orders.Models;
@@ -45,7 +42,12 @@ namespace OMS_App.Areas.Orders.Controllers
             return View();
 
         }
+        [HttpGet]
+        public async Task<IActionResult> CreateAsync(string userId)
+        {
+            return View();
 
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -60,12 +62,12 @@ namespace OMS_App.Areas.Orders.Controllers
             var result = await _repository.CreateAsync(address);
             if (result == true)
             {
-                return View("Index", new { sortUpdate = "desceding" });
+                return View("Index");
             }
             else
             {
                 Console.WriteLine("-->Can not add orders");
-                return View(address);
+                return View();
             }
 
         }

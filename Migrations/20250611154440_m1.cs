@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OMS_App.Migrations
 {
     /// <inheritdoc />
-    public partial class OrderTables : Migration
+    public partial class m1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -232,24 +232,19 @@ namespace OMS_App.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderAddresses",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    District = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Locality = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddressDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrderedPriceTotal = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderAddresses", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderAddresses_AspNetUsers_UserId",
+                        name: "FK_Orders_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -378,30 +373,88 @@ namespace OMS_App.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "OrderAddresses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderedProductId = table.Column<int>(type: "int", nullable: false),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Locality = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isDefault = table.Column<bool>(type: "bit", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrderedPriceTotal = table.Column<double>(type: "float", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: true)
+                    OrderId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_OrderAddresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_UserId",
+                        name: "FK_OrderAddresses_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_OrderAddresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "OrderAddresses",
+                        name: "FK_OrderAddresses_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderedProducts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalProduct = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    TotalPrices = table.Column<double>(type: "float", nullable: false),
+                    IsOrder = table.Column<bool>(type: "bit", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderedProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderedProducts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderedProducts_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderStatusUpdates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsStatusUpdate = table.Column<bool>(type: "bit", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderStatusUpdates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderStatusUpdates_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -425,57 +478,6 @@ namespace OMS_App.Migrations
                         column: x => x.PostId,
                         principalTable: "Post",
                         principalColumn: "PostId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderedProducts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalProduct = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    TotalPrices = table.Column<double>(type: "float", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    OrderedProductId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderedProducts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrderedProducts_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderedProducts_Orders_OrderedProductId",
-                        column: x => x.OrderedProductId,
-                        principalTable: "Orders",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderStatusUpdate",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderStatusUpdate", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrderStatusUpdate_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -544,14 +546,16 @@ namespace OMS_App.Migrations
                 column: "ProductNameId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderAddresses_OrderId",
+                table: "OrderAddresses",
+                column: "OrderId",
+                unique: true,
+                filter: "[OrderId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderAddresses_UserId",
                 table: "OrderAddresses",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderedProducts_OrderedProductId",
-                table: "OrderedProducts",
-                column: "OrderedProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderedProducts_OrderId",
@@ -559,9 +563,9 @@ namespace OMS_App.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_AddressId",
-                table: "Orders",
-                column: "AddressId");
+                name: "IX_OrderedProducts_UserId",
+                table: "OrderedProducts",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
@@ -569,8 +573,8 @@ namespace OMS_App.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderStatusUpdate_OrderId",
-                table: "OrderStatusUpdate",
+                name: "IX_OrderStatusUpdates_OrderId",
+                table: "OrderStatusUpdates",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
@@ -624,10 +628,13 @@ namespace OMS_App.Migrations
                 name: "InventoryImages");
 
             migrationBuilder.DropTable(
+                name: "OrderAddresses");
+
+            migrationBuilder.DropTable(
                 name: "OrderedProducts");
 
             migrationBuilder.DropTable(
-                name: "OrderStatusUpdate");
+                name: "OrderStatusUpdates");
 
             migrationBuilder.DropTable(
                 name: "PostCategories");
@@ -658,9 +665,6 @@ namespace OMS_App.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductNames");
-
-            migrationBuilder.DropTable(
-                name: "OrderAddresses");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

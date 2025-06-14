@@ -12,8 +12,8 @@ using OMS_App.Data;
 namespace OMS_App.Migrations
 {
     [DbContext(typeof(OMSDBContext))]
-    [Migration("20250603234508_OrderTables1")]
-    partial class OrderTables1
+    [Migration("20250611154440_m1")]
+    partial class m1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -352,6 +352,9 @@ namespace OMS_App.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("isDefault")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId")
@@ -371,6 +374,9 @@ namespace OMS_App.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsStatusUpdate")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Note")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -389,7 +395,7 @@ namespace OMS_App.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderStatusUpdate");
+                    b.ToTable("OrderStatusUpdates");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Orders.Models.OrderedProduct", b =>
@@ -400,7 +406,10 @@ namespace OMS_App.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("OrderId")
+                    b.Property<bool>("IsOrder")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<double>("Price")
@@ -416,9 +425,15 @@ namespace OMS_App.Migrations
                     b.Property<int>("TotalProduct")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("OrderedProducts");
                 });
@@ -788,11 +803,17 @@ namespace OMS_App.Migrations
                 {
                     b.HasOne("OMS_App.Areas.Orders.Models.Order", "Order")
                         .WithMany("OrderedProducts")
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("OrderId");
+
+                    b.HasOne("OMS_App.Models.AppUser", "User")
+                        .WithMany("OrderedProducts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OMS_App.Areas.Post.Models.Post", b =>
@@ -879,6 +900,8 @@ namespace OMS_App.Migrations
             modelBuilder.Entity("OMS_App.Models.AppUser", b =>
                 {
                     b.Navigation("OrderAddressed");
+
+                    b.Navigation("OrderedProducts");
 
                     b.Navigation("Orders");
 

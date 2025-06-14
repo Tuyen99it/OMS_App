@@ -5,14 +5,14 @@
 namespace OMS_App.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateOrderModel : Migration
+    public partial class m2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "StatusUpdate",
-                table: "OrderStatusUpdate",
+                name: "IsNewCreate",
+                table: "Orders",
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
@@ -22,8 +22,8 @@ namespace OMS_App.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "StatusUpdate",
-                table: "OrderStatusUpdate");
+                name: "IsNewCreate",
+                table: "Orders");
         }
     }
 }
